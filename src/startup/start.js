@@ -8,8 +8,8 @@ var path = require('path');
 
 var readConfig = function(codebase, configFile) {
     // check for arguments
-    if (codebase == undefined) codebase = __dirname;
-    if (configFile == undefined) configFile = 'config.json';
+    if (codebase === undefined) codebase = __dirname;
+    if (configFile === undefined) configFile = 'config.json';
 
     //read settings from configuration file
     return JSON.parse(

@@ -12,8 +12,13 @@ module.exports = function(){
 
         //define function to parse pre-define script by path
         parse: function(scriptPath){
+
           if (!fs.existsSync(scriptPath)) {
-              return null;
+            scriptPath = path.join(__dirname, scriptPath)
+          }
+
+          if (!fs.existsSync(scriptPath)) {
+              throw new Error('Invaild script name');
           }
 
           //read report text from defined file
@@ -40,6 +45,11 @@ module.exports = function(){
                         break;
                     case "float":
                         arg = parseFloat(arg);
+                        break;
+                    case "Date":
+                            arg = Date.parse(arg);
+                            break;
+                    case "string":
                         break;
                     default :
                         break;
