@@ -1,0 +1,27 @@
+{
+  "password":{
+    "hashes":[
+      {"hash":"md5", "digest":"hex"},
+      {"hash":"sha256", "digest":"base64"}
+    ]
+  },
+  "token":{
+    "hashes":[
+      {"hash":"sha256", "digest":"base64"},
+      {"hash":"md5", "digest":"hex"}
+    ],
+    "expires":5000,
+    "verify":false
+  },
+  "permission": {
+    "operations": {
+      "get": 1,
+      "list": 2,
+      "query": 4,
+      "create": 8,
+      "edit": 16,
+      "delete": 32,
+      "report": 64
+    }
+  }
+}

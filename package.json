@@ -1,0 +1,42 @@
+{
+  "name": "pitayax-service",
+  "description": "The rest/file service base on express, node and mongodb",
+  "version": "1.0.0",
+  "author": "Bruce Jiang <bruce2005@pitayax.net>",
+  "keywords": [
+    "restful",
+    "express",
+    "mongodb",
+    "entity",
+    "rest",
+    "node"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "babel-runtime": "^5.8.20",
+    "body-parser": "*",
+    "express": "4.*",
+    "mongoose": "4.*",
+    "q": "*",
+    "underscore": "1.6.*"
+  },
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-eslint": "^4.1.0",
+    "eslint": "^1.2.1",
+    "eslint-plugin-react": "^3.3.0"
+  },
+  "scripts": {
+    "start": "node ./src/startup/start",
+    "test": "node ./test/test"
+  },
+  "bugs": {
+    "url": "https://github.com/PitayaX/pitayax-service/issues/new",
+    "email": "bruce2005@pitayax.net"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PitayaX/pitayax-service.git"
+  },
+  "homepage": "http://www.pitayax.net"
+}
