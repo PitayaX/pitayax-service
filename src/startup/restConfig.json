@@ -2,15 +2,15 @@
   "name": "nrest server",
   "databases": {
     "dbblog": "mongodb://10.10.73.209:27017/PSPMS_Restore",
-    "dbtest": "mongodb://10.10.73.209:27017/NorthWind"
+    "dbtest": "mongodb://10.10.73.209:27017/Northwind"
   },
   "settings": {
     "#env": "development",
     "port": 8088,
     "supportHttps": false,
-    "supportMiddleware": false,
+    "supportMiddleware": true,
     "useSubFolder": false,
-    "recordSteps": true
+    "recordSteps": false
   },
   "logger": {
     "output": "stdout",

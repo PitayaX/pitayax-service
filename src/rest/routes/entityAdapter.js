@@ -74,7 +74,8 @@ module.exports = function (app, entityName) {
             }
 
             //find report by defined path
-            var scriptPath = path.resolve('./rest/scripts/predefine/' + ((entityName == '') ? '' : (entityName + '/')) + scriptName + '.js');
+            //var scriptPath = path.resolve('./rest/scripts/predefine/' + ((entityName == '') ? '' : (entityName + '/')) + scriptName + '.js');
+            var scriptPath = '/predefine/' + ((entityName == '') ? '' : (entityName + '/')) + scriptName + '.js'
 
             //create instance of script engine
             var engine = require('../scripts/scriptEngine')();

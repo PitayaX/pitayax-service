@@ -10,8 +10,7 @@ module.exports = function (app) {
 
     //read settings from configuration file
     var config = app.readConfig(__dirname);
-    console.log('d1:' + __dirname);
-
+    
     //set application to router
     router.app = app;
 
@@ -89,4 +88,3 @@ module.exports = function (app) {
 
     return router;
 };
-
