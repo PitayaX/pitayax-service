@@ -1,0 +1,37 @@
+{
+  "database": {
+    "default": "dbblog"
+  },
+  "entity": {
+    "blog": {
+      "model": {
+        "title": "String",
+        "content": "String",
+        "att": "String",
+        "attachments": [],
+        "comments": [],
+        "priority": "Number",
+        "tags": [],
+        "lastUpdateDate": "Date",
+        "date": "Date"
+      },
+      "options": {
+        "collection": "articles"
+      }
+    },
+    "blogfile": {
+      "model": {
+        "key": "String",
+        "meta": {
+          "name" : "String",
+          "size" : "Number",
+          "mime" : "String"
+        },
+        "date": "Date"
+      },
+      "options": {
+        "collection": "files"
+      }
+    }
+  }
+}

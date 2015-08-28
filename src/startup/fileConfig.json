@@ -1,0 +1,13 @@
+{
+  "name": "file server",
+  "settings": {
+    "port": 8081,
+    "supportHttps": false,
+    "supportMiddleware": false,
+    "recordSteps": true
+  },
+  "logger": {
+    "output": "stdout",
+    "error": "stderr"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "database": {
+    "default": "dbtest"
+  },
+  "entity": {
+    "category": {
+      "model": {
+        "CategoryID": "Number",
+        "Description": "String",
+        "CategoryName": "String"
+      },
+      "options": {
+        "collection": "Categories"
+      }
+    },
+    "customer": {
+      "model": {
+        "City": "String",
+        "Fax": "String",
+        "PostalCode": "String",
+        "ContactTitle": "String",
+        "Phone": "String",
+        "ContactName": "String",
+        "CustomerID": "String",
+        "Country": "String",
+        "CompanyName": "String",
+        "Region": "String",
+        "Address": "String"
+      },
+      "options": {
+        "collection": "Customers"
+      }
+    }
+  }
+}

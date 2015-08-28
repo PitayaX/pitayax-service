@@ -1,0 +1,15 @@
+{
+  "databases": {
+    "#dbmain": "mongodb://hostname:port/dbname"
+  },
+  "servers":[
+    {
+      "config":"restConfig.json",
+      "script":"./restApp"
+    },
+    {
+      "config":"fileConfig.json",
+      "script":"./fileApp"
+    }
+  ]
+}
