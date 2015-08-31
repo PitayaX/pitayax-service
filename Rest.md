@@ -3,7 +3,7 @@
 |---|---|
 |URL|/api/object/object-id|
 |HTTP method|GET|
-|Description | empty |
+|Description | get single instance of object |
 
 > Usage:
 
@@ -35,7 +35,7 @@ response:
 |---|---|
 |URL|/api/object/query|
 |HTTP method|POST|
-|Description | empty |
+|Description | get array of objects by matched certions |
 
 > Usage:
 ```
