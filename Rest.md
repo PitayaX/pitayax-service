@@ -141,6 +141,23 @@ response:
         "Address": "54, rue Royale"
     }
 ]
+
+query1.js saved in scripts/perdefine/customer folder
+var $$ = {
+        "type":"report",
+        "version":"1.0.0",
+        "arguments":{
+          "$$city":{
+            "default":["London","Tsawassen"], "type":"string"
+          }
+        },
+        "script":{
+           "$query":{"City": {"$in": "$$city"}},
+           "$page":1,
+           "$pageSize":3,
+           "$sort": {"Fax":1}
+        }
+    };
 ```
 
 ##Insert
