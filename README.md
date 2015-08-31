@@ -1,5 +1,5 @@
 # nrest
-The simple rest service base on express + nodejs + mongodb
+The simple rest service base on express + nodejs + mongodb.
 
 ## Installation
 nmp install
