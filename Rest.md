@@ -1,25 +1,39 @@
 ##Get
->Get one single instance of object
->URL: /api/object/object-id
->HTTP method: Get
->Body:empty
+| | |
+|---|---|
+|URL|/api/object/object-id|
+|HTTP method|get|
+|Body | empty |
+
 
 ##Query
->Get one single instance of object
-HTTP method: Post
+| | |
+|---|---|
+|URL|/api/object/query|
+|HTTP method|post|
+|Body | empty |
+
+> Usage:
 
 ##Insert
-HTTP method: Post
+| | |
+|---|---|
+|URL|/api/object/insert|
+|HTTP method|post|
+|Body | `{p1:"v1", p2: "v2"}` |
+
 
 ##Update
 HTTP method: Put
+| | |
+|---|---|
+|URL|/api/object/insert|
+|HTTP method|post|
+|Body | `{p1:"v1", p2: "v2"}` |
 
 ##Delete
-HTTP method: Delete
-Body: {
-   "_id": "55d4410188dba04c68296714"
-}
-
-|T|T|
-------
-|1|2|
+| | |
+|---|---|
+|URL|/api/object/insert|
+|HTTP method|post|
+|Body | `{p1:"v1", p2: "v2"}` |
