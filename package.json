@@ -28,7 +28,7 @@
   },
   "scripts": {
     "start": "node ./src/startup/start",
-    "test": "node ./test/test"
+    "test": "node ./test/start"
   },
   "bugs": {
     "url": "https://github.com/PitayaX/pitayax-service/issues/new",

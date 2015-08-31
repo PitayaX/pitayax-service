@@ -4,9 +4,7 @@
 /**
  * Created by Bruce on 1/22/2015.
  */
-
 var fs = require('fs');
-var U = require('underscore');
 
 function getRestEntities(entities){
     return Object.keys(entities)
@@ -35,8 +33,7 @@ module.exports = function(router, config) {
     //get entity names from schema
     var entityNames = getRestEntities((schemas && schemas.entity) ? schemas.entity : {});
 
-    //fetch all entity name in array
-    U.forEach(entityNames, function(entityName) {
+    entityNames.forEach(function(entityName) {
 
         //create a router for current object
         var entityRouter = require('express').Router();
@@ -46,8 +43,12 @@ module.exports = function(router, config) {
         entityRouter.app = app;
         entityRouter.callback = router.callback;
 
+        //bind rest router
         require('./restRouter')(entityRouter, config, adapter);
 
-        router.use('/entity/' + entityName, entityRouter);
+        //bind entity to parent router
+        var routePath = (config['basePath'] ? config['basePath'] : '/api') + '/' + entityName;
+        console.log(routePath);
+        router.use(routePath, entityRouter);
     });
 };

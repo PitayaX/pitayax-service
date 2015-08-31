@@ -23,68 +23,72 @@ module.exports = function (router, config, adapter) {
     var restAdapter = (adapter) ? adapter : require('./' + config['adapter'])(app);
 
     //fetch all method in handles file
-    U.forEach(handles, function (handle, httpMethod) {
+    Object.keys(handles)
+        .forEach(function(httpMethod) {
+            var handle = handles[httpMethod];
 
-        //fetch all paths in current http method
-        handles[httpMethod].forEach(function (item) {
+            //fetch all paths in current http method
+            handles[httpMethod].forEach(function (item) {
 
-            //get route path from item
-            var routePath = item.key;
+                //get route path from item
+                var routePath = item.key;
 
-            //set route for http method and route path
-            restRouter[httpMethod](routePath, function (req, res) {
+                //set route for http method and route path
+                restRouter[httpMethod](routePath, function (req, res) {
 
-                try {
-                    //get rest name for method
-                    var restMethod = item.value;
-                    if (!restMethod) {
-                        //The router doesn't support empty rest method
-                        throw new Error('The router doesn\'t support empty rest method.');
-                    }
-
-                    //get the method in adapter by rest name
-                    var adapterMethod = restAdapter[restMethod];
-                    if (!adapterMethod) {
-                        //The router can't find rest method in adapter
-                        throw new Error('Current router doesn\'t support the rest method: ' + restMethod + '.');
-                    }
-
-                    if (!config.anonymous) {
-
-                        //control access for current method by rest route
-                        var allowCheck =
-                            (restAdapter.allowCheck == undefined)
-                                ? function(req, res, adapterMethod) { return true; }
-                                : restAdapter.allowCheck;
-
-                        if (!allowCheck(req, res, restMethod)) {
-
-                            throw new Error("Deny access this method.");
+                    try {
+                        //get rest name for method
+                        var restMethod = item.value;
+                        if (!restMethod) {
+                            //The router doesn't support empty rest method
+                            throw new Error('The router doesn\'t support empty rest method.');
                         }
+
+                        //get the method in adapter by rest name
+                        var adapterMethod = restAdapter[restMethod];
+                        if (!adapterMethod) {
+                            //The router can't find rest method in adapter
+                            throw new Error('Current router doesn\'t support the rest method: ' + restMethod + '.');
+                        }
+
+                        if (!config.anonymous) {
+
+                            //control access for current method by rest route
+                            var allowCheck =
+                                (restAdapter.allowCheck == undefined)
+                                    ? function(req, res, adapterMethod) { return true; }
+                                    : restAdapter.allowCheck;
+
+                            if (!allowCheck(req, res, restMethod)) {
+
+                                throw new Error("Deny access this method.");
+                            }
+                        }
+
+                        //invoke rest method
+                        adapterMethod(req, res)
+                            .then(function (data) {
+
+                                //get result successfully, return data
+                                callback(req, res, null, data);
+                            })
+                            .catch(function (err) {
+                                //get result failed, return error
+                                callback(req, res, err, null);
+                            });
                     }
+                    catch (err) {
 
-                    //invoke rest method
-                    adapterMethod(req, res)
-                        .then(function (data) {
-
-                            //get result successfully, return data
-                            callback(req, res, null, data);
-                        })
-                        .catch(function (err) {
-                            //get result failed, return error
-                            callback(req, res, err, null);
-                        });
-                }
-                catch (err) {
-
-                    //catch unknown issue, return error
-                    callback(req, res, err, null);
-                }
+                        //catch unknown issue, return error
+                        callback(req, res, err, null);
+                    }
+                });
             });
         });
-    });
 
     var path = (config['path']) ? config['path']:'/'
+
+    console.log('p1:' + path)
 
     //add rest method to router
     router.use(path, restRouter);

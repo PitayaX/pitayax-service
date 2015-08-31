@@ -1,8 +1,9 @@
 {
   "entity": {
     "anonymous": true,
-    "adapter":"entityAdapter",
-    "router":"./entityRouter",
+    "basePath": "/api",
+    "adapter": "entityAdapter",
+    "router": "./entityRouter",
     "route":{
       "get": [
         { "key":"/test", "value": "test" },
@@ -17,7 +18,7 @@
         { "key":"/findOne", "value": "get" },
         { "key":"/get/:id", "value": "get" },
         { "key":"/:key/:id", "value": "get" },
-        { "key":"/:id", "value": "get" },
+        { "key":"/get/:id", "value": "get" },
         { "key":"/", "value": "disable" }
       ],
       "post": [
@@ -59,8 +60,8 @@
     }
   },
   "admin":{
-    "adapter":"adminAdapter",
     "path":"/admin",
+    "adapter":"adminAdapter",
     "route": {
       "get": [
         { "key": "/list", "value": "listObjs" },
