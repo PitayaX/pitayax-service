@@ -1,5 +1,5 @@
 # nrest
-The simple rest service base on express + nodejs + mongodb.
+The restful service to do authenticate. It bases on express + nodejs + MySql.
 
 ## Installation
 nmp install
