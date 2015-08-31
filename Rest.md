@@ -80,20 +80,24 @@ response:
 ]
 ```
 
+##Query
+| | |
+|---|---|
+|URL|/api/object/script/script-name|
+|HTTP method|POST|
+|Description | execute script defined server |
+
 > Usage:
 
 ```javascript
 request:
-post:/api/customer/query
+post:/api/customer/script/query1
 headers:{
   content-type: "application/json"
   access-token: "xxxxxx"
 }
 body:{
-  "$script": "query1",
-  "$arguments": {
-    "city": ["Aachen", "Nantes"]
-  }
+  "city": ["Aachen", "Nantes"]
 }
 
 response:
