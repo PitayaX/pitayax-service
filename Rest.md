@@ -7,7 +7,7 @@
 
 > Usage:
 
-```
+```javascript
 request:
 url:/api/customer/55d4410288dba04c6829671d
 header:{}
