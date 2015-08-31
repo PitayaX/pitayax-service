@@ -239,25 +239,6 @@ response:
 }
 ```
 
-```javascript
-request:
-put:/api/customer/update
-headers:{
-  content-type: "application/json"
-  access-token: "xxxxxx"
-}
-body:{
-  "modifier": {"City": "AachenXX2"}
-}
-
-response:
-{
-    "ok": 1,
-    "nModified": 1,
-    "n": 1
-}
-```
-
 ##Delete
 | | |
 |---|---|
