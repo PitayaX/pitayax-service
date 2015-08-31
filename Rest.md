@@ -9,8 +9,8 @@
 
 ```javascript
 request:
-url:/api/customer/55d4410288dba04c6829671d
-header:{}
+get:/api/customer/55d4410288dba04c6829671d
+header:{access-token:xxxxxx}
 body:{}
 
 response:
@@ -35,15 +35,44 @@ response:
 |---|---|
 |URL|/api/object/query|
 |HTTP method|POST|
-|Description | get array of objects by matched certions |
+|Description | get array of objects by matched query criterion |
 
 > Usage:
-```
-post url:/api/customer/query
-header:{}
-body:{p1:"v1", p2: "v2"}
-```
 
+```javascript
+request:
+post:/api/customer/query
+header:{access-token:xxxxxx}
+body:{
+  "$query":{"City":"London"},
+  "$fields":{"City":1, "Fax":1, "CompanyName":1},
+  "$page":1,
+  "$pageSize":3,
+  "$sort":{"CompanyName":1}
+}
+
+response:
+[
+    {
+        "_id": "55d4410188dba04c68296717",
+        "City": "London",
+        "Fax": "(171) 555-6750",
+        "CompanyName": "Around the Horn"
+    },
+    {
+        "_id": "55d4410288dba04c6829671e",
+        "City": "London",
+        "Fax": null,
+        "CompanyName": "B's Beverages"
+    },
+    {
+        "_id": "55d4410288dba04c68296723",
+        "City": "London",
+        "Fax": "(171) 555-9199",
+        "CompanyName": "Consolidated Holdings"
+    }
+]
+```
 
 ##Insert
 | | |
