@@ -1,4 +1,4 @@
-# nrest
+# rest
 The simple rest service base on express + nodejs + mongodb.
 
 ## Installation
