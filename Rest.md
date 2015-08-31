@@ -167,12 +167,46 @@ var $$ = {
 |HTTP method|POST|
 |Description | empty |
 
-```
-post url:/api/object/insert
-header:{}
-body:{p1:"v1", p2: "v2"}
-```
+> Usage:
 
+```javascript
+request:
+post:/api/customer/insert
+headers:{
+  content-type: "application/json"
+  access-token: "xxxxxx"
+}
+body:{
+        "City": "Aachen2",
+        "Fax": "0241-059428",
+        "PostalCode": "52066",
+        "ContactTitle": "Order Administrator",
+        "Phone": "0241-039123",
+        "ContactName": "Sven Ottlieb",
+        "CustomerID": "DRACD",
+        "Country": "Germany",
+        "CompanyName": "Drachenblut Delikatessen",
+        "Region": null,
+        "Address": "Walserweg 21"
+}
+
+response:
+{
+    "__v": 0,
+    "City": "Aachen2",
+    "Fax": "0241-059428",
+    "PostalCode": "52066",
+    "ContactTitle": "Order Administrator",
+    "Phone": "0241-039123",
+    "ContactName": "Sven Ottlieb",
+    "CustomerID": "DRACD",
+    "Country": "Germany",
+    "CompanyName": "Drachenblut Delikatessen",
+    "Region": null,
+    "Address": "Walserweg 21",
+    "_id": "55e4635f79c517e800d59cca"
+}
+```
 
 ##Update
 | | |
