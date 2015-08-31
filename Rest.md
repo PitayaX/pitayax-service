@@ -2,7 +2,7 @@
 | | |
 |---|---|
 |URL|/api/object/object-id|
-|HTTP method|get|
+|HTTP method|GET|
 |Body | empty |
 
 
@@ -10,7 +10,7 @@
 | | |
 |---|---|
 |URL|/api/object/query|
-|HTTP method|post|
+|HTTP method|POST|
 |Body | empty |
 
 > Usage:
@@ -19,21 +19,20 @@
 | | |
 |---|---|
 |URL|/api/object/insert|
-|HTTP method|post|
+|HTTP method|POST|
 |Body | `{p1:"v1", p2: "v2"}` |
 
 
 ##Update
-HTTP method: Put
 | | |
 |---|---|
-|URL|/api/object/insert|
-|HTTP method|post|
+|URL|/api/object/update|
+|HTTP method|PUT|
 |Body | `{p1:"v1", p2: "v2"}` |
 
 ##Delete
 | | |
 |---|---|
-|URL|/api/object/insert|
-|HTTP method|post|
+|URL|/api/object/delete|
+|HTTP method|DELETE|
 |Body | `{p1:"v1", p2: "v2"}` |
