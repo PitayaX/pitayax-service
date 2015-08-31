@@ -10,7 +10,10 @@
 ```javascript
 request:
 get:/api/customer/55d4410288dba04c6829671d
-header:{access-token:xxxxxx}
+headers:{
+  content-type: "application/json"
+  access-token: "xxxxxx"
+}
 body:{}
 
 response:
@@ -42,7 +45,10 @@ response:
 ```javascript
 request:
 post:/api/customer/query
-header:{access-token:xxxxxx}
+headers:{
+  content-type: "application/json"
+  access-token: "xxxxxx"
+}
 body:{
   "$query":{"City":"London"},
   "$fields":{"City":1, "Fax":1, "CompanyName":1},
@@ -70,6 +76,69 @@ response:
         "City": "London",
         "Fax": "(171) 555-9199",
         "CompanyName": "Consolidated Holdings"
+    }
+]
+```
+
+> Usage:
+
+```javascript
+request:
+post:/api/customer/query
+headers:{
+  content-type: "application/json"
+  access-token: "xxxxxx"
+}
+body:{
+  "$script": "query1",
+  "$arguments": {
+    "city": ["Aachen", "Nantes"]
+  }
+}
+
+response:
+[
+    {
+        "_id": "55d4410288dba04c68296724",
+        "City": "Aachen",
+        "Fax": "0241-059428",
+        "PostalCode": "52066",
+        "ContactTitle": "Order Administrator",
+        "Phone": "0241-039123",
+        "ContactName": "Sven Ottlieb",
+        "CustomerID": "DRACD",
+        "Country": "Germany",
+        "CompanyName": "Drachenblut Delikatessen",
+        "Region": null,
+        "Address": "Walserweg 21"
+    },
+    {
+        "_id": "55d4410288dba04c68296725",
+        "City": "Nantes",
+        "Fax": "40.67.89.89",
+        "PostalCode": "44000",
+        "ContactTitle": "Owner",
+        "Phone": "40.67.88.88",
+        "ContactName": "Janine Labrune",
+        "CustomerID": "DUMON",
+        "Country": "France",
+        "CompanyName": "Du monde entier",
+        "Region": null,
+        "Address": "67, rue des Cinquante Otages"
+    },
+    {
+        "_id": "55d4410288dba04c6829672d",
+        "City": "Nantes",
+        "Fax": "40.32.21.20",
+        "PostalCode": "44000",
+        "ContactTitle": "Marketing Manager",
+        "Phone": "40.32.21.21",
+        "ContactName": "Carine Schmitt",
+        "CustomerID": "FRANR",
+        "Country": "France",
+        "CompanyName": "France restauration",
+        "Region": null,
+        "Address": "54, rue Royale"
     }
 ]
 ```
