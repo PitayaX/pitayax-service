@@ -9,16 +9,22 @@ var fs = require('fs');
 var U = require('underscore');
 
 function getRestEntities(entities){
-    return U.filter(
+    return Object.keys(entities)
+                .filter(function(name) {
+                    var e = entities[name];
+                    return (e.rest != undefined && e.rest === false) ? false : true;
+                });
+
+     /*U.filter(
         U.keys(entities),
         function(name){
             var e = entities[name];
             return (e.rest != undefined && e.rest === false) ? false : true;
         }
-    );
+    );*/
 }
 
-module.exports = function(router, config){
+module.exports = function(router, config) {
 
     //get instance of application
     var app = router.app;

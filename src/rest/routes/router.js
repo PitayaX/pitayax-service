@@ -10,7 +10,7 @@ module.exports = function (app) {
 
     //read settings from configuration file
     var config = app.readConfig(__dirname);
-    
+
     //set application to router
     router.app = app;
 
@@ -55,20 +55,21 @@ module.exports = function (app) {
         }
     };
 
-    ///append routers
-    for(var key in config){
+    ///literate all keys in configuration file
+    Object.keys(config)
+          .forEach(function(key) {
 
-        //get router config by key
-        var routerConfig = config[key];
+            //get router configuation file by key
+            var routerConfig = config[key];
 
-        //check it whither or not is router config
-        if (routerConfig && routerConfig['route']) {
+            //check it whither or not is router config
+            if (routerConfig && routerConfig['route']) {
 
-            //append router to current router.
-            require((routerConfig['router'])?routerConfig['router']:'./restRouter')(router, routerConfig || {});
-            app.logger.log('rest server for ' + key + ' is ready');
-        }
-    }
+                //append router to current router.
+                require((routerConfig['router'])?routerConfig['router']:'./restRouter')(router, routerConfig || {});
+                app.logger.log('rest server for ' + key + ' is ready');
+            }
+          })
 
     //append test rest method for root path
     router.get(
