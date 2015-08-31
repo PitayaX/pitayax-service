@@ -165,7 +165,7 @@ var $$ = {
 |---|---|
 |URL|/api/object/insert|
 |HTTP method|POST|
-|Description | empty |
+|Description | create one object and save into database |
 
 > Usage:
 
@@ -211,9 +211,48 @@ response:
 ##Update
 | | |
 |---|---|
-|URL|/api/object/update|
+|URL|/api/object/object-id|
 |HTTP method|PUT|
-|Body | `{p1:"v1", p2: "v2"}` |
+
+> Usage:
+
+```javascript
+request:
+put:/api/customer/55e4635f79c517e800d59cca
+headers:{
+  content-type: "application/json"
+  access-token: "xxxxxx"
+}
+body:{
+  "modifier": {"City": "AachenXX2"}
+}
+
+response:
+{
+    "ok": 1,
+    "nModified": 1,
+    "n": 1
+}
+```
+
+```javascript
+request:
+put:/api/customer/update
+headers:{
+  content-type: "application/json"
+  access-token: "xxxxxx"
+}
+body:{
+  "modifier": {"City": "AachenXX2"}
+}
+
+response:
+{
+    "ok": 1,
+    "nModified": 1,
+    "n": 1
+}
+```
 
 ##Delete
 | | |
