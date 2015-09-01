@@ -6,50 +6,24 @@
     "router": "./entityRouter",
     "route":{
       "get": [
-        { "key":"/test", "value": "test" },
-        { "key":"/model", "value": "model" },
+        { "key":"/:id", "value": "get" },
         { "key":"/list", "value": "list" },
-        { "key":"/ls", "value": "list" },
-        { "key":"/query", "value": "list" },
-        { "key": "/script/:name", "value": "script" },
-        { "key": "/count", "value": "count" },
-        { "key": "/total", "value": "count" },
-        { "key":"/retrieve", "value": "get" },
-        { "key":"/findOne", "value": "get" },
-        { "key":"/get/:id", "value": "get" },
-        { "key":"/:key/:id", "value": "get" },
-        { "key":"/get/:id", "value": "get" },
         { "key":"/", "value": "disable" }
       ],
       "post": [
         { "key": "/create", "value": "create" },
-        { "key": "/insert", "value": "create" },
         { "key": "/query", "value": "list" },
-        { "key": "/find", "value": "get" },
-        { "key": "/retrieve", "value": "get" },
-        { "key": "/script/:name", "value": "script" },
         { "key": "/count", "value": "count" },
-        { "key": "/total", "value": "count" },
-        { "key": "/aggregate", "value": "aggregate" },
-        { "key": "/ag", "value": "aggregate" },
+        { "key": "/script/:name", "value": "script" },
         { "key":"/", "value": "disable" }
       ],
       "put": [
-        { "key": "/update/", "value": "update" },
-        { "key": "/change/", "value": "update" },
-        { "key":"/:key/:id", "value": "update" },
         { "key":"/:id", "value": "update" },
         { "key":"/", "value": "update" }
       ],
       "delete": [
-        { "key":"/delete/:id", "value": "delete" },
-        { "key": "/delete/*", "value": "delete" },
-        { "key": "/delete", "value": "delete" },
-        { "key": "/remove", "value": "delete" },
-        { "key": "/remove/*", "value": "delete" },
-        { "key":"/:key/:id", "value": "delete" },
         { "key":"/:id", "value": "delete" },
-        { "key":"/", "value": "delete" }
+        { "key":"/", "value": "disable" }
       ],
       "options":[
         { "key": "/*", "value": "ok" }
