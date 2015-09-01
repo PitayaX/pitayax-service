@@ -1,4 +1,4 @@
-##Get
+##Retrieve
 | | |
 |---|---|
 |URL|/api/object/object-id|
@@ -80,12 +80,115 @@ response:
 ]
 ```
 
-##Query
+
+##Create
+| | |
+|---|---|
+|URL|/api/object/create|
+|HTTP method|POST|
+|Description | Get array of objects by filter |
+
+> Usage:
+
+```javascript
+request:
+post:/api/customer/new
+headers:{
+  content-type: "application/json"
+  access-token: "xxxxxx"
+}
+body:{
+        "City": "Aachen2",
+        "Fax": "0241-059428",
+        "PostalCode": "52066",
+        "ContactTitle": "Order Administrator",
+        "Phone": "0241-039123",
+        "ContactName": "Sven Ottlieb",
+        "CustomerID": "DRACD",
+        "Country": "Germany",
+        "CompanyName": "Drachenblut Delikatessen",
+        "Region": null,
+        "Address": "Walserweg 21"
+}
+
+response:
+{
+    "__v": 0,
+    "City": "Aachen2",
+    "Fax": "0241-059428",
+    "PostalCode": "52066",
+    "ContactTitle": "Order Administrator",
+    "Phone": "0241-039123",
+    "ContactName": "Sven Ottlieb",
+    "CustomerID": "DRACD",
+    "Country": "Germany",
+    "CompanyName": "Drachenblut Delikatessen",
+    "Region": null,
+    "Address": "Walserweg 21",
+    "_id": "55e4635f79c517e800d59cca"
+}
+```
+
+##Update
+| | |
+|---|---|
+|URL|/api/object/object-id|
+|HTTP method|PUT|
+|Description | Update one object by its object-id |
+
+> Usage:
+
+```javascript
+request:
+put:/api/customer/55e4635f79c517e800d59cca
+headers:{
+  content-type: "application/json"
+  access-token: "xxxxxx"
+}
+body:{
+  "City": "AachenXX2"
+}
+
+response:
+{
+    "ok": 1,
+    "nModified": 1,
+    "n": 1
+}
+```
+
+##Delete
+| | |
+|---|---|
+|URL|/api/object/object-id|
+|HTTP method|DELETE|
+|Description | Delete one object by its object-id |
+
+> Usage:
+
+```javascript
+request:
+delete:/api/customer/55e4635f79c517e800d59cca
+headers:{
+  content-type: "application/json"
+  access-token: "xxxxxx"
+}
+body:{}
+
+response:
+{
+    "ok": 1,
+    "nModified": 1,
+    "n": 1
+}
+```
+
+##Script
 | | |
 |---|---|
 |URL|/api/object/script/script-name|
 |HTTP method|POST|
-|Description | execute script defined server |
+|Description | execute pre-defined script in server, it doesn't only work for query, also can work for batch update/delete |
 
 > Usage:
 
@@ -163,85 +266,3 @@ var $$ = {
         }
     };
 ```
-
-##Insert
-| | |
-|---|---|
-|URL|/api/object/insert|
-|HTTP method|POST|
-|Description | create one object and save into database |
-
-> Usage:
-
-```javascript
-request:
-post:/api/customer/insert
-headers:{
-  content-type: "application/json"
-  access-token: "xxxxxx"
-}
-body:{
-        "City": "Aachen2",
-        "Fax": "0241-059428",
-        "PostalCode": "52066",
-        "ContactTitle": "Order Administrator",
-        "Phone": "0241-039123",
-        "ContactName": "Sven Ottlieb",
-        "CustomerID": "DRACD",
-        "Country": "Germany",
-        "CompanyName": "Drachenblut Delikatessen",
-        "Region": null,
-        "Address": "Walserweg 21"
-}
-
-response:
-{
-    "__v": 0,
-    "City": "Aachen2",
-    "Fax": "0241-059428",
-    "PostalCode": "52066",
-    "ContactTitle": "Order Administrator",
-    "Phone": "0241-039123",
-    "ContactName": "Sven Ottlieb",
-    "CustomerID": "DRACD",
-    "Country": "Germany",
-    "CompanyName": "Drachenblut Delikatessen",
-    "Region": null,
-    "Address": "Walserweg 21",
-    "_id": "55e4635f79c517e800d59cca"
-}
-```
-
-##Update
-| | |
-|---|---|
-|URL|/api/object/object-id|
-|HTTP method|PUT|
-
-> Usage:
-
-```javascript
-request:
-put:/api/customer/55e4635f79c517e800d59cca
-headers:{
-  content-type: "application/json"
-  access-token: "xxxxxx"
-}
-body:{
-  "modifier": {"City": "AachenXX2"}
-}
-
-response:
-{
-    "ok": 1,
-    "nModified": 1,
-    "n": 1
-}
-```
-
-##Delete
-| | |
-|---|---|
-|URL|/api/object/delete|
-|HTTP method|DELETE|
-|Body | `{p1:"v1", p2: "v2"}` |
