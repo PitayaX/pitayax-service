@@ -86,7 +86,7 @@ response:
 |---|---|
 |URL|/api/object/new|
 |HTTP method|POST|
-|Description | create one object and save into database |
+|Description | Get array of objects by filter |
 
 > Usage:
 
@@ -134,6 +134,7 @@ response:
 |---|---|
 |URL|/api/object/object-id|
 |HTTP method|PUT|
+|Description | Update one object by its object-id |
 
 > Usage:
 
@@ -161,6 +162,7 @@ response:
 |---|---|
 |URL|/api/object/object-id|
 |HTTP method|DELETE|
+|Description | Delete one object by its object-id |
 
 > Usage:
 
@@ -186,7 +188,7 @@ response:
 |---|---|
 |URL|/api/object/script/script-name|
 |HTTP method|POST|
-|Description | execute script defined server |
+|Description | execute pre-defined script in server, it doesn't only work for query, also can work for batch update/delete |
 
 > Usage:
 
