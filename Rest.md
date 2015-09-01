@@ -80,7 +80,7 @@ response:
 ]
 ```
 
-##Query
+##Script
 | | |
 |---|---|
 |URL|/api/object/script/script-name|
