@@ -1,4 +1,4 @@
-##Get
+##Retrieve
 | | |
 |---|---|
 |URL|/api/object/object-id|
@@ -81,10 +81,10 @@ response:
 ```
 
 
-##Insert
+##Create
 | | |
 |---|---|
-|URL|/api/object/new|
+|URL|/api/object/create|
 |HTTP method|POST|
 |Description | Get array of objects by filter |
 
