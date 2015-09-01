@@ -80,6 +80,107 @@ response:
 ]
 ```
 
+
+##Insert
+| | |
+|---|---|
+|URL|/api/object/new|
+|HTTP method|POST|
+|Description | create one object and save into database |
+
+> Usage:
+
+```javascript
+request:
+post:/api/customer/new
+headers:{
+  content-type: "application/json"
+  access-token: "xxxxxx"
+}
+body:{
+        "City": "Aachen2",
+        "Fax": "0241-059428",
+        "PostalCode": "52066",
+        "ContactTitle": "Order Administrator",
+        "Phone": "0241-039123",
+        "ContactName": "Sven Ottlieb",
+        "CustomerID": "DRACD",
+        "Country": "Germany",
+        "CompanyName": "Drachenblut Delikatessen",
+        "Region": null,
+        "Address": "Walserweg 21"
+}
+
+response:
+{
+    "__v": 0,
+    "City": "Aachen2",
+    "Fax": "0241-059428",
+    "PostalCode": "52066",
+    "ContactTitle": "Order Administrator",
+    "Phone": "0241-039123",
+    "ContactName": "Sven Ottlieb",
+    "CustomerID": "DRACD",
+    "Country": "Germany",
+    "CompanyName": "Drachenblut Delikatessen",
+    "Region": null,
+    "Address": "Walserweg 21",
+    "_id": "55e4635f79c517e800d59cca"
+}
+```
+
+##Update
+| | |
+|---|---|
+|URL|/api/object/object-id|
+|HTTP method|PUT|
+
+> Usage:
+
+```javascript
+request:
+put:/api/customer/55e4635f79c517e800d59cca
+headers:{
+  content-type: "application/json"
+  access-token: "xxxxxx"
+}
+body:{
+  "City": "AachenXX2"
+}
+
+response:
+{
+    "ok": 1,
+    "nModified": 1,
+    "n": 1
+}
+```
+
+##Delete
+| | |
+|---|---|
+|URL|/api/object/object-id|
+|HTTP method|DELETE|
+
+> Usage:
+
+```javascript
+request:
+delete:/api/customer/55e4635f79c517e800d59cca
+headers:{
+  content-type: "application/json"
+  access-token: "xxxxxx"
+}
+body:{}
+
+response:
+{
+    "ok": 1,
+    "nModified": 1,
+    "n": 1
+}
+```
+
 ##Script
 | | |
 |---|---|
@@ -163,85 +264,3 @@ var $$ = {
         }
     };
 ```
-
-##Insert
-| | |
-|---|---|
-|URL|/api/object/insert|
-|HTTP method|POST|
-|Description | create one object and save into database |
-
-> Usage:
-
-```javascript
-request:
-post:/api/customer/insert
-headers:{
-  content-type: "application/json"
-  access-token: "xxxxxx"
-}
-body:{
-        "City": "Aachen2",
-        "Fax": "0241-059428",
-        "PostalCode": "52066",
-        "ContactTitle": "Order Administrator",
-        "Phone": "0241-039123",
-        "ContactName": "Sven Ottlieb",
-        "CustomerID": "DRACD",
-        "Country": "Germany",
-        "CompanyName": "Drachenblut Delikatessen",
-        "Region": null,
-        "Address": "Walserweg 21"
-}
-
-response:
-{
-    "__v": 0,
-    "City": "Aachen2",
-    "Fax": "0241-059428",
-    "PostalCode": "52066",
-    "ContactTitle": "Order Administrator",
-    "Phone": "0241-039123",
-    "ContactName": "Sven Ottlieb",
-    "CustomerID": "DRACD",
-    "Country": "Germany",
-    "CompanyName": "Drachenblut Delikatessen",
-    "Region": null,
-    "Address": "Walserweg 21",
-    "_id": "55e4635f79c517e800d59cca"
-}
-```
-
-##Update
-| | |
-|---|---|
-|URL|/api/object/object-id|
-|HTTP method|PUT|
-
-> Usage:
-
-```javascript
-request:
-put:/api/customer/55e4635f79c517e800d59cca
-headers:{
-  content-type: "application/json"
-  access-token: "xxxxxx"
-}
-body:{
-  "modifier": {"City": "AachenXX2"}
-}
-
-response:
-{
-    "ok": 1,
-    "nModified": 1,
-    "n": 1
-}
-```
-
-##Delete
-| | |
-|---|---|
-|URL|/api/object/delete|
-|HTTP method|DELETE|
-|Body | `{p1:"v1", p2: "v2"}` |
