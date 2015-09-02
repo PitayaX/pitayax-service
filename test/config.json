@@ -1,0 +1,23 @@
+{
+    "@@version":"1.0.1",
+    "name": "rest server",
+    "databases": {
+        "dbblog": "mongodb://10.10.73.209:27017/PSPMS_Restore",
+        "dbtest": "mongodb://10.10.73.209:27017/Northwind"
+    },
+    "settings": {
+        "#env": "development",
+        "port": 8088,
+        "supportHttps": false,
+        "supportMiddleware": true,
+        "useSubFolder": false,
+        "recordSteps": false
+    },
+    "logger": {
+        "output": "stdout",
+        "error": "stderr"
+    },
+    "middlewares": [
+        "../rest/security/middleware"
+    ]
+}
