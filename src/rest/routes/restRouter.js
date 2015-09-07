@@ -51,6 +51,7 @@ module.exports = function (router, config, adapter) {
                             throw new Error('Current router doesn\'t support the rest method: ' + restMethod + '.');
                         }
 
+/*
                         if (!config.anonymous) {
 
                             //control access for current method by rest route
@@ -64,6 +65,7 @@ module.exports = function (router, config, adapter) {
                                 throw new Error("Deny access this method.");
                             }
                         }
+                        */
 
                         //invoke rest method
                         adapterMethod(req, res)
@@ -87,8 +89,6 @@ module.exports = function (router, config, adapter) {
         });
 
     var path = (config['path']) ? config['path']:'/'
-
-    console.log('p1:' + path)
 
     //add rest method to router
     router.use(path, restRouter);

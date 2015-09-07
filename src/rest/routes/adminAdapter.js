@@ -65,6 +65,15 @@ module.exports = function (app) {
             return Q('Hello World!');
         },
 
+        sendmail: function (req, res) {
+
+            var mail = require('../admin/mail')(app);
+
+            mail.send(req, res);
+
+            return Q('OK');
+        },
+
         setup: function(req, res) {
 
             return Q('OK');

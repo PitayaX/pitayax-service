@@ -41,7 +41,10 @@
         { "key": "/list", "value": "listObjs" },
         { "key": "/ls", "value": "listObjs" },
         { "key": "/setup", "value": "setup" }
-      ]
+    ],
+        "post": [
+            {"key":"/sendmail", "value":"sendmail"}
+        ]
     }
   },
   "settings":{

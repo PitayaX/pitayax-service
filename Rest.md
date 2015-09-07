@@ -261,7 +261,7 @@ response:
 
 ```javascript
 request:
-post:/api/customer/script/query1
+post:/api/customer/script/report
 headers:{
   content-type: "application/json"
   access-token: "xxxxxx"
@@ -316,7 +316,7 @@ response:
     }
 ]
 
-query1.js saved in scripts/perdefine/customer folder
+report.js saved in scripts/perdefine/customer folder
 {
     "type":"report",
     "version":"1.0.0",

@@ -18,7 +18,9 @@
     "express": "4.*",
     "mongoose": "4.*",
     "q": "*",
-    "underscore": "1.6.*"
+    "underscore": "1.6.*",
+    "nodemailer":"*",
+    "nodemailer-smtp-pool":"*"
   },
   "devDependencies": {
     "babel": "^5.8.23",
