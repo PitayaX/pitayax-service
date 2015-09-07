@@ -22,7 +22,13 @@ module.exports = function(){
           }
 
           //read report text from defined file
-          eval(fs.readFileSync(scriptPath, { encoding: 'utf-8' }));
+          var scriptContent = fs.readFileSync(scriptPath, { encoding: 'utf-8' });
+
+          var c = eval("2+2");
+          console.log(c);
+
+          var $$ = (eval(scriptContent));
+          console.log('tt');
 
           return $$;
         },

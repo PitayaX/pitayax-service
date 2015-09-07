@@ -6,16 +6,16 @@
     "router": "./entityRouter",
     "route":{
       "get": [
-        { "key":"/:id", "value": "get" },
         { "key":"/list", "value": "list" },
+        { "key":"/:id", "value": "get" },
         { "key":"/", "value": "disable" }
       ],
       "post": [
+        { "key": "/script/:name", "value": "script" },
         { "key": "/create", "value": "create" },
         { "key": "/query", "value": "list" },
         { "key": "/count", "value": "count" },
-        { "key": "/script/:name", "value": "script" },
-        { "key":"/", "value": "disable" }
+        { "key":"/", "value": "create" }
       ],
       "put": [
         { "key":"/:id", "value": "update" },

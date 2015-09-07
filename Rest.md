@@ -1,9 +1,20 @@
-##Retrieve
-| | |
-|---|---|
-|URL|/api/object/object-id|
-|HTTP method|GET|
-|Description | get single instance of object |
+## Retrieve
+<table>
+    <tbody>
+    <tr>
+        <td>URL</td>
+        <td>/api/object/object-id</td>
+    </tr>
+    <tr>
+        <td>HTTP method</td>
+        <td>GET</td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td>get single instance of object</td>
+    </tr>
+    </tbody>
+</table>
 
 > Usage:
 
@@ -33,12 +44,24 @@ response:
 }
 ```
 
-##Query
-| | |
-|---|---|
-|URL|/api/object/query|
-|HTTP method|POST|
-|Description | get array of objects by matched query criterion |
+## Query
+<table>
+    <tbody>
+    <tr>
+        <td>URL</td>
+        <td>/api/object/query</td>
+    </tr>
+    <tr>
+        <td>HTTP method</td>
+        <td>POST</td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td>get array of objects by matched query criterion</td>
+    </tr>
+    </tbody>
+</table>
+
 
 > Usage:
 
@@ -81,18 +104,30 @@ response:
 ```
 
 
-##Create
-| | |
-|---|---|
-|URL|/api/object/create|
-|HTTP method|POST|
-|Description | Get array of objects by filter |
+## Create
+<table>
+    <tbody>
+    <tr>
+        <td>URL</td>
+        <td>/api/object/create</td>
+    </tr>
+    <tr>
+        <td>HTTP method</td>
+        <td>POST</td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td> Create new object by json body</td>
+    </tr>
+    </tbody>
+</table>
+
 
 > Usage:
 
 ```javascript
 request:
-post:/api/customer/new
+post:/api/customer/create
 headers:{
   content-type: "application/json"
   access-token: "xxxxxx"
@@ -129,12 +164,23 @@ response:
 }
 ```
 
-##Update
-| | |
-|---|---|
-|URL|/api/object/object-id|
-|HTTP method|PUT|
-|Description | Update one object by its object-id |
+## Update
+<table>
+    <tbody>
+    <tr>
+        <td>URL</td>
+        <td>/api/object/object-id</td>
+    </tr>
+    <tr>
+        <td>HTTP method</td>
+        <td>PUT</td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td> Update one object by its object-id</td>
+    </tr>
+    </tbody>
+</table>
 
 > Usage:
 
@@ -157,12 +203,23 @@ response:
 }
 ```
 
-##Delete
-| | |
-|---|---|
-|URL|/api/object/object-id|
-|HTTP method|DELETE|
-|Description | Delete one object by its object-id |
+## Delete
+<table>
+    <tbody>
+    <tr>
+        <td>URL</td>
+        <td>/api/object/object-id</td>
+    </tr>
+    <tr>
+        <td>HTTP method</td>
+        <td>DELETE</td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td>Delete one object by its object-id</td>
+    </tr>
+    </tbody>
+</table>
 
 > Usage:
 
@@ -178,17 +235,27 @@ body:{}
 response:
 {
     "ok": 1,
-    "nModified": 1,
     "n": 1
 }
 ```
 
-##Script
-| | |
-|---|---|
-|URL|/api/object/script/script-name|
-|HTTP method|POST|
-|Description | execute pre-defined script in server, it doesn't only work for query, also can work for batch update/delete |
+## Script
+<table>
+    <tbody>
+    <tr>
+        <td>URL</td>
+        <td>/api/object/script/script-name</td>
+    </tr>
+    <tr>
+        <td>HTTP method</td>
+        <td>POST</td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td>execute pre-defined script in server, it doesn't only work for query, also can work for batch update/delete</td>
+    </tr>
+    </tbody>
+</table>
 
 > Usage:
 
@@ -250,19 +317,19 @@ response:
 ]
 
 query1.js saved in scripts/perdefine/customer folder
-var $$ = {
-        "type":"report",
-        "version":"1.0.0",
-        "arguments":{
-          "$$city":{
-            "default":["London","Tsawassen"], "type":"string"
-          }
-        },
-        "script":{
-           "$query":{"City": {"$in": "$$city"}},
-           "$page":1,
-           "$pageSize":3,
-           "$sort": {"Fax":1}
-        }
-    };
+{
+    "type":"report",
+    "version":"1.0.0",
+    "arguments":{
+      "$$city":{
+        "default":["London","Tsawassen"], "type":"string"
+      }
+    },
+    "script":{
+       "$query":{"City": {"$in": "$$city"}},
+       "$page":1,
+       "$pageSize":3,
+       "$sort": {"Fax":1}
+    }
+};
 ```

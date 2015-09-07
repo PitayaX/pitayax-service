@@ -145,11 +145,11 @@ module.exports = function (app, entityName) {
             return dataAdapter.retrieveAggregate(entityName, that.parseFilter(req), that.parseOptions(req));
         },
 
-        insert: function (req, res) {
-            return that.insertEntity(req, res);
+        create: function (req, res) {
+            return that.createEntity(req, res);
         },
 
-        insertEntity: function (req, res) {
+        createEntity: function (req, res) {
 
             return dataAdapter.insertEntity(entityName, req.body);
         },
@@ -162,7 +162,7 @@ module.exports = function (app, entityName) {
 
             //get filter and modifier by request
             var filter = that.getFilterByMask(req, req.body.query || {});
-            var modifier = req.body.modifier || {};
+            var modifier = req.body.modifier || ((req.body) ? req.body : {});
 
             //call update model by Q
             return dataAdapter.updateEntity(entityName, filter, modifier);

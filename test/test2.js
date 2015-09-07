@@ -1,6 +1,9 @@
 import Conf from './Conf'
 import path from 'path'
 
+let $ = eval("{}");
+console.log($);
+
 
 //console.log(new Conf('t1'));
 let config = Conf.parse(path.join(__dirname, 'config.json'));

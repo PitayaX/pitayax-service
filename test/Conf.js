@@ -49,6 +49,7 @@ export default class Conf{
 
         //append system varints
         dict.version = (config['@@version'] !== undefined) ? config['@@version'] : '1.0.0';
+        dict.description = (config['@@description'] !== undefined) ? config['@@description'] : '';
 
         return dict;
     }

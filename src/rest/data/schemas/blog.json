@@ -3,34 +3,55 @@
     "default": "dbblog"
   },
   "entity": {
-    "blog": {
+      "post": {
+        "model": {
+          "title": "String",
+          "abstract": "String",
+          "content": "String",
+          "tags": [],
+          "publishedOn": "Date",
+          "publishedBy": "String",
+          "status": "Number",
+          "viewCount": "Number",
+          "CanComment": "Boolean"
+        },
+        "options": {
+          "collection": "post"
+        }
+    },
+    "user": {
       "model": {
-        "title": "String",
-        "content": "String",
-        "att": "String",
-        "attachments": [],
-        "comments": [],
-        "priority": "Number",
-        "tags": [],
-        "lastUpdateDate": "Date",
-        "date": "Date"
+        "userToken": "String",
+        "nick": "String",
+        "email": "String",
+        "avatarFileToken": "String",
+        "phone": "String",
+        "description": "String",
+        "homepage": "String",
+        "gender": "Number",
+        "birthday": "Date",
+        "createdOn": "Date",
+        "updatedOn": "Date"
       },
       "options": {
-        "collection": "articles"
+        "collection": "user"
       }
     },
-    "blogfile": {
+    "team": {
       "model": {
-        "key": "String",
-        "meta": {
-          "name" : "String",
-          "size" : "Number",
-          "mime" : "String"
-        },
-        "date": "Date"
+          "nick": "String",
+          "email": "String",
+          "avatarFileToken": "String",
+          "phone": "String",
+          "description": "String",
+          "homepage": "String",
+          "users":[{
+              "userToken":"String",
+              "role":"String"
+              }]
       },
       "options": {
-        "collection": "files"
+        "collection": "team"
       }
     }
   }

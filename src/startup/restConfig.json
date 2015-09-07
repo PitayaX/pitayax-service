@@ -1,7 +1,7 @@
 {
   "name": "rest server",
   "databases": {
-    "dbblog": "mongodb://10.10.73.209:27017/PSPMS_Restore",
+    "dbblog": "mongodb://10.10.73.209:27017/PitayaX",
     "dbtest": "mongodb://10.10.73.209:27017/Northwind"
   },
   "settings": {
