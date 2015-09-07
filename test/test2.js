@@ -1,7 +1,7 @@
 import Conf from './Conf'
 import path from 'path'
 
-let $ = eval("{}");
+let $ = eval("(function (){return {}})()");
 console.log($);
 
 
