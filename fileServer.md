@@ -27,11 +27,7 @@ headers:{
 }
 Request Payload:{
 ------WebKitFormBoundary3hhSVxzTfNofdvnO
-<<<<<<< HEAD
-Content-Disposition: form-data; name="mode" * [Picture Mode](http://developer.qiniu.com/docs/v6/api/reference/fop/image/imageview2.html#imageView2-specification)
-=======
-Content-Disposition: form-data; name="[mode](http://developer.qiniu.com/docs/v6/api/reference/fop/image/imageview2.html#imageView2-specification)"
->>>>>>> parent of 0d72a46... update
+Content-Disposition: form-data; name="mode"
 
 1
 ------WebKitFormBoundary3hhSVxzTfNofdvnO
