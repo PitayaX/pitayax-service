@@ -4,7 +4,8 @@
     "port": 8081,
     "supportHttps": false,
     "supportMiddleware": false,
-    "recordSteps": true
+    "recordSteps": true,
+    "flieCache": "C://upload"
   },
   "logger": {
     "output": "stdout",
