@@ -1,5 +1,8 @@
+import util from 'util';
+import events from 'events';
 import {} from './runtime';
 import {} from 'events';
+global.ConfigMap = ConfigMap;
 
 export class ConfigMap extends Map {
 
@@ -9,12 +12,20 @@ export class ConfigMap extends Map {
 
         this.version = '1.0.0';
         this.description = '';
+
+        util.inherits(ConfigMap, events.EventEmitter);
     }
 
     get Version() {return this.version;}
     get Description() {return this.description;}
 
+    on(event, callback){
+        super.on(event, callback);
+    }
+
     toJSON() {
+        super.emit('message', 'test');
+
         let output = {};
         output['@@versioni'] = this.version;
         output['@@description'] = this.description;
