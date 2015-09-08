@@ -33,7 +33,7 @@ module.exports = function(app, config) {
         qiniu.io.putFile(putPolicy.token(), keyName, files.file.path, extra, function(err, ret) {
           if(!err) {
             // create short view
-            var url = fileUpload.shortView(keyName, fields.width);
+            var url = fileUpload.shortView(keyName, fields.mode, fields.width, fields.height);
             // clear the cache
             fs.unlink(files.file.path);
             // return picture infomation
@@ -51,7 +51,7 @@ module.exports = function(app, config) {
         var putPolicy = new qiniu.rs.PutPolicy(fileConfig.bucketName);
         var extra = new qiniu.io.PutExtra();
         for (var i = 0; i < files.file.length; i++) {
-          // upload local file with qiniu
+          // get file mask name
           files.file[i].key = files.file[i].path.replace(fileConfig.flieCache, '');
           qiniu.io.putFile(putPolicy.token(), files.file[i].key, files.file[i].path, extra, function(err, ret) {
             if(!err) {
@@ -59,7 +59,7 @@ module.exports = function(app, config) {
                 if(files.file[i].key == ret.key){
                   fs.unlink(files.file[i].path);
                   ret['filename'] = files.file[i].name;
-                  ret['url'] = fileUpload.shortView(files.file[i].key, fields.width);
+                  ret['url'] = fileUpload.shortView(files.file[i].key, fields.mode, fields.width, fields.height);
                   result.push(ret);
                   uploadIndex++;
                 }
