@@ -20,7 +20,9 @@
     "q": "*",
     "underscore": "1.6.*",
     "nodemailer":"*",
-    "nodemailer-smtp-pool":"*"
+    "nodemailer-smtp-pool":"*",
+    "formidable": "1.0.17",
+    "qiniu": "6.1.8"
   },
   "devDependencies": {
     "babel": "^5.8.23",
