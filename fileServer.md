@@ -26,21 +26,29 @@ headers:{
   content-type: "multipart/form-data"
 }
 Request Payload:{
-------WebKitFormBoundaryDwYRyOW5xtTxZ5gl
-Content-Disposition: form-data; name="width"
+------WebKitFormBoundary3hhSVxzTfNofdvnO
+Content-Disposition: form-data; name="[mode](http://developer.qiniu.com/docs/v6/api/reference/fop/image/imageview2.html#imageView2-specification)"
+
+1
+------WebKitFormBoundary3hhSVxzTfNofdvnO
+Content-Disposition: form-data; name="height"
 
 100
-------WebKitFormBoundaryDwYRyOW5xtTxZ5gl
-Content-Disposition: form-data; name="xxxx"; filename="xxxx.jpg"
+------WebKitFormBoundary3hhSVxzTfNofdvnO
+Content-Disposition: form-data; name="width"
+
+200
+------WebKitFormBoundary3hhSVxzTfNofdvnO
+Content-Disposition: form-data; name="file"; filename="realFileName1.jpg"
 Content-Type: image/jpeg
 
 
-------WebKitFormBoundaryDwYRyOW5xtTxZ5gl
-Content-Disposition: form-data; name="xxxx"; filename="xxxx.jpg"
+------WebKitFormBoundary3hhSVxzTfNofdvnO
+Content-Disposition: form-data; name="file"; filename="realFileName2.jpg"
 Content-Type: image/jpeg
 
 
-------WebKitFormBoundaryDwYRyOW5xtTxZ5gl--
+------WebKitFormBoundary3hhSVxzTfNofdvnO--
 }
 
 response:
