@@ -1,49 +1,20 @@
-import Conf from './Conf'
-import path from 'path'
+import path from 'path';
+import fs from 'fs';
+import {ConfigMap} from './util/conf';
 
-let $ = eval("(function (){return {}})()");
-console.log($);
+let debug = true;
+if (debug){
 
+    //get full file path for configuration
+    let configFile = path.join(__dirname, 'config.json');
 
-//console.log(new Conf('t1'));
-let config = Conf.parse(path.join(__dirname, 'config.json'));
+    //parse config json to an object
+    let config = ConfigMap.parseJSON(fs.readFileSync(configFile, { encoding: 'utf-8' }));
 
-for (let [k, v] of config.entries()){
-    if (typeof v === 'Object') v = JSON.stringify(v);
-    console.log(`k: ${k}, v: ${v}`);
-}
+    console.log ('version:' + config.Version);
+    console.log ('json:' + config.toJSON());
 
-console.log(config.version)
-
-class B {
-    get html(){
-        return '<HTML/>'
-    }
-
-    html2(){
-        return '<BODY/>';
-    }
-
-    get(key){
-        return '<GET/>';
+    for(let [k, v] of config){
+        console.log(`k:${k}, v:${JSON.stringify(v)}`);
     }
 }
-
-let b = new B();
-console.log(b.html);
-console.log(b.html2());
-//console.log(b['aaa']]);
-console.log(b.get());
-
-class MyArray extends Array {
-  constructor(...args) {
-    super(...args);
-  }
-}
-
-var arr = new MyArray();
-arr[0] = 12;
-console.log(arr.length); // 1
-
-arr.length = 0;
-console.log(arr[0]); // undefined
