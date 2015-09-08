@@ -38,5 +38,10 @@ Content-Type: image/jpeg
 ------WebKitFormBoundaryE4zkjTAIwCB1OmBC--
 }
 
-response: "OK"
+response: {
+  {
+    "hash":"xxxxxx",
+    "key":"xxxxxx.jpg",
+    "url":"xxxxxxxx"}
+}
 ```
