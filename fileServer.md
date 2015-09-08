@@ -26,22 +26,36 @@ headers:{
   content-type: "multipart/form-data"
 }
 Request Payload:{
-------WebKitFormBoundaryE4zkjTAIwCB1OmBC
+------WebKitFormBoundaryDwYRyOW5xtTxZ5gl
 Content-Disposition: form-data; name="width"
 
-600
-------WebKitFormBoundaryE4zkjTAIwCB1OmBC
-Content-Disposition: form-data; name="xxxx"; filename="xxxxx"
+100
+------WebKitFormBoundaryDwYRyOW5xtTxZ5gl
+Content-Disposition: form-data; name="xxxx"; filename="xxxx.jpg"
 Content-Type: image/jpeg
 
 
-------WebKitFormBoundaryE4zkjTAIwCB1OmBC--
+------WebKitFormBoundaryDwYRyOW5xtTxZ5gl
+Content-Disposition: form-data; name="xxxx"; filename="xxxx.jpg"
+Content-Type: image/jpeg
+
+
+------WebKitFormBoundaryDwYRyOW5xtTxZ5gl--
 }
 
-response: {
-  {
-    "hash":"xxxxxx",
-    "key":"xxxxxx.jpg",
-    "url":"xxxxxxxx"}
-}
+response:
+  [
+    { "hash":"xxxxxx",
+      "key":"maskFileName.jpg",
+      "filename":"realFileName.jpg",
+      "url":"xxxxxxxx"},
+
+    { "hash":"xxxxxx",
+      "key":"maskFileName.jpg",
+      "filename":"realFileName.jpg",
+      "url":"xxxxxxxx"},
+
+    ......
+  ]
+
 ```

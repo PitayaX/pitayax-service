@@ -38,6 +38,8 @@ module.exports = function(app, config) {
             fs.unlink(files.file.path);
             // return picture infomation
             ret['url'] = url;
+            ret['filename'] = files.file.name;
+            ret = [ret];
             res.json(ret);
           } else {
             res.json(err);
