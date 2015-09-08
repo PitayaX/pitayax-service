@@ -1,6 +1,6 @@
 var qiniu = require('qiniu');
 var formidable = require('formidable');
-var fileConfig = require('../../startup/fileConfig').settings;
+var fileConfig = require('../startup/fileConfig').settings;
 
 exports.shortView = function(keyName, mode, width, height){
   // return the short view of upload picture

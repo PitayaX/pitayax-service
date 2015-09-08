@@ -5,7 +5,7 @@
 var qiniu = require('qiniu');
 var formidable = require('formidable');
 var fileConfig = require('./fileConfig').settings;
-var fileUpload = require('../file/utility/fileUpload');
+var fileUpload = require('../file/fileUpload');
 var fs = require('fs');
 
 qiniu.conf.ACCESS_KEY = fileConfig.ACCESS_KEY;
@@ -77,6 +77,22 @@ module.exports = function(app, config) {
         }
       }
     });
+  });
+
+  app.post('/upload', function(req, res, next) {
+    var data = '';
+    req.setEncoding('utf8');
+    req.on('data', function(chunk){
+      console.log(chunk);
+    });
+  });
+
+  app.post('/download', function(req, res, next) {
+
+  });
+
+  app.post('/delete', function(req, res, next) {
+
   });
 
   return app;
