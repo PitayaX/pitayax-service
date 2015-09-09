@@ -7,11 +7,54 @@ var formidable = require('formidable');
 var fileConfig = require('./fileConfig').settings;
 var fileUpload = require('../file/fileUpload');
 var fs = require('fs');
+var fileStream;
+var filesData = [];
 
 qiniu.conf.ACCESS_KEY = fileConfig.ACCESS_KEY;
 qiniu.conf.SECRET_KEY = fileConfig.SECRET_KEY;
 
 module.exports = function(app, config) {
+
+  app.post('/upload', function(req, res, next) {
+    var form = new formidable.IncomingForm();
+    form.uploadDir = fileConfig.flieCache;
+    form.keepExtensions = true;
+    form.multiples = true;
+
+    form.onPart = function(part) {
+        form.handlePart(part);
+        part.addListener('data', function(chunk) {
+          if(!fileStream) fileStream = chunk;
+          fileStream += chunk;
+        });
+    }
+
+    form.on('file', function(name, file) {
+      filesData.push(fileStream);
+      fileStream = null;
+    });
+
+    form.parse(req, function(err, fields, files) {
+      console.log(filesData);
+    });
+  });
+
+  app.post('/download', function(req, res, next) {
+
+  });
+
+  app.post('/delete', function(req, res, next) {
+
+  });
+
+
+
+
+
+
+
+
+
 
   app.post('/picture/upload', function(req, res, next) {
     // create a new instance of formidable
@@ -79,21 +122,9 @@ module.exports = function(app, config) {
     });
   });
 
-  app.post('/upload', function(req, res, next) {
-    var data = '';
-    req.setEncoding('utf8');
-    req.on('data', function(chunk){
-      console.log(chunk);
-    });
-  });
 
-  app.post('/download', function(req, res, next) {
 
-  });
 
-  app.post('/delete', function(req, res, next) {
-
-  });
 
   return app;
 }
