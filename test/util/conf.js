@@ -1,10 +1,21 @@
-import util from 'util';
-import events from 'events';
 import {} from './runtime';
-import {} from 'events';
-global.ConfigMap = ConfigMap;
+import events from 'events';
+import {EventEmitter} from 'events';
+//global.ConfigMap = ConfigMap;
 
-export class ConfigMap extends Map {
+export class TEvent extends EventEmitter
+{
+    constructor() {
+        super();
+    }
+
+    test() {
+        this.emit('message', 'test');
+    }
+}
+
+export class ConfigMap extends Map
+{
 
     constructor(...values)
     {
@@ -12,37 +23,52 @@ export class ConfigMap extends Map {
 
         this.version = '1.0.0';
         this.description = '';
-
-        util.inherits(ConfigMap, events.EventEmitter);
+        this.ee = new EventEmitter();
     }
 
     get Version() {return this.version;}
     get Description() {return this.description;}
 
-    on(event, callback){
-        super.on(event, callback);
+    on(name, callback){
+        this.ee.on(name, callback);
     }
 
-    toJSON() {
-        super.emit('message', 'test');
+    toJSON(outputSys = false) {
+
+        this.ee.emit('message', 'to json');
 
         let output = {};
-        output['@@versioni'] = this.version;
-        output['@@description'] = this.description;
 
-        (function fn(o, dict) {
+        if (outputSys) {
+            output['@@versioni'] = this.version;
+            output['@@description'] = this.description;
+        }
 
-            for(let [k, v] of o.entries()) {
+        if (this.size > 0){
 
-                if (v.__proto__.toString() === '[object Map]')
-                    dict[k] = fn(v, {});
-                else dict[k] = v;
-            }
+            (function fn(o, dict) {
 
-            return dict;
-        })(this, output);
+                for(let [k, v] of o.entries()) {
+
+                    if (v.__proto__.toString() === '[object Map]')
+                        dict[k] = fn(v, {});
+                    else dict[k] = v;
+                }
+
+                return dict;
+            })(this, output);
+        }
 
         return JSON.stringify(output, null, 4);
+    }
+
+    copy(map){
+        Object.assign(this, map);
+    }
+
+    static parseYAML(){
+        //
+        throw new Error("Not supported");
     }
 
     static parseJSON(json) {
