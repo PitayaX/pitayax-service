@@ -2,7 +2,7 @@
 The simple rest service base on express + nodejs + mongodb.
 
 ## Installation
-nmp install
+npm install
 
 ## Start Rest Services
 npm start
