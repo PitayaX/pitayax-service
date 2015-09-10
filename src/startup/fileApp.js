@@ -7,8 +7,7 @@ var formidable = require('formidable');
 var fileConfig = require('./fileConfig').settings;
 var fileUpload = require('../file/fileUpload');
 var fs = require('fs');
-var fileStream;
-var filesData = [];
+var filesData = [], fileIndex = 0;
 
 qiniu.conf.ACCESS_KEY = fileConfig.ACCESS_KEY;
 qiniu.conf.SECRET_KEY = fileConfig.SECRET_KEY;
@@ -22,21 +21,30 @@ module.exports = function(app, config) {
     form.multiples = true;
 
     form.onPart = function(part) {
-        form.handlePart(part);
-        part.addListener('data', function(chunk) {
-          if(!fileStream) fileStream = chunk;
-          fileStream += chunk;
-        });
+      // formidable原生处理函数
+      form.handlePart(part);
+      // 如果收到文件数据，添加监听器
+      part.addListener('data', function(chunk) {
+        if(filesData[fileIndex] == undefined){
+          filesData[fileIndex] = chunk;
+        } else {
+          filesData[fileIndex] += chunk;
+        }
+      });
     }
 
     form.on('file', function(name, file) {
-      filesData.push(fileStream);
-      fileStream = null;
+      // create qiniu policy
+      var putPolicy = new qiniu.rs.PutPolicy(fileConfig.bucketName);
+      var extra = new qiniu.io.PutExtra();
+      // upload local file with qiniu
+      qiniu.io.put(putPolicy.token(), file.name, filesData[fileIndex], extra, function(err, ret) {
+        res.json(ret);
+      });
+      fileIndex++;
     });
 
-    form.parse(req, function(err, fields, files) {
-      console.log(filesData);
-    });
+    form.parse(req, function(err, fields, files) {});
   });
 
   app.post('/download', function(req, res, next) {
