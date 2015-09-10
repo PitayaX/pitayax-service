@@ -72,6 +72,7 @@ headers:{
   content-type:""
   access-token:""
 }
+
 response:
 headers:{
 	content-type:"",
@@ -147,6 +148,7 @@ header: {
 body: {
   file-tokens: [token1, token2 ... tokenn]
 }
+
 response:
 body:{
   "ok":1, (failed is 0)
@@ -168,7 +170,7 @@ body:{
     </tr>
     <tr>
         <td>Description</td>
-        <td>upload a picture</td>
+        <td>upload pictures (This method is old, you need use the new API to instead.)</td>
     </tr>
     </tbody>
 </table>
@@ -185,26 +187,21 @@ headers:{
 Request Payload:{
 ------WebKitFormBoundary3hhSVxzTfNofdvnO
 Content-Disposition: form-data; name="mode"
-
 1
 ------WebKitFormBoundary3hhSVxzTfNofdvnO
 Content-Disposition: form-data; name="height"
-
 100
 ------WebKitFormBoundary3hhSVxzTfNofdvnO
 Content-Disposition: form-data; name="width"
-
 200
 ------WebKitFormBoundary3hhSVxzTfNofdvnO
 Content-Disposition: form-data; name="file"; filename="realFileName1.jpg"
 Content-Type: image/jpeg
-
-
+DATA
 ------WebKitFormBoundary3hhSVxzTfNofdvnO
 Content-Disposition: form-data; name="file"; filename="realFileName2.jpg"
 Content-Type: image/jpeg
-
-
+DATA
 ------WebKitFormBoundary3hhSVxzTfNofdvnO--
 }
 
