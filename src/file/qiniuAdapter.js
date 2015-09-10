@@ -19,9 +19,25 @@ QiniuAdapter.prototype.info = function(token) {
     return Q(result);
 }
 
+QiniuAdapter.prototype.upload = function(options, buffer) {
+
+    return 'token';
+}
+
 QiniuAdapter.prototype.download = function(token, options, res) {
 
     return 'test';
+}
+
+QiniuAdapter.prototype.delete = function(token) {
+
+    var result = {
+        "ok":1,
+        "n":1
+    }
+
+    //do something
+    return Q(result);
 }
 
 var adapter = new QiniuAdapter();

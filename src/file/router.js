@@ -7,6 +7,7 @@ var path = require('path');
 
 module.exports = function (app) {
 
+    app.readConfig(__dirname, 'config.json');
     //that = this;
 
     //create new instance of router
@@ -58,6 +59,7 @@ module.exports = function (app) {
     //upload one or more files
     router.post("/", function(req, res, next){
         //
+        var fileAdapter = getAdapter('');
     });
 
     //delete a file by token
