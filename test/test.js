@@ -1,3 +1,5 @@
+"use strict";
+
 var a = 5;
 var b = 10;
 
@@ -64,8 +66,8 @@ console.log(a1);
 let a2 = Array.from(new Set(a1));
 console.log(a2);
 
-var [k1, k2, k3] = a1;
-console.log(k2);
+//let [k1, k2, k3] = a1;
+//console.log(k2);
 let d1 = {k1:"v1", k2:"v2", k3:"v3"};
 let d2 = {"k1":"v1", "k2":"v2", "k3":"v3"};
 
@@ -79,6 +81,11 @@ for (let k in d2.keys) {
         //console.log(k + ': ' + v);
 }
 
+for (let item of m1.entries()) {
+    console.log('k:' + item[0]);
+}
+
+/*
 for (let [k, v] of m1) {
     console.log(k + ' => ' + v);
 }
@@ -86,6 +93,7 @@ for (let [k, v] of m1) {
 for(let [k, ] of m1) {
     console.log(`k: [${k}]`);
 }
+*/
 
 let f2 = ((a, b) => {
     a++; b++;

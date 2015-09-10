@@ -1,16 +1,32 @@
+"use strict";
+
 import path from 'path';
 import fs from 'fs';
 import {ConfigMap, TEvent} from './util/conf';
 
 //console.log(IIf(2===2, 1, 2));
 
-let te = new TEvent();
+function* f(){
+    yield 1;
+    yield 2;
+    yield 3;
+    yield 4;
+    return;
+}
 
-te.on('message', (...args)=>{if (args.length > 0) console.log(args[0])});
-te.test('good');
+for(let i of f()){
+    console.log('yield:' + i);
+}
 
-let debug = true;
-if (debug){
+let debugConfigMap = true;
+debugConfigMap = false;
+if (debugConfigMap){
+
+    let te = new TEvent();
+
+    te.on('message', (...args)=>{if (args.length > 0) console.log(args[0])});
+    te.test('good');
+
 
     //get full file path for configuration
     let configFile = path.join(__dirname, 'config.json');

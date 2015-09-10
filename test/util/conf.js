@@ -16,7 +16,6 @@ export class TEvent extends EventEmitter
 
 export class ConfigMap extends Map
 {
-
     constructor(...values)
     {
         super(...values);
