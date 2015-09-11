@@ -24,22 +24,26 @@ QiniuAdapter.prototype.info = function(token) {
     return Q(result);
 }
 
-QiniuAdapter.prototype.upload = function(options, buffer) {
+QiniuAdapter.prototype.upload = function(options, buffer, callback) {
+  // get the mask name of file
   var maskName = options.file.path.replace(options.flieCache, ''), result = {};
+  // upload to qiniu
   qiniu.io.put(this.putPolicy.token(), maskName, buffer, this.extra, function(err, ret){
-    console.log(err);
-    console.log(ret);
+    if (!err) {
+      result = {
+          'file-hash':ret.hash,
+          'file-name': options.file.name,
+          'mask-name': maskName,
+          "content-type": options.file.type,
+          "size": options.file.size
+      }
+    } else {
+      result = { 'error' : err };
+    }
+    callback(result);
   });
-
-  var result = {
-      "file-token":"xxxx", //you can use 7niu hash to repalce
-      "file-name": "xxx.jpg",
-      "content-type": "image/jpeg",
-      "size": 412
-  }
-
-  //do something
-  return Q(result);
+  // // sync result, cannot use promise
+  // return Q(result);
 }
 
 QiniuAdapter.prototype.download = function(token, options, res) {

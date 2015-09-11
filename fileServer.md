@@ -35,10 +35,11 @@ headers:{}
 body:{
 [
   {
-    file-token:"xxxx", //you can use 7niu hash to repalce
-    file-name: "xxx.jpg",
+    file-hash:"FvX4rSaBmkcTGNJGMfpQVQNnEqh-",
+    file-name: "Chrysanthemum.jpg",
+    mask-name:"upload_d39211e749807247cdb78bd1d742bf32.jpg",
     content-type: "image/jpeg"
-    size: 412
+    size:879394
   }
   ...
 ]}

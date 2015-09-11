@@ -89,14 +89,10 @@ module.exports = function (app) {
           options['name'] = name;
           options['file'] = file;
           options['flieCache'] = config.flieCache;
-          fileAdapter.upload(options, filesData)
-          .then(function(data) {
-              res.json(data);
-              res.end();
+          fileAdapter.upload(options, filesData, function(result){
+            res.json(result);
+            res.end();
           })
-          .catch(function(err) {
-              res.end('err');
-          });
         });
 
         // parse the post form
@@ -104,7 +100,7 @@ module.exports = function (app) {
 
         }
         catch(err){
-          res.end('err2');
+          res.end(err);
         }
     });
 
