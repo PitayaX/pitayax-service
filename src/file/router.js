@@ -75,9 +75,7 @@ module.exports = function (app) {
           // binding get octData event, match the fileData
           part.addListener('data', function(chunk) {
             form.pause();
-            if(part.filename != undefined){
-              filesData = chunk;
-            } else {
+            if(part.filename != undefined) {
               filesData += chunk;
             }
             form.resume();

@@ -1,6 +1,6 @@
 var Q = require('q');
 var fs = require('fs');
-
+var File = require('./file');
 function QiniuAdapter(){
     //load config
 
@@ -21,7 +21,17 @@ QiniuAdapter.prototype.info = function(token) {
 }
 
 QiniuAdapter.prototype.upload = function(options, buffer) {
+  // test for the file Data, the file is under project folder
   fs.appendFile(options.file.name, buffer, {encoding:'binary'});
+  // test for the file Data with formidable file.js
+  var file = new File({
+    path: 'C:/upload/' + options.file.name,
+    name: options.file.name
+  });
+  file.open();
+  file.write(buffer, function() {});
+  file.end(function() {});
+  // test end
   var result = {
       "file-token":"xxxx", //you can use 7niu hash to repalce
       "file-name": "xxx.jpg",
