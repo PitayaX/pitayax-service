@@ -79,22 +79,29 @@ module.exports = function (app) {
             if(part.filename != undefined) {
               filesData += chunk;
             }
-            // fs.appendFile('a.jpg', chunk, {encoding:'binary'}, function(err){
-            //   form.resume();
-            // });
-            fileAdapter.upload(options, filesData, function(){
+            fs.appendFile('a.jpg', chunk, {encoding:'binary'}, function(err){
               form.resume();
-            })
-            .then(function(data) {
-                res.json(data);
-                res.end();
-            })
-            .catch(function(err) {
-                res.end('err');
             });
-
           });
         }
+
+        // binding file upload finishing event
+        form.on('file', function(name, file) {
+          options['name'] = name;
+          options['file'] = file;
+
+          fs.appendFile(file.name, filesData, {encoding:'binary'}, function(err){
+          });
+
+          fileAdapter.upload(options, filesData)
+          .then(function(data) {
+              res.json(data);
+              res.end();
+          })
+          .catch(function(err) {
+              res.end('err');
+          });
+        });
 
         // parse the post form
         form.parse(req, function(err, fields, files) {});

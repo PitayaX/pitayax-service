@@ -24,9 +24,11 @@ QiniuAdapter.prototype.info = function(token) {
     return Q(result);
 }
 
-QiniuAdapter.prototype.upload = function(options, buffer, callback) {
+QiniuAdapter.prototype.upload = function(options, buffer) {
 
-  qiniu.io.put(this.putPolicy.token(), 'a.jpg', buffer, this.extra, callback);
+  qiniu.io.put(this.putPolicy.token(), 'a.jpg', buffer, this.extra, function(err, ret){
+    console.log(ret);
+  });
 
   var result = {
       "file-token":"xxxx", //you can use 7niu hash to repalce
