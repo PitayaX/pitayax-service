@@ -58,8 +58,49 @@ module.exports = function (app) {
 
     //upload one or more files
     router.post("/", function(req, res, next){
-        //
-        var fileAdapter = getAdapter('');
+
+      var fileAdapter = getAdapter('');
+      var options = {}, filesData = '';
+      var form = new formidable.IncomingForm();
+
+      form.uploadDir = config.flieCache;
+      form.keepExtensions = true;
+
+      try{
+        // redefined form.onPart Function
+        form.onPart = function(part) {
+          form.handlePart(part);
+          // binding get octData event, match the fileData
+          part.addListener('data', function(chunk) {
+            form.pause();
+            if(part.filename != undefined) {
+              filesData += chunk;
+            }
+            form.resume();
+          });
+        }
+
+        // binding file upload finishing event
+        form.on('file', function(name, file) {
+          options['name'] = name;
+          options['file'] = file;
+          fileAdapter.upload(options, filesData)
+          .then(function(data) {
+              res.json(data);
+              res.end();
+          })
+          .catch(function(err) {
+              res.end('err');
+          });
+        });
+
+        // parse the post form
+        form.parse(req, function(err, fields, files) {});
+
+        }
+        catch(err){
+          res.end('err2');
+        }
     });
 
     //delete a file by token

@@ -1,0 +1,10 @@
+{
+  "name": "file server",
+  "settings": {
+    "flieCache": "C:\\upload\\"
+  },
+  "logger": {
+    "output": "stdout",
+    "error": "stderr"
+  }
+}
