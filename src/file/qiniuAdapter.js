@@ -25,8 +25,9 @@ QiniuAdapter.prototype.info = function(token) {
 }
 
 QiniuAdapter.prototype.upload = function(options, buffer) {
-
-  qiniu.io.put(this.putPolicy.token(), 'a.jpg', buffer, this.extra, function(err, ret){
+  var maskName = options.file.path.replace(options.flieCache, ''), result = {};
+  qiniu.io.put(this.putPolicy.token(), maskName, buffer, this.extra, function(err, ret){
+    console.log(err);
     console.log(ret);
   });
 

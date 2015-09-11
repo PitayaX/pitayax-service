@@ -63,7 +63,7 @@ module.exports = function (app) {
     router.post("/", function(req, res, next){
 
       var fileAdapter = getAdapter('');
-      var options = {}, filesData = '';
+      var options = {}, filesData = new Buffer(0);
       var form = new formidable.IncomingForm();
 
       form.uploadDir = config.flieCache;
@@ -75,13 +75,12 @@ module.exports = function (app) {
           form.handlePart(part);
           // binding get octData event, match the fileData
           part.addListener('data', function(chunk) {
-            form.pause();
             if(part.filename != undefined) {
-              filesData += chunk;
+              var temp = [];
+              temp[0] = filesData;
+              temp[1] = chunk;
+              filesData = Buffer.concat(temp);
             }
-            fs.appendFile('a.jpg', chunk, {encoding:'binary'}, function(err){
-              form.resume();
-            });
           });
         }
 
@@ -89,10 +88,7 @@ module.exports = function (app) {
         form.on('file', function(name, file) {
           options['name'] = name;
           options['file'] = file;
-
-          fs.appendFile(file.name, filesData, {encoding:'binary'}, function(err){
-          });
-
+          options['flieCache'] = config.flieCache;
           fileAdapter.upload(options, filesData)
           .then(function(data) {
               res.json(data);
