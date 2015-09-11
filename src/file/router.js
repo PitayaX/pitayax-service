@@ -59,13 +59,14 @@ module.exports = function (app) {
         res.end(ft);
     });
 
+
     //upload one or more files
     router.post("/", function(req, res, next){
-
+      // define
       var fileAdapter = getAdapter('');
       var options = {}, filesData = new Buffer(0);
       var form = new formidable.IncomingForm();
-
+      // formidable settings
       form.uploadDir = config.flieCache;
       form.keepExtensions = true;
 
@@ -79,6 +80,7 @@ module.exports = function (app) {
               var temp = [];
               temp[0] = filesData;
               temp[1] = chunk;
+              // match the files data
               filesData = Buffer.concat(temp);
             }
           });
@@ -95,7 +97,7 @@ module.exports = function (app) {
           })
         });
 
-        // parse the post form
+        // parse the post form process the upload file
         form.parse(req, function(err, fields, files) {});
 
         }
@@ -103,6 +105,7 @@ module.exports = function (app) {
           res.end(err);
         }
     });
+
 
     //delete a file by token
     router.delete('/:token', function(req, res, next){

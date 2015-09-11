@@ -1,3 +1,4 @@
+'use strict';
 var Q = require('q');
 var qiniu = require('qiniu');
 var qiniuConfig = require('./qiniuConfig').settings;
@@ -11,17 +12,21 @@ function QiniuAdapter(){
   this.extra = new qiniu.io.PutExtra();
 }
 
-QiniuAdapter.prototype.info = function(token) {
-
-    var result = {
-        "file-token":"xxxx", //you can use 7niu hash to repalce
-        "file-name": "xxx.jpg",
-        "content-type": "image/jpeg",
-        "size": 412
-    }
-
-    //do something
-    return Q(result);
+QiniuAdapter.prototype.info = function(hash) {
+  // get all the infomation of files, qiniu hasn't API to search file with hash
+  qiniu.rsf.listPrefix(qiniuConfig.bucketName, null, null, null, function(err, ret) {
+    // ret.items.forEach(function(file){
+    //   if(file['hash'] == hash){
+    //     console.log(file);
+    //   }
+    // });
+    console.log(ret);
+  });
+  var result = {
+      "n":1
+  }
+  //do something
+  return Q(result);
 }
 
 QiniuAdapter.prototype.upload = function(options, buffer, callback) {
@@ -31,19 +36,17 @@ QiniuAdapter.prototype.upload = function(options, buffer, callback) {
   qiniu.io.put(this.putPolicy.token(), maskName, buffer, this.extra, function(err, ret){
     if (!err) {
       result = {
-          'file-hash':ret.hash,
-          'file-name': options.file.name,
-          'mask-name': maskName,
-          "content-type": options.file.type,
-          "size": options.file.size
+      'file-hash':ret.hash,
+      'file-name': options.file.name,
+      'mask-name': maskName,
+      "content-type": options.file.type,
+      "size": options.file.size
       }
     } else {
       result = { 'error' : err };
     }
     callback(result);
   });
-  // // sync result, cannot use promise
-  // return Q(result);
 }
 
 QiniuAdapter.prototype.download = function(token, options, res) {
