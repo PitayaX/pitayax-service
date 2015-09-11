@@ -3,7 +3,10 @@
  * Created by Bruce on 9/10/2015.
  */
 
-var path = require('path');
+ var path = require('path');
+ var formidable = require('formidable');
+ var config = require('./config').settings;
+var fs = require('fs');
 
 module.exports = function (app) {
 
@@ -76,23 +79,22 @@ module.exports = function (app) {
             if(part.filename != undefined) {
               filesData += chunk;
             }
-            form.resume();
+            // fs.appendFile('a.jpg', chunk, {encoding:'binary'}, function(err){
+            //   form.resume();
+            // });
+            fileAdapter.upload(options, filesData, function(){
+              form.resume();
+            })
+            .then(function(data) {
+                res.json(data);
+                res.end();
+            })
+            .catch(function(err) {
+                res.end('err');
+            });
+
           });
         }
-
-        // binding file upload finishing event
-        form.on('file', function(name, file) {
-          options['name'] = name;
-          options['file'] = file;
-          fileAdapter.upload(options, filesData)
-          .then(function(data) {
-              res.json(data);
-              res.end();
-          })
-          .catch(function(err) {
-              res.end('err');
-          });
-        });
 
         // parse the post form
         form.parse(req, function(err, fields, files) {});

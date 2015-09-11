@@ -1,10 +1,14 @@
 var Q = require('q');
-var fs = require('fs');
-var File = require('./file');
-function QiniuAdapter(){
-    //load config
+var qiniu = require('qiniu');
+var qiniuConfig = require('./qiniuConfig').settings;
 
-    //init
+function QiniuAdapter(){
+  //load config
+  qiniu.conf.ACCESS_KEY = qiniuConfig.ACCESS_KEY;
+  qiniu.conf.SECRET_KEY = qiniuConfig.SECRET_KEY;
+  //init
+  this.putPolicy = new qiniu.rs.PutPolicy(qiniuConfig.bucketName);
+  this.extra = new qiniu.io.PutExtra();
 }
 
 QiniuAdapter.prototype.info = function(token) {
@@ -20,18 +24,10 @@ QiniuAdapter.prototype.info = function(token) {
     return Q(result);
 }
 
-QiniuAdapter.prototype.upload = function(options, buffer) {
-  // test for the file Data, the file is under project folder
-  fs.appendFile(options.file.name, buffer, {encoding:'binary'});
-  // test for the file Data with formidable file.js
-  var file = new File({
-    path: 'C:/upload/' + options.file.name,
-    name: options.file.name
-  });
-  file.open();
-  file.write(buffer, function() {});
-  file.end(function() {});
-  // test end
+QiniuAdapter.prototype.upload = function(options, buffer, callback) {
+
+  qiniu.io.put(this.putPolicy.token(), 'a.jpg', buffer, this.extra, callback);
+
   var result = {
       "file-token":"xxxx", //you can use 7niu hash to repalce
       "file-name": "xxx.jpg",
