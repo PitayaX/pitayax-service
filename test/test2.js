@@ -1,8 +1,14 @@
 "use strict";
-
-import path from 'path';
-import fs from 'fs';
-import {ConfigMap, TEvent} from './util/conf';
+//import path from 'path';
+//import fs from 'fs';
+//import {ConfigMap} from './util/conf';
+require('./util/runtime');
+let path = require('path');
+let fs = require('fs');
+//require('./util/conf.js');
+let ConfigMap = require('./util/conf.js').ConfigMap;
+console.log('hm:' + harmonyMode);
+//let ConfigMap = conf.ConfigMap;
 
 //console.log(IIf(2===2, 1, 2));
 
@@ -19,14 +25,8 @@ for(let i of f()){
 }
 
 let debugConfigMap = true;
-debugConfigMap = false;
+//debugConfigMap = false;
 if (debugConfigMap){
-
-    let te = new TEvent();
-
-    te.on('message', (...args)=>{if (args.length > 0) console.log(args[0])});
-    te.test('good');
-
 
     //get full file path for configuration
     let configFile = path.join(__dirname, 'config.json');
@@ -38,7 +38,6 @@ if (debugConfigMap){
     //let a = ConfigMap.parse({"a1":1, "a2":2});
     let a = new ConfigMap();
     a.copy(config.get('databases'));
-    a.on('message', (...args)=>{console.log(args[0])});
 
     console.log ('json a:' + a.toJSON());
 
@@ -46,7 +45,8 @@ if (debugConfigMap){
 
     console.log ('json config:' + config.toJSON(true));
 
-    for(let [k, v] of config){
+    for(let k of config.keys()){
+        let v = config[k];
         //console.log(`k:${k}, v:${JSON.stringify(v)}`);
     }
 }

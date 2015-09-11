@@ -1,20 +1,9 @@
-import {} from './runtime';
-import events from 'events';
-import {EventEmitter} from 'events';
-//global.ConfigMap = ConfigMap;
+'use strict';
 
-export class TEvent extends EventEmitter
-{
-    constructor() {
-        super();
-    }
+//import {} from './runtime';
+require('./runtime');
 
-    test() {
-        this.emit('message', 'test');
-    }
-}
-
-export class ConfigMap extends Map
+class ConfigMap extends Map
 {
     constructor(...values)
     {
@@ -22,19 +11,12 @@ export class ConfigMap extends Map
 
         this.version = '1.0.0';
         this.description = '';
-        this.ee = new EventEmitter();
     }
 
     get Version() {return this.version;}
     get Description() {return this.description;}
 
-    on(name, callback){
-        this.ee.on(name, callback);
-    }
-
-    toJSON(outputSys = false) {
-
-        this.ee.emit('message', 'to json');
+    toJSON(outputSys) {
 
         let output = {};
 
@@ -47,8 +29,8 @@ export class ConfigMap extends Map
 
             (function fn(o, dict) {
 
-                for(let [k, v] of o.entries()) {
-
+                for(let k of o.keys()) {
+                    let v = o.get(k);
                     if (v.__proto__.toString() === '[object Map]')
                         dict[k] = fn(v, {});
                     else dict[k] = v;
@@ -134,4 +116,10 @@ export class ConfigMap extends Map
     }
 }
 
-export default {}
+//global.ConfigMap = ConfigMap;
+
+module.exports = function(){
+    return {
+        "ConfigMap": ConfigMap
+    }
+}()

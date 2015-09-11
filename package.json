@@ -42,5 +42,14 @@
     "type": "git",
     "url": "git://github.com/PitayaX/pitayax-service.git"
   },
-  "homepage": "http://www.pitayax.net"
+  "homepage": "http://www.pitayax.net",
+  "author": {
+    "name": "Bruce Jiang",
+    "email": "bruce2005@pitayax.net"
+  },
+  "contributors": [
+    {
+      "name": "Roger Luo",
+      "email": "rabbit.roger1993@pitayaX.net"
+    }]
 }

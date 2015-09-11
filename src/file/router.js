@@ -7,7 +7,7 @@ var path = require('path');
 
 module.exports = function (app) {
 
-    app.readConfig(__dirname, 'config.json');
+    //app.readConfig(__dirname, 'config.json');
     //that = this;
 
     //create new instance of router
