@@ -68,7 +68,7 @@ body:{
 
 ```javascript
 request:
-GET:/info/file-token
+GET:/info/{file-hash}
 headers:{
   content-type:""
   access-token:""
@@ -135,7 +135,7 @@ body: {
     <tbody>
     <tr>
         <td>URL</td>
-        <td>/fs/file-token</td>
+      <td>/{file-hash}</td>
     </tr>
     <tr>
         <td>HTTP method</td>
@@ -153,7 +153,7 @@ body: {
 
 ```javascript
 request:
-delete:/file-token
+delete:/{file-hash}
 header: {
   content-type: "application/json"
   access-token:""
