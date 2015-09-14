@@ -4,7 +4,7 @@
     <tbody>
     <tr>
         <td>URL</td>
-        <td>/fs</td>
+        <td>/</td>
     </tr>
     <tr>
         <td>HTTP method</td>
