@@ -2,13 +2,64 @@
 <html>
   <head>
     <title>Express</title>
+    <style>
+    div{
+      height: 150px;
+      width: 700px;
+      border-width: thin;
+      border-style: solid;
+      border-color: #ff0000;
+    }
+    </style>
   </head>
   <body>
-    <h1>Express</h1>
+    <h1>File Server API</h1>
     <p>Welcome to Test</p>
-    <form action="http://localhost:8081/" method="post" enctype="multipart/form-data">
+
+    <h2>Upload a file</h2>
+    <form action="http://localhost:8081/" method="post" enctype="multipart/form-data" target="upload">
       <input type="file" name="file" multiple="multiple"><br>
       <input type="submit" value="submit">
     </form>
+    <iframe id="upload" name="upload" width="700" height="100"></iframe>
+
+    <h2>Get file infomation</h2>
+    <label>file hash</label>
+    <input type="text" id="infoHash" value="">
+    <button onclick="getFileInfo()">submit</button>
+    <div id="info"></div>
+
+    <h2>download file</h2>
+    <label>file hash</label>
+    <input type="text" id="downHash" value="">
+    <button onclick="getFileUrl()">submit</button>
+    <div id="down"></div>
+
+    <script>
+    function loadXMLDoc(method, action, content, result){
+      var xmlhttp;
+      if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+        xmlhttp=new XMLHttpRequest();
+      } else {// code for IE6, IE5
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange=function(){
+        document.getElementById(result).innerText = xmlhttp.responseText;
+        console.log(xmlhttp.responseText);
+      }
+      xmlhttp.open(method, action, true);
+      xmlhttp.send(content);
+    }
+
+    function getFileInfo() {
+      loadXMLDoc('GET', 'http://localhost:8081/info/' + document.getElementById('infoHash').value, null, 'info');
+    }
+
+    function getFileUrl() {
+      console.log(document.getElementById('downHash').value);
+      loadXMLDoc('GET', 'http://localhost:8081/' + document.getElementById('downHash').value, null, 'down')
+    }
+    </script>
+
   </body>
 </html>

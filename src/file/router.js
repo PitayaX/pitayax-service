@@ -6,7 +6,7 @@
  var path = require('path');
  var formidable = require('formidable');
  var config = require('./config').settings;
-var fs = require('fs');
+ var fs = require('fs');
 
 module.exports = function (app) {
 
@@ -15,6 +15,11 @@ module.exports = function (app) {
 
     //create new instance of router
     var router = require('express').Router();
+
+    router.all('*', function(req, res, next) {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      next();
+    });
 
     var getToken = function(req){
         return req.params['token'];
@@ -52,7 +57,6 @@ module.exports = function (app) {
 
     //download a file by token
     router.get('/:token', function(req, res, next){
-
       var fileToken = getToken(req);
       var fileAdapter = getAdapter(fileToken);
       var options = {};
@@ -113,9 +117,13 @@ module.exports = function (app) {
 
     //delete a file by token
     router.delete('/:token', function(req, res, next){
-        var ft = getToken(req);
+      var fileToken = getToken(req);
+      var fileAdapter = getAdapter(fileToken);
 
-        res.end(ft);
+      fileAdapter.delete(fileToken, function(err, ret){
+        ret['error'] = err;
+        res.json(ret);
+      });
     });
 
     return router;

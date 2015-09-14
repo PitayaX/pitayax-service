@@ -68,15 +68,13 @@ QiniuAdapter.prototype.download = function(hash, options, callback) {
   });
 }
 
-QiniuAdapter.prototype.delete = function(token) {
-
-    var result = {
-        "ok":1,
-        "n":1
-    }
-
-    //do something
-    return Q(result);
+QiniuAdapter.prototype.delete = function(hash, callback) {
+  this.info(hash, function(result){
+    var client = new qiniu.rs.Client();
+    client.remove(qiniuConfig.bucketName, result['mask-name'], function(err, ret) {
+      callback(err, ret);
+    });
+  });
 }
 
 var adapter = new QiniuAdapter();
