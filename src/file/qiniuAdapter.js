@@ -17,21 +17,21 @@ QiniuAdapter.prototype.info = function(hash, callback) {
   try {
     // get all the infomation of files, qiniu hasn't API to search file with hash
     qiniu.rsf.listPrefix(qiniuConfig.bucketName, null, null, null, function(err, ret) {
-      if(err) throw 'QiniuAdapter.info error, detial:' + err;
+      if(err) throw 'QiniuAdapter.info error, detial:' + err.toString();
       // search all file, if the file hash is the same as req.hash, get it
-      ret.items.forEach(function(fileInfo){
-        if(fileInfo['hash'] == hash){
+      for (var i = 0; i < ret.items.length; i++) {
+        if(ret.items[i].hash == hash){
           result = {
-            'file-hash':fileInfo.hash,
-            'mask-name': fileInfo.key,
-            'content-type': fileInfo.mimeType,
-            'putTime':fileInfo.putTime,
-            'size': fileInfo.fsize
-          }
-          // send the result
-          callback(result);
+            'file-hash':ret.items[i].hash,
+            'mask-name': ret.items[i].key,
+            'content-type': ret.items[i].mimeType,
+            'size': ret.items[i].fsize
+          };
+          break;
         }
-      });
+      }
+      // send the result
+      callback(result);
     });
   } catch (e) {
     console.log(err);

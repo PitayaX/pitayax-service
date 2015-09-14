@@ -80,7 +80,6 @@ body: {
   file-hash:"FvX4rSaBmkcTGNJGMfpQVQNnEqh-",
 	mask-name:"upload_34c417a888b253e2282aff0214430b68.jpg",
   content-type:"image/jpeg",
-	putTime:14421992628553554,
 	size:879394
 }
 
@@ -123,7 +122,6 @@ body: {
 	mask-name:"upload_34c417a888b253e2282aff0214430b68.jpg",
   content-type:"image/jpeg",
   file-url:"http://{bucketUrl}/{mask-name}?e={deadline}&token={token}",
-	putTime:14421992628553554,
 	size:879394
 }
 
