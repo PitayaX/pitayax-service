@@ -7,6 +7,7 @@
  var formidable = require('formidable');
  var config = require('./config').settings;
  var fs = require('fs');
+ var utility = require('./utility');
 
 module.exports = function (app) {
 
@@ -19,6 +20,7 @@ module.exports = function (app) {
     router.all('*', function(req, res, next) {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'POST, GET, DELETE');
+      res.setHeader('Access-Control-Allow-Headers', 'height, width, mode');
       next();
     });
 
@@ -60,7 +62,7 @@ module.exports = function (app) {
     router.get('/:token', function(req, res, next){
       var fileToken = getToken(req);
       var fileAdapter = getAdapter(fileToken);
-      var options = {};
+      var options = utility.selectKey(req.headers, 'height width mode');
 
       fileAdapter.download(fileToken, options, function(file){
         res.json(file);

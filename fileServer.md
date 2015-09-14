@@ -111,8 +111,9 @@ body: {
 request:
 GET:/file-token
 headers:{
-  content-type:""
-  access-token:""
+  height:"100",
+  width:"200",
+  mode:"1"
 }
 
 response:

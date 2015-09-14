@@ -63,6 +63,16 @@ QiniuAdapter.prototype.download = function(hash, options, callback) {
   this.info(hash, function(result){
     var baseUrl = qiniu.rs.makeBaseUrl(qiniuConfig.bucketUrl, result['mask-name']);
     var policy = new qiniu.rs.GetPolicy();
+    if(options != null){
+      var iv = new qiniu.fop.ImageView();
+      // settings of short view picture
+      iv.mode = isNaN(+options.mode)? 0 : +options.mode;
+      iv.width = isNaN(+options.width)? 0 : +options.width;
+      iv.height = isNaN(+options.height)? 0 : +options.height;
+
+      // create picture url
+      baseUrl = iv.makeRequest(baseUrl);
+    }
     result['file-url'] = policy.makeRequest(baseUrl);
     callback(result);
   });
