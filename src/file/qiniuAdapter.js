@@ -12,21 +12,31 @@ function QiniuAdapter(){
   this.extra = new qiniu.io.PutExtra();
 }
 
-QiniuAdapter.prototype.info = function(hash) {
-  // get all the infomation of files, qiniu hasn't API to search file with hash
-  qiniu.rsf.listPrefix(qiniuConfig.bucketName, null, null, null, function(err, ret) {
-    // ret.items.forEach(function(file){
-    //   if(file['hash'] == hash){
-    //     console.log(file);
-    //   }
-    // });
-    console.log(ret);
-  });
-  var result = {
-      "n":1
+QiniuAdapter.prototype.info = function(hash, callback) {
+  var result = {};
+  try {
+    // get all the infomation of files, qiniu hasn't API to search file with hash
+    qiniu.rsf.listPrefix(qiniuConfig.bucketName, null, null, null, function(err, ret) {
+      if(err) throw 'QiniuAdapter.info error, detial:' + err;
+      // search all file, if the file hash is the same as req.hash, get it
+      ret.items.forEach(function(fileInfo){
+        if(fileInfo['hash'] == hash){
+          result = {
+            'file-hash':fileInfo.hash,
+            'mask-name': fileInfo.key,
+            'content-type': fileInfo.mimeType,
+            'putTime':fileInfo.putTime,
+            'size': fileInfo.fsize
+          }
+          // send the result
+          callback(result);
+        }
+      });
+    });
+  } catch (e) {
+    console.log(err);
+    callback(result);
   }
-  //do something
-  return Q(result);
 }
 
 QiniuAdapter.prototype.upload = function(options, buffer, callback) {
@@ -36,11 +46,11 @@ QiniuAdapter.prototype.upload = function(options, buffer, callback) {
   qiniu.io.put(this.putPolicy.token(), maskName, buffer, this.extra, function(err, ret){
     if (!err) {
       result = {
-      'file-hash':ret.hash,
-      'file-name': options.file.name,
-      'mask-name': maskName,
-      "content-type": options.file.type,
-      "size": options.file.size
+        'file-hash':ret.hash,
+        'file-name': options.file.name,
+        'mask-name': maskName,
+        'content-type': options.file.type,
+        'size': options.file.size
       }
     } else {
       result = { 'error' : err };
@@ -49,9 +59,13 @@ QiniuAdapter.prototype.upload = function(options, buffer, callback) {
   });
 }
 
-QiniuAdapter.prototype.download = function(token, options, res) {
-
-    return 'test';
+QiniuAdapter.prototype.download = function(hash, options, callback) {
+  this.info(hash, function(result){
+    var baseUrl = qiniu.rs.makeBaseUrl(qiniuConfig.bucketUrl, result['mask-name']);
+    var policy = new qiniu.rs.GetPolicy();
+    result['file-url'] = policy.makeRequest(baseUrl);
+    callback(result);
+  });
 }
 
 QiniuAdapter.prototype.delete = function(token) {

@@ -22,7 +22,7 @@
 
 ```javascript
 request:
-post:/fs
+post:/
 headers:{
   content-type: "multipart/form-data"
 }
@@ -50,7 +50,7 @@ body:{
     <tbody>
     <tr>
         <td>URL</td>
-        <td>/fs/file-token</td>
+        <td>/info/{file-hash}</td>
     </tr>
     <tr>
         <td>HTTP method</td>
@@ -58,7 +58,7 @@ body:{
     </tr>
     <tr>
         <td>Description</td>
-        <td>download file</td>
+        <td>Get file infomation</td>
     </tr>
     </tbody>
 </table>
@@ -68,20 +68,63 @@ body:{
 
 ```javascript
 request:
-GET:/fs/file-token
+GET:/file-token
 headers:{
   content-type:""
   access-token:""
 }
 
 response:
-headers:{
-	content-type:"",
-	filename:"",
-	(width=, height=) if it is a image
-	size:""
+headers:{}
+body: {
+  file-hash:"FvX4rSaBmkcTGNJGMfpQVQNnEqh-",
+	mask-name:"upload_34c417a888b253e2282aff0214430b68.jpg",
+  content-type:"image/jpeg",
+	putTime:14421992628553554,
+	size:879394
 }
-body: binary
+
+```
+---
+
+<table>
+    <tbody>
+    <tr>
+        <td>URL</td>
+        <td>/{file-hash}</td>
+    </tr>
+    <tr>
+        <td>HTTP method</td>
+        <td>GET</td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td>download a file</td>
+    </tr>
+    </tbody>
+</table>
+
+
+> Usage:
+
+```javascript
+request:
+GET:/file-token
+headers:{
+  content-type:""
+  access-token:""
+}
+
+response:
+headers:{}
+body: {
+  file-hash:"FvX4rSaBmkcTGNJGMfpQVQNnEqh-",
+	mask-name:"upload_34c417a888b253e2282aff0214430b68.jpg",
+  content-type:"image/jpeg",
+  file-url:"http://{bucketUrl}/{mask-name}?e={deadline}&token={token}",
+	putTime:14421992628553554,
+	size:879394
+}
 
 ```
 

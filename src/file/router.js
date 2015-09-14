@@ -30,33 +30,38 @@ module.exports = function (app) {
 
     //get file infomation by token
     router.get('/info/:token', function(req, res, next){
+      // get the file info
+      var fileToken = getToken(req);
+      var fileAdapter = getAdapter(fileToken);
 
-        var fileToken = getToken(req);
-        var fileAdapter = getAdapter(fileToken);
-
-        try{
-            fileAdapter
-                .info(fileToken)
-                .then(function(data) {
-                    res.json(data);
-                    res.end();
-                })
-                .catch(function(err) {
-                    res.end('err');
-                });
-        }
-        catch(err){
-            res.end('err2');
-        }
-        //res.end(fileToken);
+      try{
+        fileAdapter.info(fileToken, function(result){
+          if(result){
+            res.json(result);
+            res.end();
+          } else {
+            res.json('err');
+            res.end();
+          }
+        });
+      }
+      catch(err){
+        res.end('err2');
+      }
     });
 
     //download a file by token
     router.get('/:token', function(req, res, next){
 
-        var ft = getToken(req);
+      var fileToken = getToken(req);
+      var fileAdapter = getAdapter(fileToken);
+      var options = {};
 
-        res.end(ft);
+      fileAdapter.download(fileToken, options, function(file){
+        res.json(file);
+        res.end();
+      });
+
     });
 
 
@@ -99,7 +104,6 @@ module.exports = function (app) {
 
         // parse the post form process the upload file
         form.parse(req, function(err, fields, files) {});
-
         }
         catch(err){
           res.end(err);
