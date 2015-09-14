@@ -122,7 +122,7 @@ module.exports = function (app) {
       var fileAdapter = getAdapter(fileToken);
 
       fileAdapter.delete(fileToken, function(err, ret){
-        res.json(ret);
+        res.json();
       });
     });
 
