@@ -35,6 +35,12 @@
     <button onclick="getFileUrl()">submit</button>
     <div id="down"></div>
 
+    <h2>delete file</h2>
+    <label>file hash</label>
+    <input type="text" id="deleHash" value="">
+    <button onclick="deleteFile()">submit</button>
+    <div id="delete"></div>
+
     <script>
     function loadXMLDoc(method, action, content, result){
       var xmlhttp;
@@ -45,7 +51,6 @@
       }
       xmlhttp.onreadystatechange=function(){
         document.getElementById(result).innerText = xmlhttp.responseText;
-        console.log(xmlhttp.responseText);
       }
       xmlhttp.open(method, action, true);
       xmlhttp.send(content);
@@ -56,8 +61,11 @@
     }
 
     function getFileUrl() {
-      console.log(document.getElementById('downHash').value);
       loadXMLDoc('GET', 'http://localhost:8081/' + document.getElementById('downHash').value, null, 'down')
+    }
+
+    function deleteFile() {
+      loadXMLDoc('DELETE', 'http://localhost:8081/' + document.getElementById('deleHash').value, null, 'delete')
     }
     </script>
 

@@ -18,6 +18,7 @@ module.exports = function (app) {
 
     router.all('*', function(req, res, next) {
       res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'POST, GET, DELETE');
       next();
     });
 
@@ -121,7 +122,6 @@ module.exports = function (app) {
       var fileAdapter = getAdapter(fileToken);
 
       fileAdapter.delete(fileToken, function(err, ret){
-        ret['error'] = err;
         res.json(ret);
       });
     });
