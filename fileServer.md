@@ -68,7 +68,7 @@ body:{
 
 ```javascript
 request:
-GET:/file-token
+GET:/info/file-token
 headers:{
   content-type:""
   access-token:""
