@@ -12,30 +12,26 @@ function QiniuAdapter(){
   this.extra = new qiniu.io.PutExtra();
 }
 
-QiniuAdapter.prototype.info = function(hash, callback) {
+QiniuAdapter.prototype.info = function(token, callback) {
   var result = {};
   try {
-    // get all the infomation of files, qiniu hasn't API to search file with hash
-    qiniu.rsf.listPrefix(qiniuConfig.bucketName, null, null, null, function(err, ret) {
-      if(err) throw 'QiniuAdapter.info error, detial:' + err.toString();
-      // search all file, if the file hash is the same as req.hash, get it
-      for (var i = 0; i < ret.items.length; i++) {
-        if(ret.items[i].hash == hash){
-          result = {
-            'file-hash':ret.items[i].hash,
-            'mask-name': ret.items[i].key,
-            'content-type': ret.items[i].mimeType,
-            'size': ret.items[i].fsize
-          };
-          break;
+    var client = new qiniu.rs.Client();
+    client.stat(qiniuConfig.bucketName, token, function(err, ret) {
+      if(!err){
+        result = {
+          'file-hash':ret.hash,
+          'file-token': token,
+          'content-type': ret.mimeType,
+          'putTime': ret.putTime,
+          'size': ret.fsize
         }
+        callback(null, result);
+      } else {
+        callback(err, null);
       }
-      // send the result
-      callback(result);
     });
-  } catch (e) {
-    console.log(err);
-    callback(result);
+  } catch (err) {
+    callback(err, null);
   }
 }
 
@@ -48,7 +44,7 @@ QiniuAdapter.prototype.upload = function(options, buffer, callback) {
       result = {
         'file-hash':ret.hash,
         'file-name': options.file.name,
-        'mask-name': maskName,
+        'file-token': maskName,
         'content-type': options.file.type,
         'size': options.file.size
       }
@@ -59,9 +55,9 @@ QiniuAdapter.prototype.upload = function(options, buffer, callback) {
   });
 }
 
-QiniuAdapter.prototype.download = function(hash, options, callback) {
-  this.info(hash, function(result){
-    var baseUrl = qiniu.rs.makeBaseUrl(qiniuConfig.bucketUrl, result['mask-name']);
+QiniuAdapter.prototype.download = function(token, options, callback) {
+  this.info(token, function(err, result){
+    var baseUrl = qiniu.rs.makeBaseUrl(qiniuConfig.bucketUrl, result['file-token']);
     var policy = new qiniu.rs.GetPolicy();
     if(options != null){
       var iv = new qiniu.fop.ImageView();
@@ -78,12 +74,16 @@ QiniuAdapter.prototype.download = function(hash, options, callback) {
   });
 }
 
-QiniuAdapter.prototype.delete = function(hash, callback) {
-  this.info(hash, function(result){
-    var client = new qiniu.rs.Client();
-    client.remove(qiniuConfig.bucketName, result['mask-name'], function(err, ret) {
-      callback(err, ret);
-    });
+QiniuAdapter.prototype.delete = function(token, callback) {
+  this.info(token, function(err, result){
+    if(result){
+      var client = new qiniu.rs.Client();
+      client.remove(qiniuConfig.bucketName, result['file-token'], function(err, ret) {
+        callback(err, ret);
+      });
+    } else {
+      callback('not find file', result);
+    }
   });
 }
 

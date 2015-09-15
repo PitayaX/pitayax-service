@@ -43,7 +43,7 @@ module.exports = function (app) {
       var fileAdapter = getAdapter(fileToken);
 
       try{
-        fileAdapter.info(fileToken, function(result){
+        fileAdapter.info(fileToken, function(err ,result){
           if(result){
             res.json(result);
             res.end();
@@ -124,7 +124,8 @@ module.exports = function (app) {
       var fileAdapter = getAdapter(fileToken);
 
       fileAdapter.delete(fileToken, function(err, ret){
-        res.json();
+
+        res.json({ok:err?0:1});
       });
     });
 
