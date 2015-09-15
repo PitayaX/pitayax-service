@@ -9,7 +9,7 @@
     },
     {
       "config":"fileConfig.json",
-      "script":"./fileApp2"
+      "script":"./fileApp"
     }
   ]
 }
