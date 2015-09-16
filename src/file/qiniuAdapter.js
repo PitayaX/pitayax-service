@@ -56,10 +56,11 @@ QiniuAdapter.prototype.upload = function(options, buffer, callback) {
 }
 
 QiniuAdapter.prototype.download = function(token, options, callback) {
-  this.info(token, function(err, result){
+  var self = this;
+  self.info(token, function(err, result){
     var baseUrl = qiniu.rs.makeBaseUrl(qiniuConfig.bucketUrl, result['file-token']);
     var policy = new qiniu.rs.GetPolicy();
-    if(options != null){
+    if(self.optionsIsEmpty(options)){
       var iv = new qiniu.fop.ImageView();
       // settings of short view picture
       iv.mode = isNaN(+options.mode)? 0 : +options.mode;
@@ -85,6 +86,15 @@ QiniuAdapter.prototype.delete = function(token, callback) {
       callback('not find file', result);
     }
   });
+}
+
+QiniuAdapter.prototype.optionsIsEmpty = function(options) {
+  for (var prototype in options) {
+    if (options.hasOwnProperty(prototype)) {
+      return false;
+    }
+    return true;
+  }
 }
 
 var adapter = new QiniuAdapter();
