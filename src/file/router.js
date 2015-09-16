@@ -103,6 +103,7 @@ module.exports = function (app) {
           options['name'] = name;
           options['file'] = file;
           options['flieCache'] = config.flieCache;
+          options['mimeType'] = file.type;
           fileAdapter.upload(options, filesData, function(result){
             res.json(result);
             res.end();

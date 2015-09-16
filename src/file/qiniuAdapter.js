@@ -7,9 +7,6 @@ function QiniuAdapter(){
   //load config
   qiniu.conf.ACCESS_KEY = qiniuConfig.ACCESS_KEY;
   qiniu.conf.SECRET_KEY = qiniuConfig.SECRET_KEY;
-  //init
-  this.putPolicy = new qiniu.rs.PutPolicy(qiniuConfig.bucketName);
-  this.extra = new qiniu.io.PutExtra();
 }
 
 QiniuAdapter.prototype.info = function(token, callback) {
@@ -37,9 +34,12 @@ QiniuAdapter.prototype.info = function(token, callback) {
 
 QiniuAdapter.prototype.upload = function(options, buffer, callback) {
   // get the mask name of file
-  var maskName = options.file.path.replace(options.flieCache, ''), result = {};
+  var putPolicy = new qiniu.rs.PutPolicy(qiniuConfig.bucketName);
+  var maskName = options.file.path.replace(options.flieCache + 'upload_', ''), result = {};
+  var extra = new qiniu.io.PutExtra();
+  extra.mimeType = options.mimeType;
   // upload to qiniu
-  qiniu.io.put(this.putPolicy.token(), maskName, buffer, this.extra, function(err, ret){
+  qiniu.io.put(putPolicy.token(), maskName, buffer, extra, function(err, ret){
     if (!err) {
       result = {
         'file-hash':ret.hash,
