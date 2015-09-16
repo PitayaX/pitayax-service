@@ -36,9 +36,9 @@ body:{
 [
   {
     file-hash:"FvX4rSaBmkcTGNJGMfpQVQNnEqh-",
-    file-name: "Chrysanthemum.jpg",
-    mask-name:"upload_d39211e749807247cdb78bd1d742bf32.jpg",
-    content-type: "image/jpeg"
+    file-name:"Chrysanthemum.jpg",
+    file-token:"upload_e06985deed637cfaae00aef272be4e18.jpg",
+    content-type:"image/jpeg",
     size:879394
   }
   ...
@@ -78,9 +78,10 @@ response:
 headers:{}
 body: {
   file-hash:"FvX4rSaBmkcTGNJGMfpQVQNnEqh-",
-	mask-name:"upload_34c417a888b253e2282aff0214430b68.jpg",
+  file-token:"upload_e06985deed637cfaae00aef272be4e18.jpg",
   content-type:"image/jpeg",
-	size:879394
+  putTime:14423676387026204,
+  size:879394
 }
 
 ```
@@ -108,21 +109,22 @@ body: {
 
 ```javascript
 request:
-GET:/file-token
+GET:/{file-token}
 headers:{
-  height:"100",
-  width:"200",
-  mode:"1"
+  height(option):"100",
+  width(option):"200",
+  mode(option):"1"
 }
 
 response:
 headers:{}
 body: {
   file-hash:"FvX4rSaBmkcTGNJGMfpQVQNnEqh-",
-	mask-name:"upload_34c417a888b253e2282aff0214430b68.jpg",
+	file-token:"upload_34c417a888b253e2282aff0214430b68.jpg",
   content-type:"image/jpeg",
-  file-url:"http://{bucketUrl}/{mask-name}?e={deadline}&token={token}",
-	size:879394
+  putTime:14423676387026204,
+  size:879394,
+  file-url:"http://{bucketUrl}/{mask-name}?e={deadline}&token={token}"
 }
 
 ```
@@ -156,45 +158,7 @@ header: {
   content-type: "application/json"
   access-token:""
 }
-body: {}
-```
-
-<!-- ---
-
-<table>
-    <tbody>
-    <tr>
-        <td>URL</td>
-        <td>/fs</td>
-    </tr>
-    <tr>
-        <td>HTTP method</td>
-        <td>delete</td>
-    </tr>
-    <tr>
-        <td>Description</td>
-        <td>delete files</td>
-    </tr>
-    </tbody>
-</table>
-
-
-> Usage:
-
-```javascript
-request:
-delete:/fs
-header: {
-  content-type: "application/json"
-  access-token:""
-}
 body: {
-  file-tokens: [token1, token2 ... tokenn]
+  ok:1 Or 0  
 }
-
-response:
-body:{
-  "ok":1, (failed is 0)
-  "n":1 (the count of deleted files)
-}
-``` -->
+```
