@@ -76,8 +76,16 @@ module.exports = function (app, schema) {
 
                 if (!connectionsCache[connectionString]) {
 
+                    var options = {
+                      db: { native_parser: true },
+                      auth:{authdb:'admin'},
+                      server:{poolSize:10}
+                    }
+
                     //create connection by connection string
-                    var connection = mongoose.createConnection(connectionString);
+                    var connection = mongoose.createConnection(connectionString, options);
+
+                    console.log(options);
 
                     //cached the connection
                     connectionsCache[connectionString] = { 'instance': connection, 'connected': false };

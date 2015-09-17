@@ -1,8 +1,8 @@
 {
   "name": "rest server",
   "databases": {
-    "dbblog": "mongodb://10.10.73.209:27017/PitayaX",
-    "dbtest": "mongodb://10.10.73.209:27017/Northwind"
+    "dbblog": "mongodb://usrpx:password@10.10.73.207:27077/pitayax-test",
+    "#dbtest": "mongodb://10.10.73.209:27017/Northwind"
   },
   "settings": {
     "#env": "development",
