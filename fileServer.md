@@ -78,7 +78,7 @@ response:
 headers:{}
 body: {
   file-hash:"FvX4rSaBmkcTGNJGMfpQVQNnEqh-",
-  file-token:"upload_e06985deed637cfaae00aef272be4e18.jpg",
+  file-token:"e06985deed637cfaae00aef272be4e18.jpg",
   content-type:"image/jpeg",
   putTime:14423676387026204,
   size:879394
@@ -120,7 +120,7 @@ response:
 headers:{}
 body: {
   file-hash:"FvX4rSaBmkcTGNJGMfpQVQNnEqh-",
-	file-token:"upload_34c417a888b253e2282aff0214430b68.jpg",
+	file-token:"34c417a888b253e2282aff0214430b68.jpg",
   content-type:"image/jpeg",
   putTime:14423676387026204,
   size:879394,
