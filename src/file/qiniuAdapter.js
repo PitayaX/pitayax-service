@@ -60,7 +60,6 @@ QiniuAdapter.prototype.download = function(token, options, callback) {
   self.info(token, function(err, result){
     var baseUrl = qiniu.rs.makeBaseUrl(qiniuConfig.bucketUrl, result['file-token']);
     var policy = new qiniu.rs.GetPolicy();
-    console.log(self.optionsIsEmpty(options));
     if(self.optionsIsEmpty(options)){
       var iv = new qiniu.fop.ImageView();
       // settings of short view picture
