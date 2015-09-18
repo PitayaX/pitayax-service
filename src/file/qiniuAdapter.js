@@ -97,6 +97,9 @@ QiniuAdapter.prototype.download = function(hash, options, callback) {
 QiniuAdapter.prototype.delete = function(hash, callback) {
   this.info(hash, function(err, result, server){
     if(server == null){callback('The server number is not at server list.');}
+    // add the qinniu ACCESS_KEY and SECRET_KEY
+    qiniu.conf.ACCESS_KEY = server.ACCESS_KEY;
+    qiniu.conf.SECRET_KEY = server.SECRET_KEY;
     if(result){
       var client = new qiniu.rs.Client();
       client.remove(server.bucketName, result['file-hash'], function(err, ret) {
@@ -129,8 +132,6 @@ QiniuAdapter.prototype.getEmptyBucket = function(callback){
     // });
     if(server.name == 'qns001'){
       callback(server);
-    } else {
-      callback(null);
     }
   });
 }
