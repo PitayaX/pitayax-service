@@ -1,4 +1,5 @@
+.git
+.gitignore
 .idea
-.idea/*.*
 node_modules
-node_modules/*.*
+src/*debug*
