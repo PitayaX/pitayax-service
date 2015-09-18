@@ -85,7 +85,7 @@ module.exports = function (app, schema) {
                     //create connection by connection string
                     var connection = mongoose.createConnection(connectionString, options);
 
-                    console.log(options);
+                    //console.log(options);
 
                     //cached the connection
                     connectionsCache[connectionString] = { 'instance': connection, 'connected': false };

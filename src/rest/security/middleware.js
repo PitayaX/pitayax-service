@@ -6,7 +6,7 @@ module.exports = function (app) {
 
     app.use(function(req, res, next) {
 
-      console.log('path:' + req.path);
+      console.log(req.method + ': ' + req.path);
 
       next();
     });

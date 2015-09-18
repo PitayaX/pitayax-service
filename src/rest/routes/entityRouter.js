@@ -48,7 +48,6 @@ module.exports = function(router, config) {
 
         //bind entity to parent router
         var routePath = (config['basePath'] ? config['basePath'] : '/api') + '/' + entityName;
-        console.log(routePath);
         router.use(routePath, entityRouter);
     });
 };

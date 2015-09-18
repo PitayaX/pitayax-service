@@ -3,6 +3,7 @@
  */
 var fs = require('fs');
 var path = require('path');
+var Q = require('q');
 var U = require('underscore');
 
 module.exports = function (app, entityName) {
@@ -131,8 +132,21 @@ module.exports = function (app, entityName) {
             //append array of select fields to options
             if (filter['$fields']) options['fields'] = filter['$fields'];
 
-            //invoke method to get result
-            return dataAdapter.retrieveResult(entityName, method, filter, options);
+            if(predefine.postedScript){
+
+                var deferred = Q.defer();
+
+                dataAdapter.retrieveResult(entityName, method, filter, options)
+                .then(function(data){
+                    deferred.resolve(predefine.postedScript.call(this, data));
+                });
+
+                return deferred.promise;
+            }
+            else {
+                //invoke method to get result
+                return dataAdapter.retrieveResult(entityName, method, filter, options);
+            }
         },
 
         aggregate: function (req, res) {
