@@ -59,7 +59,7 @@ module.exports = function (app) {
     });
 
     //download a file by token
-    router.get('/:token', function(req, res, next){
+    router.get('/fs/:token', function(req, res, next){
       var fileToken = getToken(req);
       var fileAdapter = getAdapter(fileToken);
       var options = utility.selectKey(req.headers, 'height width mode');
@@ -73,7 +73,7 @@ module.exports = function (app) {
 
 
     //upload one or more files
-    router.post("/", function(req, res, next){
+    router.post("/fs", function(req, res, next){
       // define
       var fileAdapter = getAdapter('');
       var options = {}, filesData = new Buffer(0);
@@ -120,7 +120,7 @@ module.exports = function (app) {
 
 
     //delete a file by token
-    router.delete('/:token', function(req, res, next){
+    router.delete('/fs/:token', function(req, res, next){
       var fileToken = getToken(req);
       var fileAdapter = getAdapter(fileToken);
 

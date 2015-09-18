@@ -9,15 +9,14 @@ function QiniuAdapter(){
   qiniu.conf.SECRET_KEY = qiniuConfig.SECRET_KEY;
 }
 
-QiniuAdapter.prototype.info = function(token, callback) {
+QiniuAdapter.prototype.info = function(hash, callback) {
   var result = {};
   try {
     var client = new qiniu.rs.Client();
-    client.stat(qiniuConfig.bucketName, token, function(err, ret) {
+    client.stat(qiniuConfig.bucketName, hash, function(err, ret) {
       if(!err){
         result = {
           'file-hash':ret.hash,
-          'file-token': token,
           'content-type': ret.mimeType,
           'putTime': ret.putTime,
           'size': ret.fsize
@@ -39,12 +38,11 @@ QiniuAdapter.prototype.upload = function(options, buffer, callback) {
   var extra = new qiniu.io.PutExtra();
   extra.mimeType = options.mimeType;
   // upload to qiniu
-  qiniu.io.put(putPolicy.token(), maskName, buffer, extra, function(err, ret){
+  qiniu.io.put(putPolicy.token(), null, buffer, extra, function(err, ret){
     if (!err) {
       result = {
         'file-hash':ret.hash,
         'file-name': options.file.name,
-        'file-token': maskName,
         'content-type': options.file.type,
         'size': options.file.size
       }
@@ -55,10 +53,10 @@ QiniuAdapter.prototype.upload = function(options, buffer, callback) {
   });
 }
 
-QiniuAdapter.prototype.download = function(token, options, callback) {
+QiniuAdapter.prototype.download = function(hash, options, callback) {
   var self = this;
-  self.info(token, function(err, result){
-    var baseUrl = qiniu.rs.makeBaseUrl(qiniuConfig.bucketUrl, result['file-token']);
+  self.info(hash, function(err, result){
+    var baseUrl = qiniu.rs.makeBaseUrl(qiniuConfig.bucketUrl, result['file-hash']);
     var policy = new qiniu.rs.GetPolicy();
     if(self.optionsIsEmpty(options)){
       var iv = new qiniu.fop.ImageView();
@@ -75,11 +73,11 @@ QiniuAdapter.prototype.download = function(token, options, callback) {
   });
 }
 
-QiniuAdapter.prototype.delete = function(token, callback) {
-  this.info(token, function(err, result){
+QiniuAdapter.prototype.delete = function(hash, callback) {
+  this.info(hash, function(err, result){
     if(result){
       var client = new qiniu.rs.Client();
-      client.remove(qiniuConfig.bucketName, result['file-token'], function(err, ret) {
+      client.remove(qiniuConfig.bucketName, result['file-hash'], function(err, ret) {
         callback(err, ret);
       });
     } else {
