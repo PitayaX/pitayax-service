@@ -74,48 +74,52 @@ module.exports = function (app) {
 
     //upload one or more files
     router.post("/fs", function(req, res, next){
-      // define
-      var fileAdapter = getAdapter('');
-      var options = {}, filesData = new Buffer(0);
-      var form = new formidable.IncomingForm();
-      // formidable settings
-      form.uploadDir = config.flieCache;
-      form.keepExtensions = true;
+      if(req.headers['content-type'].split(';')[0] == 'multipart/form-data') {
+        // define
+        var fileAdapter = getAdapter('');
+        var options = {}, filesData = new Buffer(0);
+        var form = new formidable.IncomingForm();
+        // formidable settings
+        form.uploadDir = config.flieCache;
+        form.keepExtensions = true;
 
-      try{
-        // redefined form.onPart Function
-        form.onPart = function(part) {
-          form.handlePart(part);
-          // binding get octData event, match the fileData
-          part.addListener('data', function(chunk) {
-            if(part.filename != undefined) {
-              var temp = [];
-              temp[0] = filesData;
-              temp[1] = chunk;
-              // match the files data
-              filesData = Buffer.concat(temp);
-            }
+        try{
+          // redefined form.onPart Function
+          form.onPart = function(part) {
+            form.handlePart(part);
+            // binding get octData event, match the fileData
+            part.addListener('data', function(chunk) {
+              if(part.filename != undefined) {
+                var temp = [];
+                temp[0] = filesData;
+                temp[1] = chunk;
+                // match the files data
+                filesData = Buffer.concat(temp);
+              }
+            });
+          }
+
+          // binding file upload finishing event
+          form.on('file', function(name, file) {
+            options['name'] = name;
+            options['file'] = file;
+            options['flieCache'] = config.flieCache;
+            options['mimeType'] = file.type;
+            fileAdapter.upload(options, filesData, function(result){
+              res.json(result);
+              res.end();
+            })
           });
-        }
 
-        // binding file upload finishing event
-        form.on('file', function(name, file) {
-          options['name'] = name;
-          options['file'] = file;
-          options['flieCache'] = config.flieCache;
-          options['mimeType'] = file.type;
-          fileAdapter.upload(options, filesData, function(result){
-            res.json(result);
-            res.end();
-          })
-        });
-
-        // parse the post form process the upload file
-        form.parse(req, function(err, fields, files) {});
+          // parse the post form process the upload file
+          form.parse(req, function(err, fields, files) {});
         }
         catch(err){
           res.end(err);
         }
+      } else {
+        res.end('content-type is not spport.');
+      }
     });
 
 
