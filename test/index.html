@@ -17,7 +17,7 @@
     <p>Welcome to Test</p>
 
     <h2>Upload a file</h2>
-    <form action="http://localhost:8081/" method="post" enctype="multipart/form-data" target="upload">
+    <form action="http://localhost:8081/fs" method="post" enctype="multipart/form-data" target="upload">
       <input type="file" name="file" multiple="multiple"><br>
       <input type="submit" value="submit">
     </form>
@@ -78,16 +78,16 @@
     }
 
     function getFileUrl() {
-      loadXMLDoc('GET', 'http://localhost:8081/' + document.getElementById('downHash').value, null, 'down')
+      loadXMLDoc('GET', 'http://localhost:8081/fs/' + document.getElementById('downHash').value, null, 'down')
     }
 
     function getResizePic() {
       var headers = { mode:document.getElementById('mode').value, width:document.getElementById('width').value, height:document.getElementById('height').value}
-      loadXMLDoc('GET', 'http://localhost:8081/' + document.getElementById('picHash').value, headers, 'pic')
+      loadXMLDoc('GET', 'http://localhost:8081/fs/' + document.getElementById('picHash').value, headers, 'pic')
     }
 
     function deleteFile() {
-      loadXMLDoc('DELETE', 'http://localhost:8081/' + document.getElementById('deleHash').value, null, 'delete')
+      loadXMLDoc('DELETE', 'http://localhost:8081/fs/' + document.getElementById('deleHash').value, null, 'delete')
     }
     </script>
 
