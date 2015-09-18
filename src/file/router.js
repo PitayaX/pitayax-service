@@ -70,8 +70,7 @@ module.exports = function (app) {
       });
 
     });
-
-
+    
     //upload one or more files
     router.post("/fs", function(req, res, next){
       if(req.headers['content-type'].split(';')[0] == 'multipart/form-data') {
