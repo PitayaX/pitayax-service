@@ -24,7 +24,9 @@
 request:
 post:/fs
 headers:{
-  content-type: "multipart/form-data" or "image/jpeg" {file type} and so on
+  filename: "Chrysanthemum.jpg",
+  content-type: "multipart/form-data" or "image/jpeg" {file type} and so on,
+  content-length: 879394
 }
 Requestpayload:{
   fileData
@@ -32,15 +34,14 @@ Requestpayload:{
 
 response:
 headers:{}
-body:{
-[
+body:
   {
-    file-hash:"qns001FvX4rSaBmkcTGNJGMfpQVQNnEqh-",
-    content-type:"image/jpeg",
-    size:879394
+  	"file-hash":"FomzOar7oEA7-18JCg5Mcoh1c8lC",
+  	"file-token":"8d5699ca2b85943219b798b4ae2c2c128edb63432ef6d3cada0113d3e466a671f2448a1d7e551a19a597110d24988b3ca197fe0edb870630a4cdcf916f140cec239b9bf377a9a76d705ba0f7395e7046",
+  	"file-name":"haok.jpg",
+  	"content-type":"image/jpeg",
+  	"size":"832568"
   }
-  ...
-]}
 ```
 ---
 
@@ -76,10 +77,12 @@ headers:{
 response:
 headers:{}
 body: {
-  file-hash:"qns001FvX4rSaBmkcTGNJGMfpQVQNnEqh-",
+  file-hash:"FomzOar7oEA7-18JCg5Mcoh1c8lC",
+  file-token:"8d5699ca2b85943219b798b4ae2c2c128edb63432ef6d3cada0113d3e466a671f2448a1d7e551a19a597110d24988b3c049cb51dc7f8713078c774c1d0dfba620fd6e6519d5fb3849465b764435c7233",
+  file-name:"haok.jpg",
   content-type:"image/jpeg",
-  putTime:14423676387026204,
-  size:879394,
+  putTime:14428257101982782,
+  size:832568,
   file-url:"http://{bucketUrl}/{mask-name}?e={deadline}&token={token}"
 }
 

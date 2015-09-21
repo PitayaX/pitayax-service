@@ -64,17 +64,20 @@ module.exports = function (app) {
       var fileAdapter = getAdapter(fileToken);
       var options = utility.selectKey(req.headers, 'height width mode');
 
-      fileAdapter.download(fileToken, options, function(file){
-        res.json(file);
-        res.end();
+      fileAdapter.download(fileToken, options, function(err, file){
+        if (file) {
+          res.json(file);
+          res.end();
+        } else {
+          res.json(err);
+          res.end();
+        }
       });
-
     });
 
     //upload one or more files
     router.post("/fs", function(req, res, next){
-      console.log(req.headers['content-type']);
-      if(req.headers['content-type'].split(';')[0] == 'multipart/form-data') {
+      if(req.headers['content-type'].includes('multipart/form-data')) {
         // define
         var fileAdapter = getAdapter('');
         var options = {}, filesData = new Buffer(0);
@@ -130,7 +133,7 @@ module.exports = function (app) {
         req.on('end', function(){
           // define
           var fileAdapter = getAdapter(''), options = {};
-          options['file'] = { type : req.headers['content-type'], size : req.headers['content-length'] };
+          options['file'] = { type : req.headers['content-type'], size : req.headers['content-length'], name : req.headers['filename'] };
           fileAdapter.upload(options, filesData, function(result){
             res.json(result);
             res.end();
