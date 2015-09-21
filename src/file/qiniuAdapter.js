@@ -48,13 +48,12 @@ QiniuAdapter.prototype.upload = function(options, buffer, callback) {
     // create qiniu upload token
     var putPolicy = new qiniu.rs.PutPolicy(server.bucketName);
     var extra = new qiniu.io.PutExtra(), result = {};
-    extra.mimeType = options.mimeType;
+    extra.mimeType = options.file.type;
     // upload to qiniu
     qiniu.io.put(putPolicy.token(), null, buffer, extra, function(err, ret){
       if (!err) {
         result = {
           'file-hash': server.name + ret.hash,
-          'file-name': options.file.name,
           'content-type': options.file.type,
           'size': options.file.size
         }

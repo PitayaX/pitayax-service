@@ -103,7 +103,6 @@ module.exports = function (app) {
             options['name'] = name;
             options['file'] = file;
             options['flieCache'] = config.flieCache;
-            options['mimeType'] = file.type;
             fileAdapter.upload(options, filesData, function(result){
               res.json(result);
               res.end();
@@ -117,7 +116,25 @@ module.exports = function (app) {
           res.end(err);
         }
       } else {
-        res.end('content-type is not spport.');
+
+        var filesData = new Buffer(0);
+        req.on('data', function(chunk){
+          var temp = [];
+          temp[0] = filesData;
+          temp[1] = chunk;
+          // match the files data
+          filesData = Buffer.concat(temp);
+        });
+
+        req.on('end', function(){
+          // define
+          var fileAdapter = getAdapter(''), options = {};
+          options['file'] = { type : req.headers['content-type'], size : req.headers['content-length'] };
+          fileAdapter.upload(options, filesData, function(result){
+            res.json(result);
+            res.end();
+          })
+        });
       }
     });
 
@@ -128,7 +145,6 @@ module.exports = function (app) {
       var fileAdapter = getAdapter(fileToken);
 
       fileAdapter.delete(fileToken, function(err, ret){
-
         res.json({ok:err?0:1});
       });
     });

@@ -10,18 +10,28 @@
       border-style: solid;
       border-color: #ff0000;
     }
+
+    #drop_zone{
+      width:600px;
+      height:100px;
+      background:#f1f1f1;
+    }
     </style>
   </head>
   <body>
     <h1>File Server API</h1>
     <p>Welcome to Test</p>
 
-    <h2>Upload a file</h2>
+    <h2>Upload a file by form data</h2>
     <form action="http://localhost:8081/fs" method="post" enctype="multipart/form-data" target="upload">
       <input type="file" name="file" multiple="multiple"><br>
       <input type="submit" value="submit">
     </form>
     <iframe id="upload" name="upload" width="700" height="100"></iframe>
+
+    <h2>Upload a file by Data Transfer</h2>
+    <div id="drop_zone" style=""> drop files here </div>
+    <div id="uploadDiv"></div>
 
     <h2>Get file infomation</h2>
     <label>file-token</label>
@@ -90,6 +100,7 @@
       loadXMLDoc('DELETE', 'http://localhost:8081/fs/' + document.getElementById('deleHash').value, null, 'delete')
     }
     </script>
-
+    <script src="jquery.js"></script>
+    <script src="main.js"></script>
   </body>
 </html>
