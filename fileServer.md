@@ -24,9 +24,9 @@
 request:
 post:/fs
 headers:{
-  filename: "Chrysanthemum.jpg",
+  filename: "haok.jpg",
   content-type: "multipart/form-data" or "image/jpeg" {file type} and so on,
-  content-length: 879394
+  content-length: 832568
 }
 Requestpayload:{
   fileData
@@ -49,7 +49,7 @@ body:
     <tbody>
     <tr>
         <td>URL</td>
-        <td>/fs/{file-hash}</td>
+        <td>/fs/{file-token}</td>
     </tr>
     <tr>
         <td>HTTP method</td>
@@ -94,7 +94,7 @@ body: {
     <tbody>
     <tr>
         <td>URL</td>
-      <td>/fs/{file-hash}</td>
+      <td>/fs/{file-token}</td>
     </tr>
     <tr>
         <td>HTTP method</td>
@@ -112,7 +112,7 @@ body: {
 
 ```javascript
 request:
-delete:/fs/{file-hash}
+delete:/fs/{file-token}
 header: {
   content-type: "application/json"
   access-token:""
