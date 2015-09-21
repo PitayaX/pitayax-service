@@ -20,7 +20,7 @@ module.exports = function (app) {
     router.all('*', function(req, res, next) {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'POST, GET, DELETE');
-      res.setHeader('Access-Control-Allow-Headers', 'height, width, mode');
+      res.setHeader('Access-Control-Allow-Headers', 'height, width, mode, access-token');
       next();
     });
 
@@ -73,6 +73,7 @@ module.exports = function (app) {
 
     //upload one or more files
     router.post("/fs", function(req, res, next){
+      console.log(req.headers['content-type']);
       if(req.headers['content-type'].split(';')[0] == 'multipart/form-data') {
         // define
         var fileAdapter = getAdapter('');

@@ -24,10 +24,10 @@
 request:
 post:/fs
 headers:{
-  content-type: "multipart/form-data"
+  content-type: "multipart/form-data" or "image/jpeg" {file type} and so on
 }
 Requestpayload:{
-
+  fileData
 }
 
 response:
@@ -36,7 +36,6 @@ body:{
 [
   {
     file-hash:"qns001FvX4rSaBmkcTGNJGMfpQVQNnEqh-",
-    file-name:"Chrysanthemum.jpg",
     content-type:"image/jpeg",
     size:879394
   }
