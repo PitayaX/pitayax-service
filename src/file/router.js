@@ -48,13 +48,13 @@ module.exports = function (app) {
             res.json(result);
             res.end();
           } else {
-            res.json('err');
+            res.json(err);
             res.end();
           }
         });
       }
       catch(err){
-        res.end('err2');
+        res.end(err);
       }
     });
 
@@ -70,7 +70,7 @@ module.exports = function (app) {
       });
 
     });
-    
+
     //upload one or more files
     router.post("/fs", function(req, res, next){
       if(req.headers['content-type'].split(';')[0] == 'multipart/form-data') {

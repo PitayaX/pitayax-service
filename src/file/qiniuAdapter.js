@@ -12,7 +12,7 @@ QiniuAdapter.prototype.info = function(serverHash, callback) {
   var self = this, result = {};
   // auto select the empty qiniu server
   self.getBucketByName(serverHash, function(hash, server){
-    if(server == null){callback('The server number is not at server list.');}
+    if(server == null){callback({ 'err' : 'The server number is not at server list.' });}
     try {
       // add the qinniu ACCESS_KEY and SECRET_KEY
       qiniu.conf.ACCESS_KEY = server.ACCESS_KEY;
@@ -137,13 +137,16 @@ QiniuAdapter.prototype.getEmptyBucket = function(callback){
 }
 
 QiniuAdapter.prototype.getBucketByName = function(serverHash, callback){
-  var serverName = serverHash.substring(0, 6), hash = serverHash.replace(serverName, ''), found = false;
-  qiniuConfig.server.forEach(function(server){
-    if(server.name == serverName && found == false){
-      found = true;
-      callback(hash, server);
+  var serverName = serverHash.substring(0, 6), hash = serverHash.replace(serverName, '');
+  for (var i = 0; i < qiniuConfig.server.length; i++) {
+    if(qiniuConfig.server[i].name == serverName){
+      callback(hash, qiniuConfig.server[i]);
+      break;
     }
-  });
+    if (i == qiniuConfig.server.length - 1) {
+      callback(hash, null);
+    }
+  }
 }
 
 var adapter = new QiniuAdapter();
