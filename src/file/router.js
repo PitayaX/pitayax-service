@@ -69,7 +69,24 @@ module.exports = function (app) {
 
       fileAdapter.download(fileToken, options, function(err, file){
         if (file) {
-          console.log('start download');
+          res.json(file);
+          res.end();
+        } else {
+          res.json(err);
+          res.end();
+        }
+      });
+    });
+
+    router.get('/image/:token', function(req, res, next){
+      var fileToken = getToken(req);
+      var fileAdapter = getAdapter(fileToken);
+      var query = req.originalUrl.split('?');
+      query = querystring.parse(query.length == 1 ? '' : query[query.length - 1]);
+      var options = utility.selectKey(query, 'height width mode');
+
+      fileAdapter.download(fileToken, options, function(err, file){
+        if (file) {
           // res.download(file['file-url'], file.name);
           // res.set('Content-Disposition', file['file-url'] + ';filename=FileName.txt')
           res.redirect(file['file-url']);

@@ -93,13 +93,13 @@
 
     function getFileUrl() {
       var url = 'http://localhost:8081/fs/' + document.getElementById('downHash').value;
-      loadXMLDoc('GET', url);
+      loadXMLDoc('GET', url, 'down');
       console.log(url);
     }
 
     function getResizePic() {
       var options = { mode:document.getElementById('mode').value, width:document.getElementById('width').value, height:document.getElementById('height').value};
-      var url = 'http://localhost:8081/fs/' + document.getElementById('picHash').value;
+      var url = 'http://localhost:8081/image/' + document.getElementById('picHash').value;
       var temp = [], query = '';
       temp.push(isNaN(+options.mode)||+options.mode == 0 ? '' : 'mode=' + options.mode);
       temp.push(isNaN(+options.width)||+options.width == 0 ? '' : 'width=' + options.width);
