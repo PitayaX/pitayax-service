@@ -55,7 +55,8 @@
     <label>picToken</label>
     <input type="text" id="picHash" value="">
     <button onclick="getResizePic()">submit</button>
-    <div id="pic"></div>
+    <br>
+    <img id="pic" src=""></img>
 
     <h2>delete file</h2>
     <label>file-token</label>
@@ -65,19 +66,23 @@
 
     <script>
     function loadXMLDoc(method, action, result){
-      var xmlhttp;
-      if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
-        xmlhttp=new XMLHttpRequest();
-      } else {// code for IE6, IE5
-        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-      }
-      if(result){
-        xmlhttp.onreadystatechange=function(){
-          document.getElementById(result).innerText = xmlhttp.responseText;
+      if(result == 'pic') {
+        document.getElementById(result).src = action;
+      } else {
+        var xmlhttp;
+        if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+          xmlhttp=new XMLHttpRequest();
+        } else {// code for IE6, IE5
+          xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
         }
+        if(result){
+          xmlhttp.onreadystatechange=function(){
+            document.getElementById(result).innerText = xmlhttp.responseText;
+          }
+        }
+        xmlhttp.open(method, action, true);
+        xmlhttp.send();
       }
-      xmlhttp.open(method, action, true);
-      xmlhttp.send();
     }
 
     function getFileInfo() {
