@@ -8,6 +8,7 @@
  var config = require('./config').settings;
  var fs = require('fs');
  var utility = require('./utility');
+ var querystring = require('querystring');
 
 module.exports = function (app) {
 
@@ -62,12 +63,15 @@ module.exports = function (app) {
     router.get('/fs/:token', function(req, res, next){
       var fileToken = getToken(req);
       var fileAdapter = getAdapter(fileToken);
-      var options = utility.selectKey(req.headers, 'height width mode');
+      var query = req.originalUrl.split('?');
+      query = querystring.parse(query.length == 1 ? '' : query[query.length - 1]);
+      var options = utility.selectKey(query, 'height width mode');
 
       fileAdapter.download(fileToken, options, function(err, file){
         if (file) {
-          res.json(file);
-          res.end();
+          console.log('start download');
+          // res.download(file['file-url'], file.name);
+          res.redirect(file['file-url']);
         } else {
           res.json(err);
           res.end();
