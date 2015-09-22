@@ -71,6 +71,7 @@ module.exports = function (app) {
         if (file) {
           console.log('start download');
           // res.download(file['file-url'], file.name);
+          // res.set('Content-Disposition', file['file-url'] + ';filename=FileName.txt')
           res.redirect(file['file-url']);
         } else {
           res.json(err);
