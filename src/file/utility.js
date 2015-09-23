@@ -28,10 +28,11 @@ exports.encrypt = function(token){
   var cipher = crypto.createCipher('aes-256-cbc', key);
   var crypted =cipher.update(token, 'utf8', 'base64');
   crypted+=cipher.final('base64');
-  return crypted;
+  return crypted.replace(/\//g, '*').replace(/\=/g, '_').replace(/\+/g, '-');
 }
 
 exports.decrypt = function(encrypted){
+  encrypted = encrypted.replace(/\*/g, '/').replace(/_/g, '=').replace(/-/g, '+');
   var decipher = crypto.createDecipher('aes-256-cbc', key);
   var dec = decipher.update(encrypted,'base64','utf8');
   dec += decipher.final('utf8');
