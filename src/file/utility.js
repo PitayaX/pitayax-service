@@ -26,14 +26,14 @@ exports.selectKey = function (data, keyString) {
 
 exports.encrypt = function(token){
   var cipher = crypto.createCipher('aes-256-cbc', key);
-  var crypted =cipher.update(token, 'utf8', 'hex');
-  crypted+=cipher.final('hex');
+  var crypted =cipher.update(token, 'utf8', 'base64');
+  crypted+=cipher.final('base64');
   return crypted;
 }
 
 exports.decrypt = function(encrypted){
   var decipher = crypto.createDecipher('aes-256-cbc', key);
-  var dec = decipher.update(encrypted,'hex','utf8');
+  var dec = decipher.update(encrypted,'base64','utf8');
   dec += decipher.final('utf8');
   return dec;
 }
