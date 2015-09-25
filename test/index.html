@@ -23,7 +23,7 @@
     <p>Welcome to Test</p>
 
     <h2>Upload a file by form data</h2>
-    <form action="http://localhost:8081/fs" method="post" enctype="multipart/form-data" target="upload">
+    <form action="http://10.10.73.208:8081/fs" method="post" enctype="multipart/form-data" target="upload">
       <input type="file" name="file" multiple="multiple"><br>
       <input type="submit" value="submit">
     </form>
@@ -86,20 +86,20 @@
     }
 
     function getFileInfo() {
-      var url = 'http://localhost:8081/info/' + document.getElementById('infoHash').value;
+      var url = 'http://10.10.73.208:8081/info/' + document.getElementById('infoHash').value;
       loadXMLDoc('GET', url, 'info');
       console.log(url);
     }
 
     function getFileUrl() {
-      var url = 'http://localhost:8081/fs/' + document.getElementById('downHash').value;
+      var url = 'http://10.10.73.208:8081/fs/' + document.getElementById('downHash').value;
       loadXMLDoc('GET', url, 'down');
       console.log(url);
     }
 
     function getResizePic() {
       var options = { mode:document.getElementById('mode').value, width:document.getElementById('width').value, height:document.getElementById('height').value};
-      var url = 'http://localhost:8081/image/' + document.getElementById('picHash').value;
+      var url = 'http://10.10.73.208:8081/image/' + document.getElementById('picHash').value;
       var temp = [], query = '';
       temp.push(isNaN(+options.mode)||+options.mode == 0 ? '' : 'mode=' + options.mode);
       temp.push(isNaN(+options.width)||+options.width == 0 ? '' : 'width=' + options.width);
@@ -118,7 +118,9 @@
     }
 
     function deleteFile() {
-      loadXMLDoc('DELETE', 'http://localhost:8081/fs/' + document.getElementById('deleHash').value, 'delete')
+      var url = 'http://10.10.73.208:8081/fs/' + document.getElementById('deleHash').value;
+      console.log(url);
+      loadXMLDoc('DELETE', url, 'delete');
     }
     </script>
     <script src="jquery.js"></script>
