@@ -8,7 +8,7 @@
 |/image/{token}?[options] |GET    |show a picture     |                   |
 |/fs/{token}              |DELETE |delete a file     |                   |
 
-The test page is on [Server 208](http://10.10.73.208:3001/)
+Note: The test page is on [Server 208](http://10.10.73.208:3001/)
 
 ---
 
