@@ -25,7 +25,7 @@
 ```
 Request Headers:{
   Content-Length:上传文件的大小,Eg:832568,
-  Content-Type:上传文件的类型,Eg:image/jpeg,
+  Content-Type:上传文件的类型,Eg:image/jpeg, 也可以是multipart/form-data表单上传，不过现在multipart/form-data仅支持单个文件上传
   FILENAME:上传文件的名称,Eg:haok.jpg
 }
 Request Body:{
