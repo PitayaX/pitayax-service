@@ -142,3 +142,32 @@ Request Body:{
 ```
 
 ---
+
+### 5. /fs/{token} 删除文件
+
+|Key|Value|
+|---|-----|
+|URL|/image/{token}?[options]|
+|方式|DELETE|
+|描述|删除文件|
+
+#### Request内容:
+
+```
+GET: http://10.10.73.207:8081/fs/{token}
+Eg: http://10.10.73.207:8081/fs/jVaZyiuFlDIZt5i0riwsEo7bY0Mu9tPK2gET0-RmpnHyRIodflUaGaWXEQ0kmIs8Xn7S6Lg9XqF1VsfPaRpur82PpQqyX1By17wteGkH9es_
+Request Headers:{
+}
+Request Body:{
+}
+```
+
+#### Response内容:
+
+```
+{
+  ok: 1 or 0
+}
+```
+
+---
