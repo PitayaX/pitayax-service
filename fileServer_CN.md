@@ -1,4 +1,4 @@
-## 文件系统 API 一览表
+# 文件系统 API 一览表
 
 |url                      |方式   |描述             |备注               |
 | ----------------------- |:-----:| -------------- | ----------------- |
@@ -10,9 +10,9 @@
 
 ---
 
-## 文件系统 API 详细说明
+# 文件系统 API 详细说明
 
-### /fs 上传一个文件
+## /fs 上传一个文件
 
 |Key|Value|
 |---|-----|
@@ -20,7 +20,7 @@
 |方式|POST|
 |描述|上传一个文件|
 
-#### Request内容:
+### Request内容:
 
 ```
 Request Headers:{
@@ -34,7 +34,7 @@ Request Body:{
 }
 ```
 
-#### Response内容:
+### Response内容:
 
 ```
 {
@@ -48,7 +48,7 @@ Request Body:{
 
 ---
 
-### /info/{token} 查询一个文件的信息
+## /info/{token} 查询一个文件的信息
 
 |Key|Value|
 |---|-----|
@@ -56,7 +56,7 @@ Request Body:{
 |方式|GET|
 |描述|查询一个文件的信息|
 
-#### Request内容:
+### Request内容:
 
 ```
 GET: http://10.10.73.207:8081/info/{token}
@@ -67,7 +67,7 @@ Request Body:{
 }
 ```
 
-#### Response内容:
+### Response内容:
 
 ```
 {
@@ -81,7 +81,7 @@ Request Body:{
 
 ---
 
-### /fs/{token} 获取下载文件地址
+## /fs/{token} 获取下载文件地址
 
 |Key|Value|
 |---|-----|
@@ -89,7 +89,7 @@ Request Body:{
 |方式|GET|
 |描述|获取下载文件地址|
 
-#### Request内容:
+### Request内容:
 
 ```
 GET: http://10.10.73.207:8081/fs/{token}
@@ -100,7 +100,7 @@ Request Body:{
 }
 ```
 
-#### Response内容:
+### Response内容:
 
 ```
 {
@@ -115,7 +115,7 @@ Request Body:{
 
 ---
 
-### /image/{token}?[options] 获取图片
+## /image/{token}?[options] 获取图片
 
 |Key|Value|
 |---|-----|
@@ -124,7 +124,7 @@ Request Body:{
 |描述|获取图片|
 |Code|302重定向|
 
-#### Request内容:
+### Request内容:
 
 ```
 GET: http://10.10.73.207:8081/image/{token}?[options] 可设置图片模式，宽度，高度
@@ -135,7 +135,7 @@ Request Body:{
 }
 ```
 
-#### Response内容:
+### Response内容:
 
 ```
 重定向至七牛图片下载链接
