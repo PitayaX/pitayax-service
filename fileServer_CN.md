@@ -8,6 +8,8 @@
 |/image/{token}?[options] |GET    |获取一张图片     |                   |
 |/fs/{token}              |DELETE |删除一个文件     |                   |
 
+---
+
 ## 文件系统 API 详细说明
 
 ### /fs 上传一个文件
@@ -32,7 +34,7 @@ Request Body:{
 }
 ```
 
-#### Request内容:
+#### Response内容:
 
 ```
 {
@@ -43,6 +45,8 @@ Request Body:{
   size: 文件的大小,Eg:"832568"
 }
 ```
+
+---
 
 ### /info/{token} 查询一个文件的信息
 
@@ -63,7 +67,7 @@ Request Body:{
 }
 ```
 
-#### Request内容:
+#### Response内容:
 
 ```
 {
@@ -74,6 +78,8 @@ Request Body:{
   size: 文件的大小,Eg:"832568"
 }
 ```
+
+---
 
 ### /fs/{token} 获取下载文件地址
 
@@ -94,7 +100,7 @@ Request Body:{
 }
 ```
 
-#### Request内容:
+#### Response内容:
 
 ```
 {
@@ -106,6 +112,8 @@ Request Body:{
   size: 文件的大小,Eg:"832568"
 }
 ```
+
+---
 
 ### /image/{token}?[options] 获取图片
 
@@ -127,8 +135,10 @@ Request Body:{
 }
 ```
 
-#### Request内容:
+#### Response内容:
 
 ```
 重定向至七牛图片下载链接
 ```
+
+---
