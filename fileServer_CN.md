@@ -12,6 +12,8 @@
 
 ### /fs 上传一个文件
 
+|Key|Value|
+|---|-----|
 |URL|/fs|
 |方式|POST|
 |描述|上传一个文件|
@@ -44,6 +46,8 @@ Request Body:{
 
 ### /info/{token} 查询一个文件的信息
 
+|Key|Value|
+|---|-----|
 |URL|/info/{token}|
 |方式|GET|
 |描述|查询一个文件的信息|
@@ -73,6 +77,8 @@ Request Body:{
 
 ### /fs/{token} 获取下载文件地址
 
+|Key|Value|
+|---|-----|
 |URL|/fs/{token}|
 |方式|GET|
 |描述|获取下载文件地址|
@@ -103,6 +109,8 @@ Request Body:{
 
 ### /image/{token}?[options] 获取图片
 
+|Key|Value|
+|---|-----|
 |URL|/image/{token}?[options]|
 |方式|GET|
 |描述|获取图片|
