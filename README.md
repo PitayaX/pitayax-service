@@ -18,8 +18,8 @@ English version: [FileServer.md](https://github.com/PitayaX/pitayax-service/blob
 
 ## Blog Rest v1.0
 
-Chinese version: [Rest.md](https://github.com/PitayaX/pitayax-service/blob/master/Rest.md)
+English version: [Rest.md](https://github.com/PitayaX/pitayax-service/blob/master/Rest.md)
 
 ## Send Mail v1.0
 
-Chinese version: [SendMail.md](https://github.com/PitayaX/pitayax-service/blob/master/SendMail.md)
+English version: [SendMail.md](https://github.com/PitayaX/pitayax-service/blob/master/SendMail.md)
