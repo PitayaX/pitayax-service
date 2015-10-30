@@ -1,0 +1,14 @@
+databases:
+    main:
+        type: mongodb
+        connectionString: 'cs1'
+    system:
+        type: mongodb
+        connectionString: 'cs2'
+servers:
+    -
+          config: restConfig.yaml
+          script: ./restApp.js
+#    -
+#          config: fileConfig.json
+#          script: ./fileApp

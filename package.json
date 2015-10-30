@@ -1,37 +1,29 @@
 {
   "name": "pitayax-service",
-  "description": "The rest/file service base on express, node and mongodb",
+  "description": "The rest/file service base on express, node and nosql",
   "version": "1.0.0",
-  "author": "Bruce Jiang <bruce2005@pitayax.net>",
+  "author": {
+    "name": "Bruce Jiang",
+    "email": "bruce2005@pitayax.net"
+  },
   "keywords": [
-    "restful",
     "express",
-    "mongodb",
+    "node",
     "entity",
-    "rest",
-    "node"
+    "rest"
   ],
   "license": "MIT",
   "dependencies": {
-    "babel-runtime": "^5.8.20",
-    "body-parser": "*",
-    "express": "4.*",
-    "mongoose": "4.*",
-    "q": "*",
-    "underscore": "1.6.*",
-    "nodemailer":"*",
-    "nodemailer-smtp-pool":"*",
-    "formidable": "1.0.17",
-    "qiniu": "6.1.8"
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "pitayax-service-core": "^1.1.0"
   },
   "devDependencies": {
     "babel": "^5.8.23",
-    "babel-eslint": "^4.1.0",
-    "eslint": "^1.2.1",
-    "eslint-plugin-react": "^3.3.0"
+    "babel-eslint": "^4.1.0"
   },
   "scripts": {
-    "start": "node ./src/startup/start",
+    "start": "node ./src/startup/start2.js",
     "test": "node ./test/start"
   },
   "bugs": {
@@ -43,13 +35,10 @@
     "url": "git://github.com/PitayaX/pitayax-service.git"
   },
   "homepage": "http://www.pitayax.net",
-  "author": {
-    "name": "Bruce Jiang",
-    "email": "bruce2005@pitayax.net"
-  },
   "contributors": [
     {
       "name": "Roger Luo",
       "email": "rabbit.roger1993@pitayaX.net"
-    }]
+    }
+  ]
 }

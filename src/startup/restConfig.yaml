@@ -1,0 +1,13 @@
+name: rest server
+databases:
+    blog:
+            type: mongodb
+            connectionString: 'csblog'
+settings:
+    #env: development
+    port: 8088
+    supportHttps: false
+    supportMiddleware: true
+    restFolder": false
+#middlewares:
+#    - "t1"
