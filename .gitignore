@@ -1,5 +1,10 @@
 .git
 .gitignore
 .idea
+*.log
+*.release.json
+*.release.yaml
+*.debug.json
+*.debug.yaml
 node_modules
 src/*debug*

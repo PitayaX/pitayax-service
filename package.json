@@ -16,14 +16,14 @@
   "dependencies": {
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
-    "pitayax-service-core": "^1.1.0"
+    "pitayax-service-core": "^1.1.2"
   },
   "devDependencies": {
     "babel": "^5.8.23",
     "babel-eslint": "^4.1.0"
   },
   "scripts": {
-    "start": "node ./src/startup/start2.js",
+    "start": "node ./src/startup/start.js",
     "test": "node ./test/start"
   },
   "bugs": {

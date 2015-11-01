@@ -1,4 +1,8 @@
 databases:
-    blog:
-        type: mongodb
-        connectionString: mongodb://usrpx:password@10.10.73.207:27077/pitayax-test
+  blog:
+    type: mongodb
+    connectionString: "mongodb://usrpx:password@10.10.73.207:27077/pitayax-test"
+logger:
+  level:
+    default: 4
+    rest server: 4
