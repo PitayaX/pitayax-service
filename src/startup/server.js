@@ -53,7 +53,9 @@ class Server
 
     //set database
     if (conf.has('databases')) {
-      that.setDatabases(app, conf.get('databases'))
+      process.nextTick( () => {
+        that.setDatabases(app, conf.get('databases'))
+      })
     }
 
     //set route
@@ -157,12 +159,16 @@ class Server
         that.instance
           = http.createServer(that.express)
               .listen(that.port, (err) => {
-                                      if (that.logger) {
-                                        that.logger.error(`server :${that.Name} start failed, details: ${err.message}`, that.Name)
+                                      if (err) {
+
+                                        if (that.logger) {
+
+                                          that.logger.error(`server :${that.Name} start failed, details: ${err.message}`, that.Name)
+                                        }
                                       }
                                     })
 
-        let message = `server: ${that.Name} started!`
+        let message = `server: ${that.Name} started.`
         if (that.logger) {
 
           that.logger.info(message, that.Name)
@@ -173,7 +179,7 @@ class Server
 
         if (that.logger) {
 
-          that.logger.error(`server :${that.Name} start failed, details: ${err.message}`, that.Name)
+          that.logger.error(`server :${that.Name} start failed, details: ${ (err) ? err.message : 'unknown' }`, that.Name)
         }
       }
     }
@@ -201,7 +207,7 @@ class Server
       that.instance = undefined
     }
 
-    let message = `server: ${that.Name} stoped!`
+    let message = `server: ${that.Name} stopped.`
     if (that.logger) {
 
       that.logger.info(message, that.Name)
