@@ -1,25 +1,28 @@
 'use strict'
 
-let fs = require('fs')
-let path = require('path')
+const fs = require('fs')
+const path = require('path')
 
-let ConfigMap = require('pitayax-service-core').ConfigMap
-let Logger = require('pitayax-service-core').Logger
-let Express = require('express')
-let Server = require('./server.js')
+const ConfigMap = require('pitayax-service-core').ConfigMap
+const Logger = require('pitayax-service-core').Logger
+const Express = require('express')
+const Server = require('./server.js')
 
-let parseConf
+const AppName = 'global'
+
+//define function to parse configuration by file name
+const parseConf
   = (file) => {
-    //check configuration file exists or not
-    if (!fs.existsSync(file))
-      file = path.join(__dirname, file)
-
+    //can't find file in current folder, append current dir to check it again
+    if (!fs.existsSync(file)) file = path.join(__dirname, file)
     if (!fs.existsSync(file)) throw new Error(`can't find configuration file: ${file}`)
 
-    let info = path.parse(file);
+    //parse file
+    const info = path.parse(file);
     if (!info) info = {"dir": __dirname, "name": "file", "ext": ""}   //set default file info
 
-    let parse = (ext, obj) => {
+    //parse by different extend name
+    const parse = (ext, obj) => {
       switch(ext) {
         case '.json':
           return ConfigMap.parseJSON(obj)
@@ -30,45 +33,58 @@ let parseConf
       }
     }
 
-    let conf = parse(info.ext, fs.readFileSync(file, 'utf-8'))
+    //get configuration by file
+    const conf = parse(info.ext, fs.readFileSync(file, 'utf-8'))
 
+    //merge debug or release file
     let target = 'debug'
 
     file = path.join(info.dir, `${info.name}.${target}${info.ext}`)
     if (fs.existsSync(file)) {
-      let targetConf = parse(info.ext, fs.readFileSync(file, 'utf-8'))
+
+      const targetConf = parse(info.ext, fs.readFileSync(file, 'utf-8'))
       conf.merge(targetConf)
     }
 
     return conf
   }
 
-let getExpress = (servers, port) => {
+//define function to get applicaton of express
+const getExpress = (servers, port) => {
 
+  //delcare application
   let app = undefined
   for (let server of servers.entries()) {
     if (server.port === port) app = server.Express
   }
 
+  //can't get application form exists server, create new instance
   if (app === undefined) app = new Express()
+
+  //bind parse function
   app.parseConf = parseConf
 
   return app
 }
 
-let getLogger = (conf) => {
+//define function to get logger
+const getLogger = (conf) => {
 
-  let logFile = conf.get('file') || 'output.log'
+  //get log file name
+  const logFile = conf.get('file') || 'output.log'
 
-  let outputter = Logger.createFileOutputter(logFile)
-  let logger = new Logger(outputter)
+  //create file outputter for log
+  const outputter = Logger.createFileOutputter(logFile)
+
+  //create new instance of logger by outputter
+  const logger = new Logger(outputter)
 
   if (conf.has('lineFormat')) {
     logger.lineFormat = conf.get('lineFormat')
   }
 
   if (conf.has('level')) {
-    let levels = conf.get('level')
+    const levels = conf.get('level')
 
     for (let name of levels.keys()) {
       if (name === 'default') logger.Level = levels.get(name)
@@ -80,18 +96,18 @@ let getLogger = (conf) => {
 }
 
 //create servers
-let servers = new Map();
+const servers = new Map();
 let logger = undefined;
 
-let start = () => {
+const start = () => {
 
   //parse global configuration file
-  let globalConf = parseConf('servers.yaml')
+  const globalConf = parseConf('servers.yaml')
 
   logger = getLogger(globalConf.get('logger'))
 
   //get servers configuration from global
-  let serverItems = globalConf.get('servers')
+  const serverItems = globalConf.get('servers')
 
   if (serverItems !== undefined) {
 
@@ -103,16 +119,16 @@ let start = () => {
         try{
 
           //clone configuration from global
-          let conf = globalConf.clone()
+          const conf = globalConf.clone()
 
           //parse configuration file for current server
           conf.merge(parseConf(serverItem.get('config')))
 
           //get type of server
-          let Server = require(serverItem.get('script'))
+          const Server = require(serverItem.get('script'))
 
           //create new instance of server
-          let server = new Server(conf)
+          const server = new Server(conf)
 
           //set express application server
           server.setExpress(getExpress(servers, server.port))
@@ -127,7 +143,7 @@ let start = () => {
 
           //log error
           if (logger) {
-            logger.error(`Unknown issue occurs when starting servers, details: ${ (err) ? err.message : 'unknown' }` , 'global')
+            logger.error(`Unknown issue occurs when starting servers, details: ${ (err) ? err.message : 'unknown' }` , AppName)
           }
         }
       })
@@ -157,7 +173,7 @@ let stop = () => {
 process.on('uncaughtException', (err) => {
   if (logger) {
     //catch error
-    logger.error(`Uncaught error occurs, details: ${ (err) ? err.message: 'unknown' }`, 'global')
+    logger.error(`Uncaught error occurs, details: ${ (err) ? err.message: 'unknown' }`, AppName)
   }
 });
 
@@ -173,7 +189,7 @@ process.on('beforeExit', () => {
 process.on('exit', (code) => {
   if (logger) {
     //catch event
-    logger.info(`catch event exit with code (${code}).`, 'global')
+    logger.info(`catch event exit with code (${code}).`, AppName)
   }
 })
 

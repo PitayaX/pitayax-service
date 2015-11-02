@@ -11,6 +11,7 @@ api:
   adapter: './api/adapter.js'
   methods:
     get:
+      '/test': test
       '/list': list
       '/:id': retrieve
       '/': disabled

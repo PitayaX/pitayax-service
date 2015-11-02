@@ -2,20 +2,57 @@
 /**
  * Created by Bruce on 11/01/2015.
  */
-let Server = require('./server.js')
+const fs = require('fs')
+const path = require('path')
+const Server = require('./server.js')
 
 class RestServer extends Server
 {
   constructor(conf)
   {
     super(conf)
+
     this.name = conf.name
+  }
+
+  setDatabases(app, conf)
+  {
+    super.setDatabases(app, conf)
+
+    const that = this
+    const connections = that.connections
+
+    const schemas = conf.get('$schemas')
+
+    const appendSchema = (file) => {
+
+      try {
+        const buffer = fs.readFileSync(path.join(__dirname, file))
+        const json = JSON.parse(buffer)
+
+        connections.appendSchema(json)
+      }
+      catch(err) {
+
+        if (app.logger) {
+
+          app.logger.error(`parse schema file (${file}) failed, details: ${err.message}`, that.Name)
+        }
+      }
+    }
+
+    if (schemas !== undefined) {
+      if (Array.isArray(schemas)) {
+        schemas.forEach( file => appendSchema(file))
+      }
+      else appendSchema(schemas)
+    }
   }
 
   setRoute(app)
   {
     //initialize variants
-    let that = this
+    const that = this
 
     //ignore request for favicon.ico
     app.use('/favicon.ico', (req, res, next) => { return })
@@ -36,12 +73,17 @@ class RestServer extends Server
       })
     }
 
-    let restConf = that.conf.get('rest')
+
+    //declare rest restRouter
     let restRouter = undefined
+
+    //get config node from global configuration
+    const restConf = that.conf.get('rest')
 
     if (restConf && restConf.has('script')) {
       try{
-        let Router = require(restConf.get('script'))
+        //get router class by file
+        const Router = require(restConf.get('script'))
 
         restRouter = new Router(app)
       }
@@ -54,7 +96,7 @@ class RestServer extends Server
 
     if (restRouter !== undefined) {
 
-      let path = restConf.has('folder') ? restConf.get('folder') : '/'
+      const path = restConf.has('folder') ? restConf.get('folder') : '/'
 
       //handle JSON body parser
       app.use(require('body-parser').json())

@@ -3,6 +3,9 @@ databases:
   blog:
     type: mongodb
     connectionString: 'csblog'
+  $schemas:
+    - '../rest/data/schemas/blog.json'
+    - '../rest/data/schemas/northwind.json'
 settings:
   #env: development
   port: 8088
