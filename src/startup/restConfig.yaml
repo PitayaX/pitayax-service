@@ -13,6 +13,9 @@ locals:
   k1: 'v1'
   k2: 'v2'
 middlewares:
+rest:
+  #folder: 'rest'
+  script: '../rest/routes/router.js'
 logger:
   file: 'rest server.log'
   level:

@@ -4,6 +4,7 @@ let fs = require('fs')
 let path = require('path')
 
 let ConfigMap = require('pitayax-service-core').ConfigMap
+let Logger = require('pitayax-service-core').Logger
 let Express = require('express')
 let Server = require('./server.js')
 
@@ -43,43 +44,139 @@ let parseConf
   }
 
 let getExpress = (servers, port) => {
+
+  let app = undefined
   for (let server of servers.entries()) {
-    if (server.port === port) return server.Express
+    if (server.port === port) app = server.Express
   }
 
-  return new Express()
+  if (app === undefined) app = new Express()
+  app.parseConf = parseConf
+
+  return app
 }
 
-//parse global configuration file
-let globalConf = parseConf('servers.yaml')
+let getLogger = (conf) => {
+
+  let logFile = conf.get('file') || 'output.log'
+
+  let outputter = Logger.createFileOutputter(logFile)
+  let logger = new Logger(outputter)
+
+  if (conf.has('lineFormat')) {
+    logger.lineFormat = conf.get('lineFormat')
+  }
+
+  if (conf.has('level')) {
+    let levels = conf.get('level')
+
+    for (let name of levels.keys()) {
+      if (name === 'default') logger.Level = levels.get(name)
+      else logger.setLogLevel(levels.get(name))
+    }
+  }
+
+  return logger
+}
 
 //create servers
 let servers = new Map();
-let serverItems = globalConf.get('servers');
+let logger = undefined;
 
-if (serverItems !== undefined) {
-  serverItems
-    .filter( serverItem => serverItem.get('config').indexOf('#') !== 0 )
-    .forEach( serverItem => {
+let start = () => {
 
-      //get type of server
-      let Server = require(serverItem.get('script'))
+  //parse global configuration file
+  let globalConf = parseConf('servers.yaml')
 
-      //clone configuration from global
-      let conf = globalConf.clone()
+  logger = getLogger(globalConf.get('logger'))
 
-      //parse configuration file for current server
-      conf.merge(parseConf(serverItem.get('config')))
+  //get servers configuration from global
+  let serverItems = globalConf.get('servers')
 
-      //create new instance of server
-      let server = new Server(conf)
+  if (serverItems !== undefined) {
 
-      //set express application server
-      server.setExpress(getExpress(servers, server.port))
-      servers.set(server.name, server)
+    //fetch every item in servers configuration
+    serverItems
+      .filter( serverItem => serverItem.get('config').indexOf('#') !== 0 )  //ignore comment server
+      .forEach( serverItem => {
 
-      //start server
-      server.start()
-      server.stop()
-    })
+        try{
+
+          //clone configuration from global
+          let conf = globalConf.clone()
+
+          //parse configuration file for current server
+          conf.merge(parseConf(serverItem.get('config')))
+
+          //get type of server
+          let Server = require(serverItem.get('script'))
+
+          //create new instance of server
+          let server = new Server(conf)
+
+          //set express application server
+          server.setExpress(getExpress(servers, server.port))
+
+          //start server
+          server.start()
+
+          //append server to Map if it was started
+          servers.set(server.name, server)
+        }
+        catch(err) {
+
+          //log error
+          if (logger) {
+            logger.error(`Unknown issue occurs when starting servers, details: ${ (err) ? err.message : 'unknown' }` , 'global')
+          }
+        }
+      })
+  }
 }
+
+let stop = () => {
+
+  //if exists servers Map
+  if (servers) {
+
+    //get every server from Map
+    for(let server of servers.values()) {
+
+        //stop servers
+        server.stop()
+    }
+
+    servers.clear()
+
+    if (logger) {
+      logger.info('all servers were stopped.', 'global')
+    }
+  }
+}
+
+process.on('uncaughtException', (err) => {
+  if (logger) {
+    //catch error
+    logger.error(`Uncaught error occurs, details: ${ (err) ? err.message: 'unknown' }`, 'global')
+  }
+});
+
+process.on('beforeExit', () => {
+  if (logger) {
+    //catch event
+    logger.info('catch event before exit', 'global')
+
+    stop()
+  }
+})
+
+process.on('exit', (code) => {
+  if (logger) {
+    //catch event
+    logger.info(`catch event exit with code (${code}).`, 'global')
+  }
+})
+
+start()
+
+//setTimeout( () => stop(), 2000)
