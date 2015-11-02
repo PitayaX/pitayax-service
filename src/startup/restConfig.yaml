@@ -1,0 +1,20 @@
+name: rest server
+databases:
+  blog:
+    type: mongodb
+    connectionString: 'csblog'
+settings:
+  #env: development
+  port: 8088
+  supportHttps: false
+  supportMiddleware: true
+  restFolder": false
+locals:
+  k1: 'v1'
+  k2: 'v2'
+middlewares:
+logger:
+  file: 'rest server.log'
+  level:
+    rest server: 3
+    engine: 4

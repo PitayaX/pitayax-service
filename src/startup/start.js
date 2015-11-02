@@ -1,149 +1,85 @@
-/**
- * Created by Bruce on 3/26/2015.
- * Edit by Bruce on 5/7/2015
- * Edit by Bruce on 8/26/2015
- */
-var fs = require('fs');
-var path = require('path');
+'use strict'
 
-var readConfig = function(codebase, configFile) {
-    // check for arguments
-    if (codebase === undefined) codebase = __dirname;
-    if (configFile === undefined) configFile = 'config.json';
+let fs = require('fs')
+let path = require('path')
 
-    //read settings from configuration file
-    return JSON.parse(
-        fs.readFileSync(path.join(codebase, configFile),
-            { encoding: 'utf-8' })
-    );
-};
+let ConfigMap = require('pitayax-service-core').ConfigMap
+let Express = require('express')
+let Server = require('./server.js')
 
-// get configuration in config.json
-var config = readConfig();
+let parseConf
+  = (file) => {
+    //check configuration file exists or not
+    if (!fs.existsSync(file))
+      file = path.join(__dirname, file)
 
-//initialize global
-initApp(global, config);
+    if (!fs.existsSync(file)) throw new Error(`can't find configuration file: ${file}`)
 
-var servers = config['servers'] || []
+    let info = path.parse(file);
+    if (!info) info = {"dir": __dirname, "name": "file", "ext": ""}   //set default file info
 
-var serverList = {};
-
-//for each every server defined in configuration file
-servers.forEach(function(server){
-    createServer(server['config'] || '', server['script']);
-});
-
-//start every server that was created,
-//if the many server use same port, we will see these are as one server share the port.
-Object.keys(serverList)
-    .forEach(function(port){
-        startServer(serverList[port]);
-    });
-
-function initApp(app, config) {
-
-    if (app == undefined) return;
-    if (!app.config) app.config = config;
-
-    //set application name
-    app.appName = (config.name) ? config.name : 'unknown';
-
-    //set read configuration file function
-    app.readConfig = readConfig;
-
-    //put settings from configuration file to application
-    if ((typeof(app.set) === 'function')){
-        Object.keys(config.settings || {})
-            .forEach(function(k){
-                //ignore comment key
-                if (k[0] == '#') return;
-                app.set(k, config.settings[k] || '');
-            });
+    let parse = (ext, obj) => {
+      switch(ext) {
+        case '.json':
+          return ConfigMap.parseJSON(obj)
+        case '.yaml':
+          return ConfigMap.parseYAML(obj)
+        default:
+          return new ConfigMap()
+      }
     }
 
-    //put variants in local from configuration file to application
-    if (app.locals) {
-        Object.keys(config.locals || {})
-            .forEach(function(k){
-                //ignore comment key
-                if (k[0] == '#') return;
-                app.locals[k] = config.locals[k] || '';
-            });
+    let conf = parse(info.ext, fs.readFileSync(file, 'utf-8'))
+
+    let target = 'debug'
+
+    file = path.join(info.dir, `${info.name}.${target}${info.ext}`)
+    if (fs.existsSync(file)) {
+      let targetConf = parse(info.ext, fs.readFileSync(file, 'utf-8'))
+      conf.merge(targetConf)
     }
 
-    //merge global and application databases
-    var merge = function(dic1, dic2){
-        Object.keys(dic2)
-            .forEach(function(key){
-                dic1[key] = dic2[key];
-            })
-        return dic1;
-    }
+    return conf
+  }
 
-    var databases= {}; app.databases ={};
-    if (global && global['databases']) merge(databases, global['databases']);
-    if (config['databases']) merge(databases, config['databases']);
+let getExpress = (servers, port) => {
+  for (let server of servers.entries()) {
+    if (server.port === port) return server.Express
+  }
 
-    Object.keys(databases)
-        .filter(function(name){
-            return !(name.indexOf('#') == 0);
-        })
-        .forEach(function(name){
-            app.databases[name] = databases[name] || '';
-        });
+  return new Express()
+}
 
-    //create logger if need
-    app.logger = function(app){
-            if (typeof(app.logger) == 'Object') return app.logger;
-            else{
-                //define output stream for logger
-                var output = (!config.output || config.output === 'stdout')
-                    ? process.stdout
-                    : fs.createWriteStream(path.join(process.cwd(), config.output), { flags: 'a+' });
+//parse global configuration file
+let globalConf = parseConf('servers.yaml')
 
-                //define error stream for logger
-                var error = (!config.error || config.error === 'stderr')
-                    ? process.stderr
-                    : fs.createWriteStream(path.join(process.cwd(), config.error), { flags: 'a+' });
+//create servers
+let servers = new Map();
+let serverItems = globalConf.get('servers');
 
-                //create new instance of logger
-                return new console.Console(output, error);
-            }
-        }(app);
+if (serverItems !== undefined) {
+  serverItems
+    .filter( serverItem => serverItem.get('config').indexOf('#') !== 0 )
+    .forEach( serverItem => {
 
-    app.record = function (message) {
+      //get type of server
+      let Server = require(serverItem.get('script'))
 
-        if (app.settings
-            && app.settings['recordSteps']) {
-            app.logger.log(message);
-        }
-    };
+      //clone configuration from global
+      let conf = globalConf.clone()
 
-    //return instance of application
-    return app;
-};
+      //parse configuration file for current server
+      conf.merge(parseConf(serverItem.get('config')))
 
-function createServer(configFile, appFile){
+      //create new instance of server
+      let server = new Server(conf)
 
-    var serverConfig = JSON.parse(fs.readFileSync(path.join(__dirname, configFile), { encoding: 'utf-8' })) || {};
-    if (!serverConfig.settings) serverConfig.settings = {};
+      //set express application server
+      server.setExpress(getExpress(servers, server.port))
+      servers.set(server.name, server)
 
-    var port = serverConfig.settings.port || process.env.port;
-    var serverApp = serverList[port] ? serverList[port] : null;
-
-    var newApp = require(appFile)(initApp((serverApp)?serverApp:require('express')(), serverConfig), serverConfig);
-
-    if (!serverList[port])serverList[port] = newApp;
-
-    return newApp;
-};
-
-function startServer(app) {
-
-    var server = app.listen(
-        app.get('port') || process.env.port,
-        function () {
-            app.logger.log('Express server (' + app.appName + ') listening on port ' + server.address().port);
-        }
-    );
-};
+      //start server
+      server.start()
+      server.stop()
+    })
+}

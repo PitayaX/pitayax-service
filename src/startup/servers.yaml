@@ -1,0 +1,20 @@
+databases:
+  main:
+    type: mongodb
+    connectionString: '#'
+  system:
+    type: mongodb
+    connectionString: '#'
+servers:
+  -
+    config: restConfig.yaml
+    script: ./restServer.js
+#    -
+#          config: fileConfig.json
+#          script: ./fileApp
+logger:
+  file: 'server.log'
+  lineFormat: "[$level] $now: $message ($app)"
+  level:
+    default: 4
+    engine: 2
