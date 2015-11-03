@@ -1,8 +1,9 @@
 'use strict'
 
-let path = require('path')
-let Express = require('express')
-let ConfigMap = require('pitayax-service-core').ConfigMap
+const path = require('path')
+const Express = require('express')
+const ConfigMap = require('pitayax-service-core').ConfigMap
+const AppName = 'rest'
 
 class Router
 {
@@ -45,20 +46,16 @@ class Router
         }
 
         //get class for router and adapter
-        let Router = require(routerFile)
-        let Adapter = require(adapterFile)
-
-        if (!Router || typeof Router !== 'function') throw new Error(`Can't create router by file ${routerFile}`)
-        if (!Adapter || typeof Adapter !== 'function') throw new Error(`Can't create adapter by file ${adapterFile}`)
+        const Router = require(routerFile)
+        const Adapter = (adapterFile !== undefined) ? require(adapterFile) : undefined
 
         //create new instance of router and adapter
-        let router = new Router(app)
-        let adapter = new Adapter(app)
+        if (!Router || typeof Router !== 'function') throw new Error(`Can't create router by file ${routerFile}`)
+        const router = new Router(app)
+        const adapter = (Adapter && typeof Adapter === 'function') ? new Adapter(app) : {}
 
         //initialize varinats of adapter
-        adapter.app = app
-        adapter.name = key
-        adapter.target = that
+        adapter.key = key
 
         //create sub router by configuration
         rootRouter.use(path, router.createRouter(methodsConf, adapter, that.callback))
@@ -66,7 +63,7 @@ class Router
       catch(err) {
 
         if (app.logger) {
-          app.logger.error(`failed to create route for ${key}, details: ${(err) ? err.message : 'unknown'}`, 'rest')
+          app.logger.error(`failed to create route for ${key}, details: ${(err) ? err.message : 'unknown'}`, AppName)
         }
 
         continue
@@ -76,10 +73,13 @@ class Router
     return rootRouter
   }
 
-  callback(req, res, err, result)
+  callback(req, res, err, result, app)
   {
-    let that = (req.target) ? req.target : this
-    let origin = (that.restConf) ? (that.restConf.get('crossDomain') || '*') : '*'
+    const that = app
+    const conf = (app.conf) ? app.conf : new Map()
+    const restConf = (conf.has('rest')) ? conf.get('rest') : new Map()
+
+    let origin = (restConf.has('crossDomain')) ? (that.restConf.get('crossDomain') || '*') : '*'
 
     //set headers to response for rest settings
     res.setHeader("Access-Control-Allow-Origin", origin)   //allow cross domain to access REST services
@@ -96,7 +96,7 @@ class Router
     let toJSON = (data) => {
 
       //format response JSON
-      let pretty = that.restConf.get('pretty') || false
+      let pretty = restConf.has('pretty') ? restConf.get('pretty') : false
       if (pretty) {
         res.write(JSON.stringify(data, null, 2))
         res.end();
@@ -109,15 +109,13 @@ class Router
 
         //append error to logger
         if (that.logger) {
-          that.logger.error(`Execute restful API failed, details: ${err.message}`, 'rest');
+          that.logger.error(`Execute restful API failed, details: ${err.message}`, AppName)
         }
 
-        switch(err.code) {
-          default:
-            break
-        }
+        //res.statusCode = (err.statusCode) ? err.statesCode : 500
 
-        toJSON({ "error": { "code": err.code, "message": err.message } });
+        const code = (err.code) ? err.code : -1
+        toJSON({ "error": { "code": code, "message": err.message } })
     } else {
         //output JSON for result
         toJSON(result);

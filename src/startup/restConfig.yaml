@@ -4,8 +4,8 @@ databases:
     type: mongodb
     connectionString: 'csblog'
   $schemas:
-    - '../rest/data/schemas/blog.json'
-    - '../rest/data/schemas/northwind.json'
+    - '../rest/schemas/blog.json'
+    - '../rest/schemas/northwind.json'
 settings:
   #env: development
   port: 8088
@@ -16,9 +16,11 @@ locals:
   k1: 'v1'
   k2: 'v2'
 middlewares:
+  - '../rest/middlewares/authentication.js'
 rest:
   #folder: 'rest'
   script: '../rest/routes/router.js'
+  pretty: true
 logger:
   file: 'rest server.log'
   level:

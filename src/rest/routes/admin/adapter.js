@@ -13,6 +13,16 @@ class AdminAdapter
   {
     return aq.Q('test')
   }
+
+  list(req, res)
+  {
+    return aq.Q('undefined')
+  }
+
+  sendmail(req, res)
+  {
+    return aq.Q('undefined')
+  }
 }
 
 module.exports = AdminAdapter

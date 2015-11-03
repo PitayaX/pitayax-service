@@ -8,10 +8,11 @@ admin:
 api:
   path: '/api'
   router: './api/router.js'
-  adapter: './api/adapter.js'
+  #adapter: './api/adapter.js'
   methods:
     get:
       '/test': test
+      '/model': model
       '/list': list
       '/:id': retrieve
       '/': disabled

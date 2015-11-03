@@ -69,7 +69,7 @@ class RestServer extends Server
 
       //append every middleware
       middlewaresConf.forEach( middleware => {
-        //require(middleware)(app)
+        require(middleware)(app)
       })
     }
 

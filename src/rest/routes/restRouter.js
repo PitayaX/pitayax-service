@@ -4,60 +4,72 @@ let Express = require('express')
 
 class RestRouter
 {
-  constructor()
+  constructor(app)
   {
+    this.app = app
+  }
+
+  newRouter()
+  {
+    return require('express').Router()
   }
 
   createRouter(conf, adapter, callback)
   {
-    let that = this
-    let restRouter = require('express').Router()
+    const that = this
+    const restRouter = that.newRouter()
+    const app = (that.app) ? that.app : ((adapter.app) ? adapter.app : {})
+    const logger = app.logger
 
     for(let httpMethod of conf.keys()) {
 
       //get
-      let pathMap = conf.get(httpMethod)
+      const pathMap = conf.get(httpMethod)
 
       for(let path of pathMap.keys()) {
 
-        let methodByPath = function(req, res) {
+        const methodByPath = function(req, res) {
 
           try {
-            //set target
-            if (req.target === undefined) req.target = adapter.target
-
             //get method name from adapter by path
-            let adpaterMethod = pathMap.get(path)
+            const adpaterMethod = pathMap.get(path)
             if (adpaterMethod === undefined) {
               throw new Error(`Can't find method by path: ${path} from configruation file.`)
             }
 
             //get instance of method from adpater
-            let method = adapter[adpaterMethod]
+            const method = adapter[adpaterMethod]
             if (method === undefined) {
               throw new Error(`invaild method: ${adpaterMethod} in adapter`)
             }
 
-            let app = (adapter.app) ? adapter.app : {}
-            if (app.logger) app.logger.verbose(`ready for execute ${adpaterMethod}.`, `${adapter.name} rest`)
+            if (logger) {
+              logger.verbose(`ready for execute ${adpaterMethod}.`, `${adapter.name} rest`)
+            }
+
+            const bindMethod = method.bind(adapter, req, res)
 
             //invoke metho
-            method(req, res)
-                .then( data => {
-                  callback(req, res, null, data)
+            bindMethod(req, res)
+              .then( data => {
+                callback(req, res, null, data, app)
 
-                  if (app.logger) app.logger.verbose(`execute ${adpaterMethod} finished.`, `${adapter.name} rest`)
-                })
-                .catch( err => callback(req, res, err, null) )
+                if (logger) {
+                  logger.verbose(`execute ${adpaterMethod} finished.`, `${adapter.name} rest`)
+                }
+              })
+              .catch( err => callback(req, res, err, null, app) )
           }
           catch(err) {
-            callback(req, res, err, null)
+            callback(req, res, err, null, app)
           }
         }
 
         restRouter[httpMethod](path, methodByPath)
       }
     }
+
+    //restRouter.all('*', (req, res) => that.callback(req, res, new Error('Invaild path'), null))
 
     return restRouter
   }
