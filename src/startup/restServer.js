@@ -112,7 +112,7 @@ class RestServer extends Server
       //handle JSON body parser
       app.use(require('body-parser').json())
 
-      if (app.logger) app.logger.info(`get path of rest: "${path}" for router.`)
+      //handle rest router base on configuration
       app.use(path, require('body-parser').json(), restRouter.createRoute(app))
     }
 

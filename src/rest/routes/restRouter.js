@@ -50,7 +50,7 @@ class RestRouter
             const bindMethod = method.bind(adapter, req, res)
 
             //invoke metho
-            bindMethod(req, res)
+            bindMethod()
               .then( data => {
                 callback(req, res, null, data, app)
 
