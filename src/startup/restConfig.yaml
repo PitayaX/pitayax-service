@@ -16,7 +16,8 @@ locals:
   k1: 'v1'
   k2: 'v2'
 middlewares:
-  - '../rest/middlewares/authentication.js'
+  - '../rest/middlewares/authentication.js':
+      url: "#"
 rest:
   #folder: 'rest'
   script: '../rest/routes/router.js'

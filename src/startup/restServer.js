@@ -69,7 +69,18 @@ class RestServer extends Server
 
       //append every middleware
       middlewaresConf.forEach( middleware => {
-        require(middleware)(app)
+        if (typeof middleware === 'string') {
+          require(middleware)(app)
+        }
+        else if (typeof middleware === 'object') {
+
+          for( let key of middleware.keys()) {
+            require(key)(app, middleware.get(key))
+          }
+        }
+        else {
+
+        }
       })
     }
 

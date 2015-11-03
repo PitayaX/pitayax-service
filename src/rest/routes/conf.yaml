@@ -5,6 +5,9 @@ admin:
   methods:
     get:
       '/test': test
+      '/list': list
+    post:
+      '/sendmail': sendmail
 api:
   path: '/api'
   router: './api/router.js'
