@@ -1,6 +1,5 @@
 admin:
   path: '/admin'
-  router: './restRouter.js'
   adapter: './admin/adapter.js'
   methods:
     get:
@@ -11,7 +10,6 @@ admin:
 api:
   path: '/api'
   router: './api/router.js'
-  #adapter: './api/adapter.js'
   methods:
     get:
       '/test': test
@@ -36,3 +34,12 @@ api:
       '/*': disabled
     options:
       anonymous: true
+script:
+  path: '/script'
+  adapter: './script/adapter.js'
+  methods:
+    get:
+      '/test': test
+    post:
+      '/*': call
+      #'/': call

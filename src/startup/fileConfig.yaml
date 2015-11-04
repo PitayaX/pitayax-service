@@ -5,4 +5,4 @@ settings:
 logger:
   file: 'file server.log'
   level:
-    rest server: 3
+    default: 1

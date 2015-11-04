@@ -11,6 +11,7 @@ class AdminAdapter
   constructor(app)
   {
     this.app = app
+    this.conf = app.parseConf(path.join(__dirname, 'conf.yaml')).toObject()
   }
 
   test(req, res)
@@ -33,13 +34,17 @@ class AdminAdapter
 
   sendmail(req, res)
   {
-    const conf = this.app
-                    .parseConf(path.join(__dirname, 'mailConfig.yaml'))
-                    .toObject()
+    //get application
+    const app = this.app
 
-    const transporter = nodemailer.createTransport(smtpPool(conf["SMTP"]))
+    //parse configruation file
+    const conf = (this.conf.mail) ? this.conf.mail : {}
+
+    //create transporter with SMTP server
+    const transporter = nodemailer.createTransport(smtpPool(conf["smtp"]))
 
     try {
+      //create options for send content
       let options = (req.body) ? req.body : {}
       if (typeof options === 'string') options = JSON.parse(options)
 
@@ -49,13 +54,16 @@ class AdminAdapter
       //send mail with options
       transporter.sendMail(options)
 
+      if (app.logger) {
+        app.logger.verbose(`sent mail, options: ${JSON.stringify(options)}`, 'admin')
+      }
+
+      //return result
       return aq.Q('OK')
     }
-    catch(err) {
-      return aq.Q(null, err)
-    }
     finally {
-      console.log('closed')
+
+      //close transporter
       transporter.close();
     }
   }

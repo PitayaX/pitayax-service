@@ -61,6 +61,8 @@ class RestRouter
               .catch( err => callback(req, res, err, null, app) )
           }
           catch(err) {
+
+            if (err && !err.statusCode) err.statusCode = 500
             callback(req, res, err, null, app)
           }
         }

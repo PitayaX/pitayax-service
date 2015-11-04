@@ -93,6 +93,10 @@ class Router
         res.setHeader("ETag", req.token);
     }
 
+    if (err) {
+      if (err.statusCode) res.statusCode = err.statusCode
+    }
+
     let toJSON = (data) => {
 
       //format response JSON
