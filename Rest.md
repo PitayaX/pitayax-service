@@ -73,11 +73,11 @@ headers:{
   access-token: "xxxxxx"
 }
 body:{
-  "$query":{"City":"London"},
-  "$fields":{"City":1, "Fax":1, "CompanyName":1},
-  "$page":1,
-  "$pageSize":3,
-  "$sort":{"CompanyName":1}
+  "query": {"City":"London"},
+  "fields": ["_id", "City", "Fax", "CompanyName"],
+  "page": 1,
+  "pageSize": 3,
+  "sort": {"CompanyName":1}
 }
 
 response:
@@ -261,75 +261,37 @@ response:
 
 ```javascript
 request:
-post:/api/customer/script/report
+post: /script/post/keys
 headers:{
   content-type: "application/json"
   access-token: "xxxxxx"
 }
-body:{
-  "city": ["Aachen", "Nantes"]
-}
+body:{}
 
 response:
 [
-    {
-        "_id": "55d4410288dba04c68296724",
-        "City": "Aachen",
-        "Fax": "0241-059428",
-        "PostalCode": "52066",
-        "ContactTitle": "Order Administrator",
-        "Phone": "0241-039123",
-        "ContactName": "Sven Ottlieb",
-        "CustomerID": "DRACD",
-        "Country": "Germany",
-        "CompanyName": "Drachenblut Delikatessen",
-        "Region": null,
-        "Address": "Walserweg 21"
-    },
-    {
-        "_id": "55d4410288dba04c68296725",
-        "City": "Nantes",
-        "Fax": "40.67.89.89",
-        "PostalCode": "44000",
-        "ContactTitle": "Owner",
-        "Phone": "40.67.88.88",
-        "ContactName": "Janine Labrune",
-        "CustomerID": "DUMON",
-        "Country": "France",
-        "CompanyName": "Du monde entier",
-        "Region": null,
-        "Address": "67, rue des Cinquante Otages"
-    },
-    {
-        "_id": "55d4410288dba04c6829672d",
-        "City": "Nantes",
-        "Fax": "40.32.21.20",
-        "PostalCode": "44000",
-        "ContactTitle": "Marketing Manager",
-        "Phone": "40.32.21.21",
-        "ContactName": "Carine Schmitt",
-        "CustomerID": "FRANR",
-        "Country": "France",
-        "CompanyName": "France restauration",
-        "Region": null,
-        "Address": "54, rue Royale"
-    }
+  "key1",
+  "key2",
+  "key3"
 ]
 
-report.js saved in scripts/perdefine/customer folder
+keys.js saved in rest/script/files/post/ folder
 {
-    "type":"report",
-    "version":"1.0.0",
-    "arguments":{
-      "$$city":{
-        "default":["London","Tsawassen"], "type":"string"
-      }
-    },
-    "script":{
-       "$query":{"City": {"$in": "$$city"}},
-       "$page":1,
-       "$pageSize":3,
-       "$sort": {"Fax":1}
-    }
-};
+  "version": "2.0.0",
+  "parts": {
+    "headers": {"options":{"fields": ["tags"]}}
+  },
+  "after": (ctx, data) => {
+    let keys = []
+
+    data.map( row => row.tags)
+      .forEach( arr => {
+        arr.forEach( key => {
+          if (keys.indexOf(key) === -1) keys.push(key)
+        })
+      })
+
+    return keys
+  }
+}
 ```

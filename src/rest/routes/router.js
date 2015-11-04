@@ -1,91 +1,129 @@
-/**
- * Created by Bruce on 1/22/2015.
- */
-var path = require('path');
+'use strict'
 
-module.exports = function (app) {
+const path = require('path')
+const Express = require('express')
+const ConfigMap = require('pitayax-service-core').ConfigMap
+const AppName = 'rest'
 
-    //create new instance of router
-    var router = require('express').Router();
+class Router
+{
+  constructor(app)
+  {
+    this.app = app
+    this.conf = (app.conf) ? app.conf : new Map()
+    this.restConf = this.conf.has('rest') ? this.conf.get('rest') : new Map()
+    this.logger = (app.logger) ? app.logger : undefined
+  }
 
-    //read settings from configuration file
-    var config = app.readConfig(__dirname);
+  createRoute()
+  {
+    let that = this
+    let app = that.app || {}
 
-    //set application to router
-    router.app = app;
+    //parse configuration file
+    let conf = app.parseConf(path.join(__dirname, 'conf.yaml'))
+    let rootRouter = require('express').Router()
 
-    //define call back function
-    router.callback = function (req, res, err, result) {
+    //get all route
+    for(let key of conf.keys()) {
 
-        //set headers to response for rest settings
-        var settings = config.settings || {};
-        var restSettings = app.get('rest') || {};
+      let item = conf.get(key)
 
-        res.setHeader("Access-Control-Allow-Origin", restSettings.crosDomain || "*");   //allow cross domain to access REST services
-        res.setHeader("Access-Control-Allow-Methods", "HEAD, GET, POST, PUT, DELETE, OPTIONS");
-        res.setHeader("Access-Control-Allow-Credentials", "true");
-        res.setHeader("Access-Control-Max-Age", "3628800");
-        res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Token");
+      try {
 
-        if (req.token) {
-            res.setHeader('token', req.token);
-            res.setHeader("ETag", req.token);
+        let path = item.has('path') ? item.get('path') : '/'
+        let routerFile = item.has('router') ? item.get('router') : './restRouter.js'
+        let adapterFile = item.has('adapter') ? item.get('adapter') : undefined
+        let methodsConf = item.has('methods') ? item.get('methods') : new Map()
+
+        if (adapterFile === 'undefined') {
+
+          //ignore current adapterFile
+          if (app.logger) {
+            app.logger.warning(`Can't find adapter file for route ${key}`, 'rest')
+          }
+          continue
         }
 
-        var outputJSON = function (result) {
+        //get class for router and adapter
+        const Router = require(routerFile)
+        const Adapter = (adapterFile !== undefined) ? require(adapterFile) : undefined
 
-            var pretty = (settings.json || {}).pretty;
+        //create new instance of router and adapter
+        if (!Router || typeof Router !== 'function') throw new Error(`Can't create router by file ${routerFile}`)
+        const router = new Router(app)
+        const adapter = (Adapter && typeof Adapter === 'function') ? new Adapter(app) : {}
 
-            if (pretty) {
-                res.write(JSON.stringify(result, null, 4));
-                res.end();
-            }
-            else res.json(result);
-        };
+        //initialize varinats of adapter
+        adapter.key = key
 
-        //output JSON for error node
-        if (err) {
-            //append error to logger
-            app.logger.error('Got error, details:' + err.message);
+        //create sub router by configuration
+        rootRouter.use(path, router.createRouter(methodsConf, adapter, that.callback))
+      }
+      catch(err) {
 
-            outputJSON({ "error": { "code": err.code, "message": err.message } });
-        } else {
-            //output JSON for result
-            outputJSON(result);
+        if (app.logger) {
+          app.logger.error(`failed to create route for ${key}, details: ${(err) ? err.message : 'unknown'}`, AppName)
         }
-    };
 
-    ///literate all keys in configuration file
-    Object.keys(config)
-          .forEach(function(key) {
+        continue
+      }
+    }
 
-            //get router configuation file by key
-            var routerConfig = config[key];
+    return rootRouter
+  }
 
-            //check it whither or not is router config
-            if (routerConfig && routerConfig['route']) {
+  callback(req, res, err, result, app)
+  {
+    const that = app
+    const conf = (app.conf) ? app.conf : new Map()
+    const restConf = (conf.has('rest')) ? conf.get('rest') : new Map()
 
-                //append router to current router.
-                require((routerConfig['router'])?routerConfig['router']:'./restRouter')(router, routerConfig || {});
-                app.logger.log('rest server for ' + key + ' is ready');
-            }
-          })
+    let origin = (restConf.has('crossDomain')) ? (that.restConf.get('crossDomain') || '*') : '*'
 
-    //append test rest method for root path
-    router.get(
-        '/',
-        function (req, res, next) {
-            router.callback(req, res, null, 'REST');
+    //set headers to response for rest settings
+    res.setHeader("Access-Control-Allow-Origin", origin)   //allow cross domain to access REST services
+    res.setHeader("Access-Control-Allow-Methods", "HEAD, GET, POST, PUT, DELETE, OPTIONS")
+    res.setHeader("Access-Control-Allow-Credentials", "true")
+    res.setHeader("Access-Control-Max-Age", "3628800")
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Token")
+
+    /*
+    if (req.token) {
+        res.setHeader('token', req.token);
+        res.setHeader("ETag", req.token);
+    }
+    */
+
+    const access_token = req['access_token']
+    if (access_token) {
+        res.setHeader('access_token', access_token);
+        res.setHeader("ETag", access_token);
+    }
+
+    let toJSON = (data) => {
+
+      //format response JSON
+      let pretty = restConf.has('pretty') ? restConf.get('pretty') : false
+      if (pretty) {
+
+        res.write(JSON.stringify(data, null, 2))
+        res.end();
+      }
+      else res.json(data)
+    }
+
+    //output JSON for error node
+    if (err) {
+        if (app.reportError) {
+          app.reportError(err, res)
         }
-    );
+    }
+    else {
+        //output JSON for result
+        toJSON(result);
+    }
+  }
+}
 
-    //append not support methods for undefined paths
-    router.get(
-        '*',
-        function (req, res, next) {
-            router.callback(req, res, null, 'Not support');
-        }
-    );
-
-    return router;
-};
+module.exports = Router

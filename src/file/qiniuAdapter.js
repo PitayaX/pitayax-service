@@ -1,5 +1,4 @@
 'use strict';
-var Q = require('q');
 var qiniu = require('qiniu');
 var qiniuConfig = require('./qiniuConfig');
 var http = require('http');

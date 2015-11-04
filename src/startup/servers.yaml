@@ -9,9 +9,9 @@ servers:
   -
     config: restConfig.yaml
     script: ./restServer.js
-#    -
-#          config: fileConfig.json
-#          script: ./fileApp
+  -
+    config: fileConfig.yaml
+    script: ./fileServer.js
 logger:
   file: 'server.log'
   lineFormat: "[$level] $now: $message ($app)"

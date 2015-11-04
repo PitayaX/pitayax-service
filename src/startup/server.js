@@ -1,9 +1,9 @@
 'use strict'
 
-let http = require('http')
-let Express = require('express')
-let Logger = require('pitayax-service-core').Logger
-let Data = require('pitayax-service-core').data
+const http = require('http')
+const Express = require('express')
+const Logger = require('pitayax-service-core').Logger
+const Data = require('pitayax-service-core').data
 
 class Server
 {
@@ -27,12 +27,14 @@ class Server
 
   setExpress(express)
   {
-    let that = this
+    //get
+    const that = this
+    const conf = that.conf
+    const app = express
+
     that.express = express
 
-    let conf = that.conf
-    let app = express
-
+    //set application name and configuration
     app.appName = that.Name
     app.conf = conf
 
@@ -53,32 +55,31 @@ class Server
 
     //set database
     if (conf.has('databases')) {
-      that.setDatabases(app, conf.get('databases'))
+        that.setDatabases(app, conf.get('databases'))
     }
 
     //set route
-    that.setRoute(app)
-  }
-
-  setRoute(app)
-  {
-
+    if (that.setRoute) {
+      that.setRoute(app)
+    }
   }
 
   setLogger(app, conf)
   {
-    let that = this
-    let logFile = conf.get('file') || 'output.log'
+    const that = this
+    const logFile = conf.get('file') || 'output.log'
 
-    let outputter = Logger.createFileOutputter(logFile)
-    let logger = new Logger(outputter)
+    const outputter = Logger.createFileOutputter(logFile)
+    const logger = new Logger(outputter)
 
+    //change line format by config value
     if (conf.has('lineFormat')) {
       logger.lineFormat = conf.get('lineFormat')
     }
 
+    //change level by application name
     if (conf.has('level')) {
-      let levels = conf.get('level')
+      const levels = conf.get('level')
 
       for (let name of levels.keys()) {
         if (name === 'default') logger.Level = levels.get(name)
@@ -92,18 +93,21 @@ class Server
 
   setDatabases(app, conf)
   {
-    let that = this
-    let connections = new Data.MongoDBConnections()
+    const that = this
+    const connections = new Data.MongoDBConnections()
 
     for( let entry of conf.entries() )
     {
-      let name = entry[0]
-      let database = entry[1]
+      //get name and database settings from configuration
+      const name = entry[0]
+      const database = entry[1]
 
-      let connectionString = database.get('connectionString')
+      if (name.startsWith('$')) continue
+
+      const connectionString = database.get('connectionString')
       if (!connectionString || connectionString.startsWith('#')) continue
 
-      let options = database.has('options') ? database.get('options').toObject() : undefined
+      const options = database.has('options') ? database.get('options').toObject() : undefined
 
       connections.create(name, connectionString, options)
     }
@@ -148,7 +152,7 @@ class Server
 
   start()
   {
-    let that = this
+    const that = this
 
     if (that.express !== undefined) {
 
@@ -157,12 +161,16 @@ class Server
         that.instance
           = http.createServer(that.express)
               .listen(that.port, (err) => {
-                                      if (that.logger) {
-                                        that.logger.error(`server :${that.Name} start failed, details: ${err.message}`, that.Name)
+                                      if (err) {
+
+                                        if (that.logger) {
+
+                                          that.logger.error(`server :${that.Name} start failed, details: ${err.message}`, that.Name)
+                                        }
                                       }
                                     })
 
-        let message = `server: ${that.Name} started!`
+        const message = `server: ${that.Name} started.`
         if (that.logger) {
 
           that.logger.info(message, that.Name)
@@ -173,7 +181,7 @@ class Server
 
         if (that.logger) {
 
-          that.logger.error(`server :${that.Name} start failed, details: ${err.message}`, that.Name)
+          that.logger.error(`server :${that.Name} start failed, details: ${ (err) ? err.message : 'unknown' }`, that.Name)
         }
       }
     }
@@ -201,7 +209,7 @@ class Server
       that.instance = undefined
     }
 
-    let message = `server: ${that.Name} stoped!`
+    const message = `server: ${that.Name} stopped.`
     if (that.logger) {
 
       that.logger.info(message, that.Name)
@@ -209,8 +217,9 @@ class Server
     console.log(message)
   }
 
-  createDatabases(settings)
+  setRoute(app)
   {
+
   }
 }
 

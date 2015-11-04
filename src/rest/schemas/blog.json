@@ -1,6 +1,7 @@
 {
   "database": {
-    "default": "dbblog"
+
+    "default": "blog"
   },
   "entity": {
       "post": {
@@ -34,7 +35,7 @@
         "updatedOn": "Date"
       },
       "options": {
-        "collection": "user"
+        "collection": "user2"
       }
     },
     "team": {

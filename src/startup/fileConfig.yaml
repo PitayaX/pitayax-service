@@ -1,0 +1,8 @@
+
+name: 'file server'
+settings:
+  port: 8081
+logger:
+  file: 'file server.log'
+  level:
+    default: 1

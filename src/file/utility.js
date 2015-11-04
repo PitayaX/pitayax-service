@@ -1,6 +1,6 @@
 var crypto = require('crypto');
 var formidable = require('formidable');
-var fileConfig = require('../startup/fileConfig').settings;
+//var fileConfig = require('../startup/fileConfig').settings;
 
 var key="PitayaX-BruceKey";
 

@@ -19,6 +19,7 @@ module.exports = function (app) {
     var router = require('express').Router();
 
     router.all('*', function(req, res, next) {
+
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Access-Control-Allow-Methods', 'POST, GET, DELETE');
       res.setHeader('Access-Control-Allow-Headers', 'height, width, mode, access-token');
