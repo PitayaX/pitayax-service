@@ -38,10 +38,10 @@ class Router
 
         if (adapterFile === 'undefined') {
 
+          //write info to logger if can't find adapter file
+          app.logger.warning(`Can't find adapter file for route ${key}`, 'rest')
+
           //ignore current adapterFile
-          if (app.logger) {
-            app.logger.warning(`Can't find adapter file for route ${key}`, 'rest')
-          }
           continue
         }
 
@@ -62,10 +62,10 @@ class Router
       }
       catch(err) {
 
-        if (app.logger) {
-          app.logger.error(`failed to create route for ${key}, details: ${(err) ? err.message : 'unknown'}`, AppName)
-        }
+        //write error info to logger
+        app.logger.error(`failed to create route for ${key}, details: ${(err) ? err.message : 'unknown'}`, AppName)
 
+        //ignore current adapter
         continue
       }
     }
@@ -88,19 +88,16 @@ class Router
     res.setHeader("Access-Control-Max-Age", "3628800")
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Token")
 
-    /*
-    if (req.token) {
-        res.setHeader('token', req.token);
-        res.setHeader("ETag", req.token);
-    }
-    */
-
+    //set token to response
     const access_token = req['access_token']
-    if (access_token) {
+    if (access_token !== undefined) {
         res.setHeader('access_token', access_token);
         res.setHeader("ETag", access_token);
     }
 
+    res.setHeader("Content-Type", "application/json; charset=utf-8")
+
+    //define a method to convert data to json string
     let toJSON = (data) => {
 
       //format response JSON
@@ -118,6 +115,7 @@ class Router
         if (app.reportError) {
           app.reportError(err, res)
         }
+        else toJSON(err)
     }
     else {
         //output JSON for result

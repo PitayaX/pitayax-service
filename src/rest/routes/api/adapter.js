@@ -11,6 +11,7 @@ class ApiAdapter
   {
     this.app = app
     this.key = key
+    this.name = 'api'
 
     if (dataAdapter === undefined) {
       dataAdapter = new Data.MongoDBAdapter(app.connections)

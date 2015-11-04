@@ -23,11 +23,13 @@ class RestRouter
 
     for(let httpMethod of conf.keys()) {
 
-      //get
+      //get path map for current method
       const pathMap = conf.get(httpMethod)
 
+      //fetch every path in map
       for(let path of pathMap.keys()) {
 
+        //create method for current path
         const methodByPath = function(req, res) {
 
           try {
@@ -43,30 +45,41 @@ class RestRouter
               throw new Error(`invaild method: ${adpaterMethod} in adapter`)
             }
 
-            if (logger) {
-              logger.verbose(`ready for execute ${adpaterMethod}.`, `${adapter.name} rest`)
-            }
+            //write ready info to log
+            logger.verbose(`ready for execute ${adpaterMethod}.`, `${adapter.name} rest`)
 
+            //bind method to function
             const bindMethod = method.bind(adapter, req, res)
 
-            //invoke metho
+            //invoke method
             bindMethod()
               .then( data => {
+                //callback with return data
                 callback(req, res, null, data, app)
 
-                if (logger) {
-                  logger.verbose(`execute ${adpaterMethod} finished.`, `${adapter.name} rest`)
-                }
+                //write finish info to log
+                logger.verbose(`execute ${adpaterMethod} finished.`, `${adapter.name} rest`)
               })
-              .catch( err => callback(req, res, err, null, app) )
+              .catch( err => {
+
+                //write error to log
+                logger.error(`execute ${adpaterMethod} faield, details: ${(err) ? err.message : ''}.`, `${adapter.name} rest`)
+
+                //callback with error
+                callback(req, res, err, null, app)
+              } )
           }
           catch(err) {
 
-            if (err && !err.statusCode) err.statusCode = 500
+            //set status code for error
+            if (err && !err.statusCode) err.statusCode = 400
+
+            //callback with error
             callback(req, res, err, null, app)
           }
         }
 
+        //bind method to router by path
         restRouter[httpMethod](path, methodByPath)
       }
     }

@@ -2,7 +2,7 @@
 
 const path = require('path')
 const aq = require('pitayax-service-core').aq
-const AppName = "rest auth"
+const AppName = "auth rest"
 
 class Errors
 {
@@ -30,7 +30,7 @@ class Errors
         error.message = 'current token expired or invaild'
         break
       default:
-        error.message = `Unknown issue occured, details:${(err) ? err.message : 'unknown'}`
+        error.message = `unknown issue occured, details:${(err) ? err.message : 'unknown'}`
         break
     }
 
@@ -64,6 +64,8 @@ module.exports = function(app, conf) {
 
         const ignore = conf.has('ignore') ? conf.get('ignore') : false
         if (ignore) {
+
+          app.logger.verbose('ignore', AppName)
           next()
           return
         }

@@ -19,6 +19,9 @@ class RestServer extends Server
   {
     super.setDatabases(app, conf)
 
+    //initialize variants
+    const that = this
+
     //get instance of connections
     const connections = this.connections
 
@@ -32,6 +35,7 @@ class RestServer extends Server
         const json = JSON.parse(buffer)   //parse buffer to JSON
 
         connections.appendSchema(json)    //append schema to connections
+        app.logger.verbose(`appended schema file: ${file}`, that.Name)
       }
       catch(err) {
 
