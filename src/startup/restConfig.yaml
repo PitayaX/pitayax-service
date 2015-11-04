@@ -2,7 +2,7 @@ name: rest server
 databases:
   blog:
     type: mongodb
-    connectionString: 'csblog'
+    connectionString: '...'
   $schemas:
     - '../rest/schemas/blog.json'
     - '../rest/schemas/northwind.json'
