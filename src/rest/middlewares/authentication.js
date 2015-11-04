@@ -1,56 +1,97 @@
 'use strict'
+
+const path = require('path')
 const aq = require('pitayax-service-core').aq
+const AppName = "rest auth"
 
-module.exports = (app, conf) => {
+class Errors
+{
+  static get(name, err) {
 
-    if (conf === undefined) conf = new Map()
+    const error = new Error()
 
-    const reportError = (req, res, err) => {
-
-      const data = {"err":{"code":-1, "message": ((err) ? err.message : 'unknown')}}
-
-      if (app.logger) {
-        app.logger.error(`authorization failed, details: ${(err) ? err.message : 'unknown'}`)
-      }
-
-      res.end(JSON.stringify(data, null, 2))
+    error.code = -1
+    switch(name) {
+      case 'token':
+        error.message = 'can\'t find token in request'
+        break
+      case 'url':
+        error.message = 'can\'t find url of remote server'
+        break
+      case 'server':
+        error.message = `connect to server failed, details: ${(err) ? err.message : 'unknown'}`
+        break
+      case 'result':
+        error.code = -2
+        error.message = 'can\'t get correct result from server, please check it again'
+        break
+      case 'deny':
+        error.code = -2
+        error.message = 'current token expired or invaild'
+        break
+      default:
+        error.message = `Unknown issue occured, details:${(err) ? err.message : 'unknown'}`
+        break
     }
 
-    app.use((req, res, next) => {
+    return error
+  }
+}
+
+module.exports = function(app, conf) {
+
+    if (conf === undefined) {
+      conf = app.parseConf(path.join(__dirname, 'authConf.yaml'))
+    }
+
+    const reportError = (err, res) => {
+
+      if (!err) return
 
       if (app.logger) {
-        app.logger.verbose(`check permission for url: ${req.path} by http method: ${req.method}`, 'rest auth')
+        app.logger.error(`Authorization failed, details: ${(err) ? err.message : 'unknown'}`, AppName)
       }
 
-      const access_token = req.headers['access_token']
+      if (app.reportError) app.reportError(err, res)
+      else res.end(JOSN.stringify(err, null, 2))
+    }
 
-      if (access_token === undefined) {
+    app.use(
+      (req, res, next) => {
+
+        //output log to request
+        app.logger.verbose(`Start to check permission for url: ${req.path} by http method: ${req.method}`, AppName)
 
         const ignore = conf.has('ignore') ? conf.get('ignore') : false
-        if (!ignore)
-          reportError(req, res, new Error(`Can't find token in headers`))
-        else next()
-        return
-      }
+        if (ignore) {
+          next()
+          return
+        }
 
-      const url = conf.has('url') ? conf.get('url') : undefined
-      if (url === undefined) {
-        reportError(req, res, new Error(`Can't find authorization server`))
-        return
-      }
+        try{
+          //check access token
+          const access_token = req.headers['access_token']
+          if (access_token === undefined) throw Errors.get('token')
 
-      const headers = {}
-      headers["authorization"] =  access_token
-      headers["client"] = "Blog"
+          //check yrl of remote server
+          const url = conf.has('url') ? conf.get('url') : undefined
+          if (url === undefined) throw Errors.get('url')
 
-      aq.rest(url,'GET' , headers)
-        .then( data => {
-          const pass = (data) ? data.pass: undefined
-          if (pass === undefined)
-            reportError(res, req, new Error('can\'t get expected value from response'))
-          else if (pass === 0) reportError(res, req, new Error('check access_token failed'))
-          else next()
-        })
-        .catch(err => reportError(res, req, new Error(`Unknown issue get from authorization server, details: ${err.message}`)))
+          //verify access token from remote server
+          aq.rest(url, 'GET', {"authorization": access_token, "client": "Blog"})
+            .then( data => (data) ? data.pass: undefined )
+            .then( data => {
+
+              //parse result
+              if (data === undefined) throw Errors.get('result')  //get invalid data
+              if (data === 0) throw Errors.get('deny')    //reject your access
+
+              next()
+            } )
+            .catch( err => reportError((err.code && err.code == -2) ? err : Errors.get('server', err), res) )
+        }
+        catch(err) {
+          reportError(err, res)
+        }
     })
   }

@@ -38,7 +38,7 @@ class ScriptAdapter
 
   _getArguments(req)
   {
-    return undefined
+    return req.query
   }
 
   _createEngine(req)

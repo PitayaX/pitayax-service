@@ -16,8 +16,7 @@ locals:
   k1: 'v1'
   k2: 'v2'
 middlewares:
-  - '../rest/middlewares/authentication.js':
-      url: "#"
+  - '../rest/middlewares/authentication.js'
 rest:
   #folder: 'rest'
   script: '../rest/routes/router.js'
@@ -25,5 +24,6 @@ rest:
 logger:
   file: 'rest server.log'
   level:
-    rest server: 3
+    default: 1
+    rest server: 1
     engine: 4

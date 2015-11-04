@@ -2,9 +2,9 @@
   "name": "qiniu",
   "settings": {
     "bucketName": "test",
-    "bucketUrl": "7xjb3g.com1.z0.glb.clouddn.com",
-    "ACCESS_KEY": "ozb2VtztIhltSBqGREUIhcrgvHERXxSxR9b5eLSa",
-    "SECRET_KEY": "Q9OS5j2bG5VGgQA010wtxfsUBl88H_2kp9NWsn_w"
+    "bucketUrl": "...",
+    "ACCESS_KEY": "...",
+    "SECRET_KEY": "..."
   },
   "logger": {
     "output": "stdout",

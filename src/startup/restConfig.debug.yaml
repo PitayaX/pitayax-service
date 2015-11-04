@@ -1,7 +1,3 @@
 databases:
   blog:
     connectionString: 'mongodb://usrpx:password@10.10.73.207:27077/pitayax-test'
-middlewares:
-  - '../rest/middlewares/authentication.js':
-      url: "http://10.10.73.28:8001/token"
-      ignore: true

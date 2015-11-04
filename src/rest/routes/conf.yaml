@@ -10,18 +10,20 @@ admin:
 api:
   path: '/api'
   router: './api/router.js'
+  anonymous: true
   methods:
     get:
       '/test': test
       '/model': model
       '/list': list
       '/:id': retrieve
-      '/': disabled
+      '/': disable
     post:
       '/create': create
       '/query': query
       '/count': count
       '/': create
+      '/*': disable
     put:
       '/:id': update
       '/': update
@@ -29,11 +31,9 @@ api:
       '/:id': delete
       '/': update
     options:
-      '/*': passed
+      '*': pass
     all:
-      '/*': disabled
-    options:
-      anonymous: true
+      '*': disable
 script:
   path: '/script'
   adapter: './script/adapter.js'

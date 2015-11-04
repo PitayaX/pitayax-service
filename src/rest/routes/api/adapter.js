@@ -73,6 +73,18 @@ class ApiAdapter
     return dataAdapter.retrieve(this.getName(), {}, {"method": "find"})
   }
 
+  count(req, res)
+  {
+    //parse filter and options
+    const filter = this._parseFilter(req)
+    const options = this._parseOptions(req)
+
+    //set method of option
+    if (!options.method) options.method = "count"
+
+    return dataAdapter.retrieve(this.getName(), filter, options)
+  }
+
   query(req, res)
   {
     //parse filter and options
@@ -97,9 +109,16 @@ class ApiAdapter
     return dataAdapter.retrieve(this.getName(), filter, options)
   }
 
-  disabled(req, res)
+  disable(req, res)
   {
+    res.statusCode = 403
     return aq.Q('disabled')
+  }
+
+  pass(req, res)
+  {
+    res.statusCode = 200
+    return aq.Q('pass')
   }
 
   _getFilter(req, body)
@@ -124,6 +143,18 @@ class ApiAdapter
   {
     //check request
     if (!req) return {}
+
+    let ctype = req.header('content-type')
+    const index = (ctype ? ctype : '').toLowerCase().indexOf('application/json')
+
+    //can't find json mark in headers, reject query
+    if (index === -1) {
+      const
+        err = new Error('invaild request body, rejected.')
+        err.code = 403
+        err.statusCode = 403
+        throw err
+    }
 
     //process body
     let body = req.body
@@ -157,8 +188,8 @@ class ApiAdapter
 
     //parse sort and pager
     if (body.sort) options.sort = body.sort
-    if (body.page) options.sort = body.page
-    if (body.pageSize) options.sort = body.pageSize
+    if (body.page) options.page = body.page
+    if (body.pageSize) options.pageSize = body.pageSize
     //if (body['$sort']) options.sort = body['$sort']
     //if (body['$page']) options.page = body['$page']
     //if (body['$pageSize']) options.pageSize = body['$pageSize']

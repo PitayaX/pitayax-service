@@ -88,13 +88,17 @@ class Router
     res.setHeader("Access-Control-Max-Age", "3628800")
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Token")
 
+    /*
     if (req.token) {
         res.setHeader('token', req.token);
         res.setHeader("ETag", req.token);
     }
+    */
 
-    if (err) {
-      if (err.statusCode) res.statusCode = err.statusCode
+    const access_token = req['access_token']
+    if (access_token) {
+        res.setHeader('access_token', access_token);
+        res.setHeader("ETag", access_token);
     }
 
     let toJSON = (data) => {
@@ -102,6 +106,7 @@ class Router
       //format response JSON
       let pretty = restConf.has('pretty') ? restConf.get('pretty') : false
       if (pretty) {
+
         res.write(JSON.stringify(data, null, 2))
         res.end();
       }
@@ -110,17 +115,11 @@ class Router
 
     //output JSON for error node
     if (err) {
-
-        //append error to logger
-        if (that.logger) {
-          that.logger.error(`Execute restful API failed, details: ${err.message}`, AppName)
+        if (app.reportError) {
+          app.reportError(err, res)
         }
-
-        //res.statusCode = (err.statusCode) ? err.statesCode : 500
-
-        const code = (err.code) ? err.code : -1
-        toJSON({ "error": { "code": code, "message": err.message } })
-    } else {
+    }
+    else {
         //output JSON for result
         toJSON(result);
     }
