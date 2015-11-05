@@ -55,7 +55,12 @@ const getExpress = (servers, port) => {
   //delcare application
   let app = undefined
   for (let server of servers.entries()) {
-    if (server.port === port) app = server.Express
+
+    //found the server with same port, use current instance
+    if (server.port === port) {
+      app = server.Express
+      break
+    }
   }
 
   //can't get application form exists server, create new instance
@@ -64,6 +69,7 @@ const getExpress = (servers, port) => {
   //bind parse function
   app.parseConf = parseConf
 
+  //return instance of application
   return app
 }
 
@@ -165,12 +171,13 @@ let stop = () => {
     servers.clear()
 
     if (logger) {
-      logger.info('all servers were stopped.', 'global')
+      logger.info('all servers were stopped.', AppName)
     }
   }
 }
 
 process.on('uncaughtException', (err) => {
+
   if (logger) {
     //catch error
     logger.error(`Uncaught error occurs, details: ${ (err) ? err.message: 'unknown' }`, AppName)
@@ -178,12 +185,13 @@ process.on('uncaughtException', (err) => {
 });
 
 process.on('beforeExit', () => {
+
   if (logger) {
     //catch event
-    logger.info('catch event before exit', 'global')
-
-    stop()
+    logger.info('catch event before exit', AppName)
   }
+
+  stop()
 })
 
 process.on('exit', (code) => {

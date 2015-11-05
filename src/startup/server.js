@@ -28,42 +28,47 @@ class Server
   setExpress(express)
   {
     //get
-    const that = this
-    const conf = that.conf
-    const app = express
-
-    that.express = express
+    const
+      server = this
+      server.express = express
 
     //set application name and configuration
-    app.appName = that.Name
-    app.conf = conf
+    const
+      app = express
+      app.appName = (server.Name) ? server.Name : 'unknown'
+      app.conf = (server.conf) ? server.conf : new Map()
 
     //assign variants from conf to settings
-    Object.keys(that.settings)
-      .filter( key => (!key.startsWith('#')))
-      .forEach(key => app.set(key, that.settings[key]))
+    Object.keys(server.settings)
+      .filter( key => (!key.startsWith('#')) )
+      .forEach( key => app.set(key, server.settings[key]) )
 
       //assign variants from conf to locals
-    Object.keys(that.locals)
-      .filter( key => (!key.startsWith('#')))
-      .forEach( key => app.locals[key] = that.locals[key] )
+    Object.keys(server.locals)
+      .filter( key => (!key.startsWith('#')) )
+      .forEach( key => app.locals[key] = server.locals[key] )
 
+    //get configuration
+    this.initialize(app, app.conf)
+  }
+
+  initialize(app, conf)
+  {
     //initialize logger
     if (conf.has('logger')) {
-      that.setLogger(app, conf.get('logger'))
+      this.setLogger(app, conf.get('logger'))
     }
 
     //set database
     if (conf.has('databases')) {
-        that.setDatabases(app, conf.get('databases'))
+      this.setDatabases(app, conf.get('databases'))
     }
 
     //set route
-    if (that.setRoute) {
-      that.setRoute(app)
-    }
+    if (this.setRoute) this.setRoute(app)
   }
 
+  //set logger settings
   setLogger(app, conf)
   {
     const that = this
@@ -91,10 +96,11 @@ class Server
     that.logger = logger
   }
 
+  //set database settings
   setDatabases(app, conf)
   {
     const that = this
-    const connections = new Data.MongoDBConnections()
+    const mongoConnections = new Data.MongoDBConnections()
 
     for( let entry of conf.entries() )
     {
@@ -102,86 +108,101 @@ class Server
       const name = entry[0]
       const database = entry[1]
 
+      //ignore system name
       if (name.startsWith('$')) continue
 
+      //get connection from conf
       const connectionString = database.get('connectionString')
+
+      //ignore if connectionString is empty of starts with '#'
       if (!connectionString || connectionString.startsWith('#')) continue
 
+      const type = database.has('type') ? database.get('type') : 'mongodb'
+
+      //get options from conf
       const options = database.has('options') ? database.get('options').toObject() : undefined
 
-      connections.create(name, connectionString, options)
+      if (type === 'mongodb' || type === 'mongo') {
+
+        //create new connection for mongodb
+        mongoConnections.create(name, connectionString, options)
+      }
     }
 
-    connections.on('connected', conn => {
-      if (that.logger) {
+    //handle connected event of connections
+    mongoConnections.on('connected', conn => {
 
-        that.logger.info(`The connection for ${conn.Name} was connected`, that.Name)
-      }
+      //output info to logger
+      if (app.logger) app.logger.info(`The connection for ${conn.Name} was connected`, that.Name)
     })
 
-    connections.on('open', conn => {
-      if (that.logger) {
+    //handle open event of connections
+    mongoConnections.on('open', conn => {
 
-        that.logger.info(`The connection for ${conn.Name} was opened`, that.Name)
-      }
+      //output info to logger
+      if (app.logger) app.logger.info(`The connection for ${conn.Name} was opened`, that.Name)
     })
 
-    connections.on('close', conn => {
-      if (that.logger) {
+    //handle close event of connections
+    mongoConnections.on('close', conn => {
 
-        that.logger.info(`The connection for ${conn.Name} was closed`, that.Name)
-      }
+      //output info to logger
+      if (app.logger) app.logger.info(`The connection for ${conn.Name} was closed`, that.Name)
     })
 
-    connections.on('disconnected', conn => {
-      if (that.logger) {
+    //handle disconnected event of connections
+    mongoConnections.on('disconnected', conn => {
 
-        that.logger.info(`The connection for ${conn.Name} was disconnected`, that.Name)
-      }
+      //output info to logger
+      if (app.logger) app.logger.info(`The connection for ${conn.Name} was disconnected`, that.Name)
     })
 
-    connections.on('error', (err, conn) => {
-      if (that.logger) {
-        that.logger.error(`database occur unknown error, details: ${ (err) ? err.message : ''}`, that.Name)
-      }
+    //handle error event of connections
+    mongoConnections.on('error', (err, conn) => {
+
+      //output error to logger
+      if (app.logger) app.logger.error(`database occur unknown error, details: ${ (err) ? err.message : ''}`, that.Name)
     })
 
-    app.connections = connections
-    that.connections = connections
+    app.connections = mongoConnections
+
+    that.connections = mongoConnections
+  }
+
+  //set children routers
+  setRoute(app)
+  {
+    //set routers for inherits class
   }
 
   start()
   {
-    const that = this
+    const server = this
 
-    if (that.express !== undefined) {
+    if (server.Express !== undefined) {
 
       try{
 
-        that.instance
-          = http.createServer(that.express)
-              .listen(that.port, (err) => {
-                                      if (err) {
+        //create web server and start it
+        server.instance
+          = http
+              .createServer(server.Express)
+              .listen(server.port, (err) => {})
 
-                                        if (that.logger) {
+        //get server start message
+        const message = `server: ${server.Name} started.`
 
-                                          that.logger.error(`server :${that.Name} start failed, details: ${err.message}`, that.Name)
-                                        }
-                                      }
-                                    })
+        //write info to logger
+        if (server.logger) server.logger.info(message, server.Name)
 
-        const message = `server: ${that.Name} started.`
-        if (that.logger) {
-
-          that.logger.info(message, that.Name)
-        }
+        //output info to console
         console.log(message)
       }
       catch(err) {
 
-        if (that.logger) {
-
-          that.logger.error(`server :${that.Name} start failed, details: ${ (err) ? err.message : 'unknown' }`, that.Name)
+        //write error to logger
+        if (server.logger) {
+          server.logger.error(`server :${server.Name} start failed, details: ${ (err) ? err.message : 'unknown' }`, server.Name)
         }
       }
     }
@@ -189,37 +210,34 @@ class Server
 
   stop()
   {
-    let that = this
+    let server = this
 
     //close database
-    if (that.connections !== undefined)
+    if (server.connections !== undefined)
     {
-      if (that.connections instanceof Data.MongoDBConnections)
+      if (server.connections instanceof Data.MongoDBConnections)
       {
-        that.connections.Names
+        server.connections.Names
           .forEach( name => {
-            that.connections.close(name)
+            server.connections.close(name)
         })
       }
     }
 
     //close instance of TCP
-    if (that.instance !== undefined) {
-      that.instance.close()
-      that.instance = undefined
+    if (server.instance !== undefined) {
+
+      //close and release
+      server.instance.close()
+      server.instance = undefined
     }
 
-    const message = `server: ${that.Name} stopped.`
-    if (that.logger) {
+    //get message when server stoping
+    const message = `server: ${server.Name} stopped.`
 
-      that.logger.info(message, that.Name)
-    }
+    //write info to logger and console
+    if (server.logger) server.logger.info(message, server.Name)
     console.log(message)
-  }
-
-  setRoute(app)
-  {
-
   }
 }
 

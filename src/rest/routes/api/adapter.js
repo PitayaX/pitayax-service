@@ -112,14 +112,18 @@ class ApiAdapter
 
   disable(req, res)
   {
-    res.statusCode = 403
-    return aq.Q('disabled')
+    const
+      err = new Error('deny access')
+      err.statusCode = 403
+      err.code = 403
+    throw err
   }
 
   pass(req, res)
   {
     res.statusCode = 200
-    return aq.Q('pass')
+
+    return aq.Q({"pass": 1})
   }
 
   _getFilter(req, body)

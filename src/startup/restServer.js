@@ -15,6 +15,35 @@ class RestServer extends Server
     this.name = conf.name
   }
 
+  initialize(app, conf)
+  {
+    const server = this
+
+    //create function to report error
+    if (!app.reportError) {
+
+      app.reportError = (err, res) => {
+
+        //output error for parse json body failed
+        err.code = (err.code) ? err.code : -1
+
+        //create response database
+        const data = {"error": {"code": err.code, "message": err.message}}
+
+        //set response status code
+        res.statusCode = (err.statusCode) ? err.statusCode : 400
+
+        //write error to logger
+        if (app.logger) app.logger.error(`status: ${res.statusCode},\tmessage: ${err.message}`, server.Name)
+
+        //output error message to response
+        res.end(JSON.stringify(data, null, 2))
+      }
+    }
+
+    super.initialize(app, conf)
+  }
+
   setDatabases(app, conf)
   {
     super.setDatabases(app, conf)
@@ -56,22 +85,6 @@ class RestServer extends Server
   {
     //initialize variants
     const that = this
-
-    //create function to report error
-    if (!app.reportError) {
-      app.reportError = (err, res) => {
-
-        //output error for parse json body failed
-        err.code = (err.code) ? err.code : -1
-
-        //create response database
-        const data = {"error": {"code": err.code, "message": err.message}}
-
-        //set response status code
-        res.statusCode = (err.statusCode) ? err.statusCode : 400
-        res.end(JSON.stringify(data, null, 2))
-      }
-    }
 
     //ignore request for favicon.ico
     app.use('/favicon.ico', (req, res, next) => { return })
@@ -116,16 +129,6 @@ class RestServer extends Server
 
       //handle JSON body parser
       app.use(require('body-parser').json())
-      app.use((err, req, res, next) => {
-
-        //ignore if no error occur
-        if (!err) next()
-
-        if (app.reportError) {
-
-          app.reportError(err, res)
-        }
-      })
 
       //handle rest router base on configuration
       app.use(path, restRouter.createRoute(app))
@@ -143,6 +146,20 @@ class RestServer extends Server
         app.reportError(err, res)
       }
       else res.end('end')
+    })
+
+    app.use((err, req, res, next) => {
+
+      //ignore if no error occur
+      if (err) {
+        //report error
+        if (app.reportError) app.reportError(err, res)
+
+        //exit
+        return
+      }
+
+      next()
     })
   }
 }

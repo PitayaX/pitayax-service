@@ -9,12 +9,12 @@ servers:
   -
     config: restConfig.yaml
     script: ./restServer.js
-  -
-    config: fileConfig.yaml
-    script: ./fileServer.js
+#  -
+#    config: fileConfig.yaml
+#    script: ./fileServer.js
 logger:
   file: 'server.log'
   lineFormat: "[$level] $now: $message ($app)"
   level:
-    default: 4
+    default: 2
     engine: 2
