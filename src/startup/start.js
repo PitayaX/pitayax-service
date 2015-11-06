@@ -143,7 +143,7 @@ global.getLogger = (conf) => {
     for (let name of levels.keys()) {
 
       if (name === 'default') logger.Level = levels.get(name)
-      else logger.setLogLevel(levels.get(name))
+      else logger.setLogLevel(name, levels.get(name))
     }
   }
 
