@@ -1,9 +1,7 @@
 'use strict'
 
-const path = require('path')
 const Express = require('express')
 const ConfigMap = require('pitayax-service-core').ConfigMap
-const AppName = 'rest'
 
 class Router
 {
@@ -12,7 +10,6 @@ class Router
     this.app = app
     this.conf = (app.conf) ? app.conf : new Map()
     this.restConf = this.conf.has('rest') ? this.conf.get('rest') : new Map()
-    this.logger = (app.logger) ? app.logger : undefined
   }
 
   createRoute()
@@ -21,7 +18,7 @@ class Router
     let app = that.app || {}
 
     //parse configuration file
-    let conf = app.parseConf(path.join(__dirname, 'conf.yaml'))
+    let conf = app.parseConf('/rest/routes/conf.yaml')
     let rootRouter = require('express').Router()
 
     //get all route
@@ -39,7 +36,7 @@ class Router
         if (adapterFile === 'undefined') {
 
           //write info to logger if can't find adapter file
-          app.logger.warning(`Can't find adapter file for route ${key}`, 'rest')
+          app.logger.warning(`Can't find adapter file for route ${key}`, app.appName)
 
           //ignore current adapterFile
           continue
@@ -63,7 +60,7 @@ class Router
       catch(err) {
 
         //write error info to logger
-        app.logger.error(`failed to create route for ${key}, details: ${(err) ? err.message : 'unknown'}`, AppName)
+        app.logger.error(`failed to create route for ${key}, details: ${(err) ? err.message : 'unknown'}`, app.appName)
 
         //ignore current adapter
         continue

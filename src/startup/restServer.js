@@ -11,8 +11,6 @@ class RestServer extends Server
   constructor(conf)
   {
     super(conf)
-
-    this.name = conf.name
   }
 
   initialize(app, conf)
@@ -49,7 +47,7 @@ class RestServer extends Server
     super.setDatabases(app, conf)
 
     //initialize variants
-    const that = this
+    const server = this
 
     //get instance of connections
     const connections = this.connections
@@ -64,16 +62,17 @@ class RestServer extends Server
         const json = JSON.parse(buffer)   //parse buffer to JSON
 
         connections.appendSchema(json)    //append schema to connections
-        app.logger.verbose(`appended schema file: ${file}`, that.Name)
+        app.logger.verbose(`appended schema file: ${file}`, server.Name)
       }
       catch(err) {
 
         //record error logger
-        app.logger.error(`parse schema file (${file}) failed, details: ${err.message}`, that.Name)
+        app.logger.error(`parse schema file (${file}) failed, details: ${err.message}`, server.Name)
       }
     }
 
     if (schemas !== undefined) {
+
       if (Array.isArray(schemas)) {
         schemas.forEach( file => appendSchema(file))  //append every item in schemas
       }
@@ -84,13 +83,13 @@ class RestServer extends Server
   setRoute(app)
   {
     //initialize variants
-    const that = this
+    const server = this
 
     //ignore request for favicon.ico
     app.use('/favicon.ico', (req, res, next) => { return })
 
     //append middlewares from configuration
-    let middlewaresConf = that.conf.get('middlewares')
+    let middlewaresConf = server.conf.get('middlewares')
     if (middlewaresConf) {
 
       //convert single middleware to array
@@ -106,11 +105,12 @@ class RestServer extends Server
     let restRouter = undefined
 
     //get config node from global configuration
-    const restConf = that.conf.get('rest')
+    const restConf = server.conf.get('rest')
 
     //create new instance of rest router
     if (restConf && restConf.has('script')) {
-      try{
+
+      try {
         //get router class by file
         const Router = require(restConf.get('script'))
 
@@ -118,48 +118,46 @@ class RestServer extends Server
       }
       catch(err) {
 
-          app.logger.error(`Create new instance of router failed, details:${(err) ? err.message : 'unknown'}`, that.Name)
+          app.logger.error(`Create new instance of router failed, details:${(err) ? err.message : 'unknown'}`, server.Name)
       }
     }
 
     //create root router
     if (restRouter !== undefined) {
 
-      const path = restConf.has('folder') ? restConf.get('folder') : '/'
-
       //handle JSON body parser
       app.use(require('body-parser').json())
 
       //handle rest router base on configuration
+      const path = restConf.has('folder') ? restConf.get('folder') : '/'
       app.use(path, restRouter.createRoute(app))
     }
 
     //catch no route request
-    app.use('*', (req, res) => {
-
-      if (app.reportError) {
+    app.use(
+      '*',
+      (req, res) => {
 
         const
           err = new Error(`can't find file: ${req.baseUrl} from server`)
           err.code = 404
           err.statusCode = 404
-        app.reportError(err, res)
+        throw err
       }
-      else res.end('end')
-    })
+    )
 
-    app.use((err, req, res, next) => {
+    app.use(
+      (err, req, res, next) => {
 
-      //ignore if no error occur
-      if (err) {
-        //report error
-        if (app.reportError) app.reportError(err, res)
+        //hdndle error when occur in previous middlewares
+        if (err) {
 
-        //exit
-        return
-      }
+          //report error
+          if (app.reportError) app.reportError(err, res)
+          return
+        }
 
-      next()
+        next()
     })
   }
 }

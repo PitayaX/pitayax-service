@@ -27,7 +27,7 @@
     "babel-eslint": "^4.1.0"
   },
   "scripts": {
-    "start": "node ./src/startup/start.js",
+    "start": "node ./src/startup/start.js --release",
     "test": "node ./test/start"
   },
   "bugs": {

@@ -19,7 +19,6 @@ class RestRouter
     const that = this
     const restRouter = that.newRouter()
     const app = (that.app) ? that.app : ((adapter.app) ? adapter.app : {})
-    const logger = app.logger
 
     for(let httpMethod of conf.keys()) {
 
@@ -42,11 +41,11 @@ class RestRouter
             //get instance of method from adpater
             const method = adapter[adpaterMethod]
             if (method === undefined) {
-              throw new Error(`invaild method: ${adpaterMethod} in adapter`)
+              throw new Error(`invalid method: ${adpaterMethod} in adapter`)
             }
 
             //write ready info to log
-            logger.verbose(`ready for execute ${adpaterMethod}.`, `${adapter.name} rest`)
+            app.logger.verbose(`ready for execute ${adpaterMethod}.`, app.appName)
 
             //bind method to function
             const bindMethod = method.bind(adapter, req, res)
@@ -58,12 +57,12 @@ class RestRouter
                 callback(req, res, null, data, app)
 
                 //write finish info to log
-                logger.verbose(`execute ${adpaterMethod} finished.`, `${adapter.name} rest`)
+                app.logger.verbose(`execute ${adpaterMethod} finished.`, app.appName)
               })
               .catch( err => {
 
                 //write error to log
-                logger.error(`execute ${adpaterMethod} faield, details: ${(err) ? err.message : ''}.`, `${adapter.name} rest`)
+                app.logger.error(`execute ${adpaterMethod} faield, details: ${(err) ? err.message : ''}.`, app.appName)
 
                 //callback with error
                 callback(req, res, err, null, app)

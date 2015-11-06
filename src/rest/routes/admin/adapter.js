@@ -1,6 +1,5 @@
 'use strict'
 
-const path = require('path')
 const ConfigMap = require('pitayax-service-core').ConfigMap
 const nodemailer = require('nodemailer');
 const smtpPool = require('nodemailer-smtp-pool');
@@ -11,7 +10,7 @@ class AdminAdapter
   constructor(app)
   {
     this.app = app
-    this.conf = app.parseConf(path.join(__dirname, 'conf.yaml')).toObject()
+    this.conf = app.parseConf('/rest/routes/admin/conf.yaml').toObject()
   }
 
   test(req, res)
@@ -54,9 +53,7 @@ class AdminAdapter
       //send mail with options
       transporter.sendMail(options)
 
-      if (app.logger) {
-        app.logger.verbose(`sent mail, options: ${JSON.stringify(options)}`, 'admin')
-      }
+      app.logger.verbose(`sent mail, options: ${JSON.stringify(options)}`, app.appName)
 
       //return result
       return aq.Q('OK')

@@ -10,16 +10,16 @@ npm start
 ## Test
 npm test
 
+## Restful API v1.0
+
+[Rest.md](https://github.com/PitayaX/pitayax-service/blob/master/doc/Rest.md)
+
 ## File System v1.0
 
 Chinese version: [FileServer_CN.md](https://github.com/PitayaX/pitayax-service/blob/master/doc/fileServer_CN.md)
 
 English version: [FileServer.md](https://github.com/PitayaX/pitayax-service/blob/master/doc/fileServer.md)
 
-## Blog Rest v1.0
-
-Chinese version: [Rest.md](https://github.com/PitayaX/pitayax-service/blob/master/doc/Rest.md)
-
 ## Send Mail v1.0
 
-Chinese version: [SendMail.md](https://github.com/PitayaX/pitayax-service/blob/master/doc/SendMail.md)
+[SendMail.md](https://github.com/PitayaX/pitayax-service/blob/master/doc/SendMail.md)

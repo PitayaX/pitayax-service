@@ -8,21 +8,70 @@ const Logger = require('pitayax-service-core').Logger
 const Express = require('express')
 const Server = require('./server.js')
 
-const AppName = 'global'
+global.appName = 'global'
+global.target = 'debug'
+global.servers = new Map()
+global.dir = path.parse(__dirname).dir
+
+//process arguments
+process
+  .argv
+  .forEach(
+    arg => {
+      switch(arg){
+        case '-release':
+          global.target ='release'
+          break
+        case '-debug':
+          global.target ='debug'
+          break
+        default:
+          break
+      }
+    })
 
 //define function to parse configuration by file name
-const parseConf
+global.parseConf
   = (file) => {
-    //can't find file in current folder, append current dir to check it again
-    if (!fs.existsSync(file)) file = path.join(__dirname, file)
-    if (!fs.existsSync(file)) throw new Error(`can't find configuration file: ${file}`)
+
+    //declare
+    let cfile = file
+    let cfs = undefined
+
+    //check origina file
+    try {cfs = fs.statSync(cfile)} catch(err){}
+
+    //check
+    if (cfs === undefined) {
+      cfile = path.join(global.dir, file)
+      try {cfs = fs.statSync(cfile)} catch(err){}
+    }
+
+    if (cfs === undefined) {
+      cfile = path.join(__dirname, file)
+      try {cfs = fs.statSync(cfile)} catch(err){}
+    }
+
+    //can't find configuration file, throw new error
+    if (cfile === undefined) {
+      throw new Error(`can't find configuration file: ${file}`)
+    }
 
     //parse file
-    const info = path.parse(file);
-    if (!info) info = {"dir": __dirname, "name": "file", "ext": ""}   //set default file info
+    const info = path.parse(cfile);
+    if (!info) {
+      //set default file info
+      info = {
+        "dir": global.dir,
+        "name": "file",
+        "ext": ""
+      }
+    }
 
     //parse by different extend name
-    const parse = (ext, obj) => {
+    const parse = (ext, file) => {
+
+      const obj = fs.readFileSync(file, 'utf-8')
       switch(ext) {
         case '.json':
           return ConfigMap.parseJSON(obj)
@@ -34,23 +83,22 @@ const parseConf
     }
 
     //get configuration by file
-    const conf = parse(info.ext, fs.readFileSync(file, 'utf-8'))
+    const conf = parse(info.ext, cfile)
 
     //merge debug or release file
-    let target = 'debug'
+    cfile = path.join(info.dir, `${info.name}.${global.target}${info.ext}`)
 
-    file = path.join(info.dir, `${info.name}.${target}${info.ext}`)
-    if (fs.existsSync(file)) {
-
-      const targetConf = parse(info.ext, fs.readFileSync(file, 'utf-8'))
-      conf.merge(targetConf)
+    try{
+      cfs = fs.statSync(cfile)
+      conf.merge(parse(info.ext, cfile))
     }
+    catch(err){}
 
     return conf
   }
 
 //define function to get applicaton of express
-const getExpress = (servers, port) => {
+global.getExpress = (servers, port) => {
 
   //delcare application
   let app = undefined
@@ -74,7 +122,7 @@ const getExpress = (servers, port) => {
 }
 
 //define function to get logger
-const getLogger = (conf) => {
+global.getLogger = (conf) => {
 
   //get log file name
   const logFile = conf.get('file') || 'output.log'
@@ -93,6 +141,7 @@ const getLogger = (conf) => {
     const levels = conf.get('level')
 
     for (let name of levels.keys()) {
+
       if (name === 'default') logger.Level = levels.get(name)
       else logger.setLogLevel(levels.get(name))
     }
@@ -102,76 +151,67 @@ const getLogger = (conf) => {
 }
 
 //create servers
-const servers = new Map();
-let logger = undefined;
+let logger = undefined
 
 const start = () => {
 
   //parse global configuration file
   const globalConf = parseConf('servers.yaml')
 
-  logger = getLogger(globalConf.get('logger'))
+  logger = global.getLogger(globalConf.get('logger'))
 
   //get servers configuration from global
-  const serverItems = globalConf.get('servers')
+  const serverItems = globalConf.get('servers') || []
 
-  if (serverItems !== undefined) {
+  //fetch every item in servers configuration
+  serverItems
+    .filter( serverItem => serverItem.get('config').indexOf('#') !== 0 )  //ignore comment server
+    .forEach( serverItem => {
+      try{
+        //clone configuration from global
+        const conf = globalConf.clone()
 
-    //fetch every item in servers configuration
-    serverItems
-      .filter( serverItem => serverItem.get('config').indexOf('#') !== 0 )  //ignore comment server
-      .forEach( serverItem => {
+        //parse configuration file for current server
+        conf.merge(parseConf(serverItem.get('config')))
 
-        try{
+        //get type of server
+        const Server = require(serverItem.get('script'))
 
-          //clone configuration from global
-          const conf = globalConf.clone()
+        //create new instance of server
+        const server = new Server(conf)
 
-          //parse configuration file for current server
-          conf.merge(parseConf(serverItem.get('config')))
+        //set express application server
+        server.setExpress(global.getExpress(global.servers, server.port))
 
-          //get type of server
-          const Server = require(serverItem.get('script'))
+        //start server
+        server.start()
 
-          //create new instance of server
-          const server = new Server(conf)
-
-          //set express application server
-          server.setExpress(getExpress(servers, server.port))
-
-          //start server
-          server.start()
-
-          //append server to Map if it was started
-          servers.set(server.name, server)
-        }
-        catch(err) {
-
-          //log error
-          if (logger) {
-            logger.error(`Unknown issue occurs when starting servers, details: ${ (err) ? err.message : 'unknown' }` , AppName)
-          }
-        }
-      })
-  }
+        //append server to Map if it was started
+        global.servers.set(server.name, server)
+      }
+      catch(err) {
+        //log error
+        if (logger) logger.error(`Unknown issue occurs when starting servers, details: ${ (err) ? err.message : 'unknown' }` , global.appName)
+      }
+    } )
 }
 
 let stop = () => {
 
   //if exists servers Map
-  if (servers) {
+  if (global.servers) {
 
     //get every server from Map
-    for(let server of servers.values()) {
+    for(let server of global.servers.values()) {
 
         //stop servers
         server.stop()
     }
 
-    servers.clear()
+    global.servers.clear()
 
     if (logger) {
-      logger.info('all servers were stopped.', AppName)
+      logger.info('all servers were stopped.', global.appName)
     }
   }
 }
@@ -180,7 +220,7 @@ process.on('uncaughtException', (err) => {
 
   if (logger) {
     //catch error
-    logger.error(`Uncaught error occurs, details: ${ (err) ? err.message: 'unknown' }`, AppName)
+    logger.error(`Uncaught error occurs, details: ${ (err) ? err.message: 'unknown' }`, global.appName)
   }
 });
 
@@ -188,16 +228,18 @@ process.on('beforeExit', () => {
 
   if (logger) {
     //catch event
-    logger.info('catch event before exit', AppName)
+    logger.info('catch event before exit', global.appName)
   }
 
   stop()
 })
 
 process.on('exit', (code) => {
+
+  console.log('a')
   if (logger) {
     //catch event
-    logger.info(`catch event exit with code (${code}).`, AppName)
+    logger.info(`catch event exit with code (${code}).`, global.appName)
   }
 })
 

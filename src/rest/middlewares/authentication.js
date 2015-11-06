@@ -2,7 +2,6 @@
 
 const path = require('path')
 const aq = require('pitayax-service-core').aq
-const AppName = "auth rest"
 
 class Errors
 {
@@ -48,10 +47,10 @@ module.exports = function(app, conf) {
 
       if (!err) return
 
-      if (app.logger) {
-        app.logger.error(`Authorization failed, details: ${(err) ? err.message : 'unknown'}`, AppName)
-      }
+      //write error to logger
+      app.logger.error(`Authorization failed, details: ${(err) ? err.message : 'unknown'}`, app.appName)
 
+      //return error response
       if (app.reportError) app.reportError(err, res)
       else res.end(JOSN.stringify(err, null, 2))
     }
@@ -60,12 +59,12 @@ module.exports = function(app, conf) {
       (req, res, next) => {
 
         //output log to request
-        app.logger.verbose(`Start to check permission for url: ${req.path} by http method: ${req.method}`, AppName)
+        app.logger.verbose(`Start to check permission for url: ${req.path} by http method: ${req.method}`, app.appName)
 
         const ignore = conf.has('ignore') ? conf.get('ignore') : false
         if (ignore) {
 
-          app.logger.verbose('ignore', AppName)
+          app.logger.verbose('ignore', app.appName)
           next()
           return
         }

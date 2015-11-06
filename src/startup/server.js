@@ -18,7 +18,6 @@ class Server
     this.instance = undefined
 
     this.connections = undefined
-    this.logger = undefined
   }
 
   get Express() { return this.express }
@@ -58,6 +57,7 @@ class Server
     if (conf.has('logger')) {
       this.setLogger(app, conf.get('logger'))
     }
+    if (!app.logger) app.logger = global.logger
 
     //set database
     if (conf.has('databases')) {
@@ -71,35 +71,13 @@ class Server
   //set logger settings
   setLogger(app, conf)
   {
-    const that = this
-    const logFile = conf.get('file') || 'output.log'
-
-    const outputter = Logger.createFileOutputter(logFile)
-    const logger = new Logger(outputter)
-
-    //change line format by config value
-    if (conf.has('lineFormat')) {
-      logger.lineFormat = conf.get('lineFormat')
-    }
-
-    //change level by application name
-    if (conf.has('level')) {
-      const levels = conf.get('level')
-
-      for (let name of levels.keys()) {
-        if (name === 'default') logger.Level = levels.get(name)
-        else logger.setLogLevel(levels.get(name))
-      }
-    }
-
-    app.logger = logger
-    that.logger = logger
+    app.logger = global.getLogger(conf)
   }
 
   //set database settings
   setDatabases(app, conf)
   {
-    const that = this
+    const server = this
     const mongoConnections = new Data.MongoDBConnections()
 
     for( let entry of conf.entries() )
@@ -133,40 +111,40 @@ class Server
     mongoConnections.on('connected', conn => {
 
       //output info to logger
-      if (app.logger) app.logger.info(`The connection for ${conn.Name} was connected`, that.Name)
+      app.logger.info(`The connection for ${conn.Name} was connected`, server.Name)
     })
 
     //handle open event of connections
     mongoConnections.on('open', conn => {
 
       //output info to logger
-      if (app.logger) app.logger.info(`The connection for ${conn.Name} was opened`, that.Name)
+      app.logger.info(`The connection for ${conn.Name} was opened`, server.Name)
     })
 
     //handle close event of connections
     mongoConnections.on('close', conn => {
 
       //output info to logger
-      if (app.logger) app.logger.info(`The connection for ${conn.Name} was closed`, that.Name)
+      app.logger.info(`The connection for ${conn.Name} was closed`, server.Name)
     })
 
     //handle disconnected event of connections
     mongoConnections.on('disconnected', conn => {
 
       //output info to logger
-      if (app.logger) app.logger.info(`The connection for ${conn.Name} was disconnected`, that.Name)
+      app.logger.info(`The connection for ${conn.Name} was disconnected`, server.Name)
     })
 
     //handle error event of connections
     mongoConnections.on('error', (err, conn) => {
 
       //output error to logger
-      if (app.logger) app.logger.error(`database occur unknown error, details: ${ (err) ? err.message : ''}`, that.Name)
+      app.logger.error(`database occur unknown error, details: ${ (err) ? err.message : ''}`, server.Name)
     })
 
     app.connections = mongoConnections
 
-    that.connections = mongoConnections
+    server.connections = mongoConnections
   }
 
   //set children routers

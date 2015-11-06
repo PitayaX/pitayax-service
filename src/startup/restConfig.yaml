@@ -24,6 +24,6 @@ rest:
 logger:
   file: 'rest server.log'
   level:
-    default: 1
+    default: 2
     rest server: 1
     engine: 4

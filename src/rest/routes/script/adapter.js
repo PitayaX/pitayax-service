@@ -16,7 +16,7 @@ class ScriptAdapter
   constructor(app)
   {
     this.app = app
-    this.conf = app.parseConf(path.join(__dirname, 'conf.yaml')).toObject()
+    this.conf = app.parseConf('/rest/routes/script/conf.yaml').toObject()
     this.connections = app.connections
     this.dbAdapter = new data.MongoDBAdapter(this.connections)
   }
