@@ -10,7 +10,6 @@ const data = require('pitayax-service-core').data
 const Parser = gq.Parser
 const Engine = gq.Engine
 
-
 class ScriptAdapter
 {
   constructor(app)
@@ -29,11 +28,11 @@ class ScriptAdapter
   call(req, res)
   {
     //generate arguments for current script
-    const args = this._getArguments(req)
+    let args = this._getArguments(req)
 
     //create engine and execute
     return this._createEngine(req)
-              .then( engine => engine.execute(args) )
+            .then( engine => engine.execute(args) )
   }
 
   _getArguments(req)
