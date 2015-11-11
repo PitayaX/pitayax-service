@@ -11,7 +11,8 @@ settings:
   port: 8088
   supportHttps: false
   supportMiddleware: true
-  restFolder": false
+  restFolder: false
+  limitSize: 4mb
 locals:
   k1: 'v1'
   k2: 'v2'

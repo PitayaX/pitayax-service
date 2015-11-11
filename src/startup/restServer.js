@@ -88,6 +88,8 @@ class RestServer extends Server
     //ignore request for favicon.ico
     app.use('/favicon.ico', (req, res, next) => { return })
 
+    //app.use(require('express').bodyParser( { limit: 3242 } ))
+
     //append middlewares from configuration
     let middlewaresConf = server.conf.get('middlewares')
     if (middlewaresConf) {
@@ -125,8 +127,13 @@ class RestServer extends Server
     //create root router
     if (restRouter !== undefined) {
 
+      const parser = require('body-parser')
+
       //handle JSON body parser
-      app.use(require('body-parser').json())
+      const options = {};
+
+      if (app.settings.limitSize) options["limit"] = app.settings.limitSize
+      app.use(parser.json(options))
 
       //handle rest router base on configuration
       const path = restConf.has('folder') ? restConf.get('folder') : '/'

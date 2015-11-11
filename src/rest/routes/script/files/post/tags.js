@@ -12,7 +12,7 @@
     const keys = []
     const args = ctx.args
 
-    data.map( row => row.tags)
+    data.map( row => row.tags )
       .forEach( arr => {
         arr.forEach( key => {
           if (keys.length >= args.max) return
