@@ -72,6 +72,8 @@ class Router
 
   callback(req, res, err, result, app)
   {
+    if (err && err.stop) return
+
     const that = app
     const conf = (app.conf) ? app.conf : new Map()
     const restConf = (conf.has('rest')) ? conf.get('rest') : new Map()
@@ -109,14 +111,15 @@ class Router
 
     //output JSON for error node
     if (err) {
-        if (app.reportError) {
-          app.reportError(err, res)
-        }
-        else toJSON(err)
+
+      if (app.reportError) {
+        app.reportError(err, res)
+      }
+      else toJSON(err)
     }
     else {
-        //output JSON for result
-        toJSON(result);
+      //output JSON for result
+      toJSON(result);
     }
   }
 }

@@ -18,6 +18,23 @@ class AdminAdapter
     return aq.Q('test')
   }
 
+  stop(req, res)
+  {
+    //return aq.Q('test')
+    res.setHeader("Content-Type", "text/html; charset=utf-8")
+    res.statusCode = 200
+    //res.write('ttt')
+    res.write(`<script>\r\n\talert("stop current process.")\r\n</script>`, 'utf-8')
+    res.end()
+
+    //create error to stop, but the error will be catched by logger
+    const
+      err = new Error('stop')
+      err.stop = true
+
+    return aq.Q(null, err)
+  }
+
   list(req, res)
   {
     const app = this.app

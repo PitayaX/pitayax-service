@@ -5,6 +5,7 @@ admin:
     get:
       '/test': test
       '/list': list
+      '/stop': stop
     post:
       '/sendmail': sendmail
 api:
