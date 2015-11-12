@@ -13,6 +13,12 @@
     //const keys = []
     const args = ctx.args
     const allKeys = []
+    console.log('b1')
+
+    const append = (a, b) => {
+      if (!a) a = []
+      if(b) a.push(b.trim())
+    }
 
     //get all key from tag
     data.map( row => row.tags )
