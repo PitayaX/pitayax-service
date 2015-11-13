@@ -10,40 +10,34 @@
   "parts": {"headers": {"options":{"fields": ["tags"]}}},
   "after": (ctx, data) => {
 
-    //const keys = []
-    const args = ctx.args
-    const allKeys = []
-    console.log('b1')
+    const map = new Map()
 
-    const append = (a, b) => {
-      if (!a) a = []
-      if(b) a.push(b.trim())
-    }
-
-    //get all key from tag
     data.map( row => row.tags )
-          .forEach( arr => {
-            arr.forEach( key => {
-              if (key === '') return
-              if (key.indexOf(',') === -1)
-                allKeys.push(key)
-              else {
-                key.split(',').forEach( skey => allKeys.push(skey.trim()))
-              }
-            })
-          })
+      .reduce( (arr, tags) => {
+        if (!arr) arr = []    //create new array if array wasn't defined
 
-    //calculate count of keys
-    const keys = new Map()
-    allKeys.forEach(key => {
-      if (keys.has(key))
-        keys.set(key, keys.get(key) + 1)
-      else keys.set(key, 1)
-    })
+        if (!Array.isArray(tags)) cur = [tags] //re-create array if current is not array
 
-    return Array.from(keys.entries())
-      .sort((a, b) => b[1] - a[1])
-      .splice(0, args.max)
-      .map( item => {return {"name":item[0], "count":item[1]}})
+        //get tag
+        tags.forEach( tag => {
+                      tag.split(',')  //use comma to split tag
+                        .forEach( key => {
+                          if (key) arr.push(key.trim()) //remove space and append key to array
+                        })
+                    })
+
+        return arr
+      })
+      .forEach( key => map.set(key, map.has(key) ? (map.get(key) + 1) : 1) )
+
+    //get const from context
+    const args = ctx.args
+
+    return Array.from(map.entries())    //convert mapping to array
+      .sort( (a, b) => b[1] - a[1] )    //sort by count of key
+      .splice(0, args.max)              //limit return record by max argument
+      .map( item => {
+        return {"name":item[0], "count":item[1]}  //return array to object
+      })
   }
 }
