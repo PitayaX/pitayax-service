@@ -15,7 +15,7 @@ class ApiAdapter
 
     if (dataAdapter === undefined) {
       dataAdapter = new Data.MongoDBAdapter(app.connections)
-      dataAdapter.ValidateBeforeSave = false
+      dataAdapter.ValidateBeforeSave = true
     }
   }
 
