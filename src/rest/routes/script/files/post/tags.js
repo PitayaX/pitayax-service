@@ -20,7 +20,7 @@
 
         //get tag
         tags.forEach( tag => {
-                      tag.split(',')  //use comma to split tag
+                      tag.toString().split(',')  //use comma to split tag
                         .forEach( key => {
                           if (key) arr.push(key.trim()) //remove space and append key to array
                         })
