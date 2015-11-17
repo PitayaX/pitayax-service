@@ -86,6 +86,7 @@ class RestServer extends Server
     }
 
     const types = ['mongo']
+    const wrappers = require('./../rest/wrapper/')(app)
 
     for(let i = 0; i < types.length; i++) {
 
@@ -102,7 +103,7 @@ class RestServer extends Server
           }
 
           //bind wrapper function
-          //adapter.getWrapper = (name) => undefined
+          adapter.getWrapper = (name) => (wrappers.has(name)) ? wrappers.get(name) : undefined
 
           break
         default:

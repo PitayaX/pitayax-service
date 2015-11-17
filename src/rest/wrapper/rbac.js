@@ -1,32 +1,24 @@
 'use strict'
 
-class RBAC
-{
-  constructor(app)
-  {
-    this._app = app
-  }
+const hashPass = password => {
+  //return password
+  return 'hashed'
+}
 
-  _hash()
-  {
-  }
+const wrapper = {
+  "sys.user": {
+    "to": user => {
+      if (user.password !== undefined)
+        user.password = hashPass(user.password)
+      return user
+    },
 
-  user()
-  {
-    const that = this
-
-    return {
-      to: user => {
-        user.password = 'hashed'
-        return user
-      },
-
-      from: user => {
-        user.password = 'encrypted'
-        return user
-      }
+    "from": user => {
+      if (user.password !== undefined)
+        user.password = '******'
+      return user
     }
   }
 }
 
-module.exports = RBAC
+module.exports = wrapper

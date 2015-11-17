@@ -21,6 +21,7 @@
         "publishedBy": "String",
         "status": "Number",
         "viewCount": "Number",
+        "likeCount": "Number",
         "CanComment": "Boolean"
       },
       "options":
