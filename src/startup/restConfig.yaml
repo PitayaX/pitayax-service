@@ -4,6 +4,7 @@ databases:
     type: mongodb
     connectionString: '...'
   $schemas:
+    - '../rest/schemas/rbac.json'
     - '../rest/schemas/blog.json'
     - '../rest/schemas/northwind.json'
 settings:
@@ -26,5 +27,5 @@ logger:
   file: 'rest server.log'
   level:
     default: 2
-    rest server: 1
+    rest server: 3
     engine: 4

@@ -1,32 +1,33 @@
 'use strict'
 
-let Express = require('express')
-
 class RestRouter
 {
-  constructor(app)
+  constructor()
   {
-    this.app = app
   }
 
-  newRouter()
+  createRouter(app, conf, adapter, callback)
   {
-    return require('express').Router()
-  }
+    //create rest router
+    const restRouter = app.newRouter()
 
-  createRouter(conf, adapter, callback)
-  {
-    const that = this
-    const restRouter = that.newRouter()
-    const app = (that.app) ? that.app : ((adapter.app) ? adapter.app : {})
+    //get instance of logger
+    const logger = app.logger
 
-    for(let httpMethod of conf.keys()) {
+    //fetch all methods defined in configuration
+    for (let httpMethod of conf.keys()) {
+
+      //output message to logger
+      logger.verbose(`start to create router for http methods: ${httpMethod}`, app.appName)
 
       //get path map for current method
       const pathMap = conf.get(httpMethod)
 
       //fetch every path in map
-      for(let path of pathMap.keys()) {
+      for (let path of pathMap.keys()) {
+
+        //output message to logger
+        logger.verbose(`create router by path:${path}`, app.appName)
 
         //create method for current path
         const methodByPath = function(req, res) {
@@ -45,7 +46,7 @@ class RestRouter
             }
 
             //write ready info to log
-            app.logger.verbose(`ready for execute ${adpaterMethod}.`, app.appName)
+            logger.verbose(`ready for execute ${adpaterMethod}.`, app.appName)
 
             //bind method to function
             const bindMethod = method.bind(adapter, req, res)
@@ -57,12 +58,12 @@ class RestRouter
                 callback(req, res, null, data, app)
 
                 //write finish info to log
-                app.logger.verbose(`execute ${adpaterMethod} finished.`, app.appName)
+                logger.verbose(`execute ${adpaterMethod} finished.`, app.appName)
               })
               .catch( err => {
 
                 //write error to log
-                app.logger.error(`execute ${adpaterMethod} faield, details: ${(err) ? err.message : ''}.`, app.appName)
+                logger.error(`execute ${adpaterMethod} faield, details: ${(err) ? err.message : ''}.`, app.appName)
 
                 //callback with error
                 callback(req, res, err, null, app)
@@ -80,10 +81,11 @@ class RestRouter
 
         //bind method to router by path
         restRouter[httpMethod](path, methodByPath)
+
+        //output message to logger
+        logger.verbose('created rest router finished', app.appName)
       }
     }
-
-    //restRouter.all('*', (req, res) => that.callback(req, res, new Error('Invaild path'), null))
 
     return restRouter
   }

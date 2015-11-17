@@ -5,6 +5,7 @@
 const fs = require('fs')
 const path = require('path')
 const Server = require('./server.js')
+const Data = require('pitayax-service-core').data
 
 class RestServer extends Server
 {
@@ -25,11 +26,11 @@ class RestServer extends Server
         //output error for parse json body failed
         err.code = (err.code) ? err.code : -1
 
-        //create response database
-        const data = {"error": {"code": err.code, "message": err.message}}
-
         //set response status code
         res.statusCode = (err.statusCode) ? err.statusCode : 400
+
+        //create response database
+        const data = {"error": {"code": err.code, "message": err.message, "status": res.statusCode}}
 
         //write error to logger
         if (app.logger) app.logger.error(`status: ${res.statusCode},\tmessage: ${err.message}`, server.Name)
@@ -78,6 +79,39 @@ class RestServer extends Server
       }
       else appendSchema(schemas)  //append one schema file
     }
+
+    //set adapter
+    if (app.adapters === undefined) {
+      app.adapters = new Map()
+    }
+
+    const types = ['mongo']
+
+    for(let i = 0; i < types.length; i++) {
+
+      let adapter = undefined
+
+      switch(types[i]) {
+        case 'mongo':
+          //create mongo adapter
+          adapter = new Data.MongoDBAdapter(connections)
+
+          //initialize mongo adapter
+          if (adapter.ValidateBeforeSave !== undefined) {
+            adapter.ValidateBeforeSave = true
+          }
+
+          //bind wrapper function
+          //adapter.getWrapper = (name) => undefined
+
+          break
+        default:
+          break
+      }
+
+      //append adapter
+      app.adapters.set(types[i], adapter)
+    }
   }
 
   setRoute(app)
@@ -88,7 +122,9 @@ class RestServer extends Server
     //ignore request for favicon.ico
     app.use('/favicon.ico', (req, res, next) => { return })
 
-    //app.use(require('express').bodyParser( { limit: 3242 } ))
+    if (app.newRouter === undefined) {
+      app.newRouter = () => require('express').Router()
+    }
 
     //append middlewares from configuration
     let middlewaresConf = server.conf.get('middlewares')
@@ -112,15 +148,17 @@ class RestServer extends Server
     //create new instance of rest router
     if (restConf && restConf.has('script')) {
 
-      try {
+      try
+      {
         //get router class by file
         const Router = require(restConf.get('script'))
 
         restRouter = new Router(app)
       }
-      catch(err) {
+      catch(err)
+      {
 
-          app.logger.error(`Create new instance of router failed, details:${(err) ? err.message : 'unknown'}`, server.Name)
+        app.logger.error(`Create new instance of router failed, details:${(err) ? err.message : 'unknown'}`, server.Name)
       }
     }
 
@@ -137,7 +175,11 @@ class RestServer extends Server
 
       //handle rest router base on configuration
       const path = restConf.has('folder') ? restConf.get('folder') : '/'
-      app.use(path, restRouter.createRoute(app))
+
+      //bind create router function
+      const routerBind = restRouter.createRouter.bind(restRouter, app)
+
+      app.use(path, routerBind())
     }
 
     //catch no route request
@@ -153,6 +195,7 @@ class RestServer extends Server
       }
     )
 
+    //catch error
     app.use(
       (err, req, res, next) => {
 

@@ -35,6 +35,11 @@ class AdminAdapter
     return aq.Q(null, err)
   }
 
+  restart(req, res)
+  {
+    return aq.Q('restart')
+  }
+
   list(req, res)
   {
     const app = this.app

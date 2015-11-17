@@ -1,0 +1,35 @@
+{
+  "database":
+  {
+    "default": "blog"
+  },
+  "entity":
+  {
+    "sys.user":
+    {
+      "model":
+      {
+        "uid": "String",
+        "name": "String",
+        "password": "String",
+        "email": "String",
+        "createdDate":
+        {
+          "type": "Date",
+          "default": "${Date.now()}"
+        },
+        "modifiedDate":
+        {
+          "type": "Date",
+          "default": "${Date.now()}"
+        },
+        "status": "Number",
+        "comment": "String"
+      },
+      "options":
+      {
+        "collection": "_user"
+      }
+    }
+  }
+}

@@ -1,3 +1,5 @@
+#This file was used for router.js to define routes for rest server,
+#
 admin:
   path: '/admin'
   adapter: './admin/adapter.js'
@@ -6,6 +8,7 @@ admin:
       '/test': test
       '/list': list
       '/stop': stop
+      '/restart': restart
     post:
       '/sendmail': sendmail
 api:
@@ -43,4 +46,3 @@ script:
       '/test': test
     post:
       '/*': call
-      #'/': call

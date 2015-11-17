@@ -79,7 +79,7 @@ module.exports = function(app, conf) {
           if (url === undefined) throw Errors.get('url')
 
           //verify access token from remote server
-          aq.rest(url, 'GET', {"authorization": access_token, "client": "Blog"})
+          aq.rest(url, 'GET', {"authorization": access_token, "client": "pitayax-web"})
             .then( data => (data) ? data.pass: undefined )
             .then( data => {
 

@@ -1,72 +1,93 @@
 'use strict'
 
-const Express = require('express')
-const ConfigMap = require('pitayax-service-core').ConfigMap
-
 class Router
 {
   constructor(app)
   {
-    this.app = app
-    this.conf = (app.conf) ? app.conf : new Map()
-    this.restConf = this.conf.has('rest') ? this.conf.get('rest') : new Map()
   }
 
-  createRoute()
+  createRouter(app)
   {
-    let that = this
-    let app = that.app || {}
+    //set callback function
+    const callback = this.callback
 
     //parse configuration file
-    let conf = app.parseConf('/rest/routes/conf.yaml')
-    let rootRouter = require('express').Router()
+    const conf = app.parseConf('/rest/routes/conf.yaml')
+
+    //get instance of logger
+    const logger = app.logger
+
+    //create new instance of root router
+    const rootRouter = app.newRouter()
 
     //get all route
-    for(let key of conf.keys()) {
+    for (let key of conf.keys()) {
 
-      let item = conf.get(key)
+      const item = conf.get(key)
 
-      try {
+      try
+      {
+        //output log entries
+        logger.info(`start to create router for ${key}`, app.appName)
 
-        let path = item.has('path') ? item.get('path') : '/'
-        let routerFile = item.has('router') ? item.get('router') : './restRouter.js'
-        let adapterFile = item.has('adapter') ? item.get('adapter') : undefined
-        let methodsConf = item.has('methods') ? item.get('methods') : new Map()
-
-        if (adapterFile === 'undefined') {
-
-          //write info to logger if can't find adapter file
-          app.logger.warning(`Can't find adapter file for route ${key}`, app.appName)
-
-          //ignore current adapterFile
-          continue
-        }
+        //get variants from configuration
+        const path = item.has('path') ? item.get('path') : '/'
+        const routerFile = item.has('router') ? item.get('router') : './restRouter.js'
+        const adapterFile = item.has('adapter') ? item.get('adapter') : undefined
+        const methodsConf = item.has('methods') ? item.get('methods') : new Map()
 
         //get class for router and adapter
         const Router = require(routerFile)
         const Adapter = (adapterFile !== undefined) ? require(adapterFile) : undefined
 
-        //create new instance of router and adapter
-        if (!Router || typeof Router !== 'function') throw new Error(`Can't create router by file ${routerFile}`)
+        //can't find router class, throw exception
+        if (!Router || typeof Router !== 'function') {
+
+          //record errors
+          logger.error(`can't find definition for router by ${key}.`, app.appName)
+
+          //throw new exception
+          throw new Error(`Can't create router by file ${routerFile}`)
+        }
+
+        //create new instance of router
         const router = new Router(app)
+
+        //output message to logger
+        logger.verbose('created instance of router', app.appName)
+
+        //create new instance of router adapter
         const adapter = (Adapter && typeof Adapter === 'function') ? new Adapter(app) : {}
 
+        //output message to logger
+        logger.verbose('created instance of adapter', app.appName)
+
         //initialize varinats of adapter
-        adapter.key = key
+        if (adapter.key === undefined) adapter.key = key
+
+        //create bind function for router
+        const routerBind = router.createRouter.bind(router, app, methodsConf, adapter, callback)
+
+        //output message to logger
+        logger.verbose('bound router function', app.appName)
 
         //create sub router by configuration
-        rootRouter.use(path, router.createRouter(methodsConf, adapter, that.callback))
+        rootRouter.use(path, routerBind())
+
+        //output message to logger
+        logger.verbose('append sub-router to root', app.appName)
       }
       catch(err) {
 
         //write error info to logger
-        app.logger.error(`failed to create route for ${key}, details: ${(err) ? err.message : 'unknown'}`, app.appName)
+        logger.error(`failed to create route for ${key}, details: ${(err) ? err.message : 'unknown'}`, app.appName)
 
         //ignore current adapter
         continue
       }
     }
 
+    //return root router
     return rootRouter
   }
 
@@ -78,7 +99,7 @@ class Router
     const conf = (app.conf) ? app.conf : new Map()
     const restConf = (conf.has('rest')) ? conf.get('rest') : new Map()
 
-    let origin = (restConf.has('crossDomain')) ? (that.restConf.get('crossDomain') || '*') : '*'
+    let origin = (restConf.has('crossDomain')) ? (restConf.get('crossDomain') || '*') : '*'
 
     //set headers to response for rest settings
     res.setHeader("Access-Control-Allow-Origin", origin)   //allow cross domain to access REST services

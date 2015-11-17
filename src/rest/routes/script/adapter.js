@@ -4,9 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const aq = require('pitayax-service-core').aq
 const gq = require('pitayax-service-core').gq
-const data = require('pitayax-service-core').data
 
-//const MongoDBAdapter = data.MongoDBAdapter
 const Parser = gq.Parser
 const Engine = gq.Engine
 
@@ -14,10 +12,8 @@ class ScriptAdapter
 {
   constructor(app)
   {
-    this.app = app
-    this.conf = app.parseConf('/rest/routes/script/conf.yaml').toObject()
-    this.connections = app.connections
-    this.dbAdapter = new data.MongoDBAdapter(this.connections)
+    this._app = app
+    this._conf = app.parseConf('/rest/routes/script/conf.yaml').toObject()
   }
 
   test(req, res)
@@ -28,7 +24,7 @@ class ScriptAdapter
   call(req, res)
   {
     //generate arguments for current script
-    let args = this._getArguments(req)
+    const args = this._getArguments(req)
 
     //create engine and execute
     return this._createEngine(req)
@@ -43,6 +39,9 @@ class ScriptAdapter
   _createEngine(req)
   {
     const that = this
+    const app = that._app
+    const conf = that._conf
+
     const notFound = function() {
       let err = new Error('Can\'t find script by path')
       err.statusCode = 404
@@ -70,8 +69,7 @@ class ScriptAdapter
     //get full path of script file
     scriptFile = path.join(__dirname, `files\\${scriptFile}`)
 
-    //check file exists not not
-    //if (!fs.existsSync(scriptFile)) notFuond()
+    //check file exists or not
     try {fs.statSync(scriptFile)}
     catch(err) { notFound() }
 
@@ -83,10 +81,18 @@ class ScriptAdapter
 
               const engine = new Engine(script)
 
-              engine.setDataAdapter('mongo', that.dbAdapter)
-              engine.setContextItem('req', req)
-              engine.setContextItem('conf', that.conf)
-              if (name !== undefined) engine.setContextItem('name', name)
+              //set data adapters for data engine
+              if (app.adapters) {
+                for(let type of app.adapters.keys()) {
+                  engine.setDataAdapter(type, app.adapters.get(type))
+                }
+              }
+
+              //engine.setDataAdapter('mongo', that._dbAdapter)
+              //set context items for data engine
+              engine.setContextItem('req', req || {})
+              engine.setContextItem('conf', conf || {})
+              engine.setContextItem('name', name || '')
 
               engine.DefaultAction = 'mongo'
 
