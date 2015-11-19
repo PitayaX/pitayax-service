@@ -67,7 +67,7 @@ class ScriptAdapter
     }
 
     //get full path of script file
-    scriptFile = path.join(__dirname, `files\\${scriptFile}`)
+    scriptFile = path.join(global.dir, `rest\\scripts\\${scriptFile}`)
 
     //check file exists or not
     try {fs.statSync(scriptFile)}
