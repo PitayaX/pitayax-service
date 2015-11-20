@@ -23,8 +23,8 @@
     const user = ctx.global.getItem('user')
 
     if (user && user.userToken)
-      post.author = {"_id":user._id, "userToken":user.userToken, "nick":user.nick, "email": user.email}
-    else post.author = {"_id":'', "userToken":'', "nick":'', "email": ''}
+      post.author = { "_id":user._id, "userToken":user.userToken, "nick":user.nick, "email": user.email }
+    else post.author = { "_id":'', "userToken":'', "nick":'', "email": '' }
 
     return post
   }
