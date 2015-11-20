@@ -13,27 +13,20 @@
         "abstract": "String",
         "content": "String",
         "tags": [],
-        "publishedOn":
-        {
-          "type": "Date",
-          "default": "${Date.now()}"
-        },
+        "publishedOn": { "type": "Date", "default": "${Date.now()}" },
         "publishedBy": "String",
         "status": "Number",
         "viewCount": "Number",
         "likeCount": "Number",
         "CanComment": "Boolean"
       },
-      "options":
-      {
-        "collection": "post"
-      }
+      "options": { "collection": "post" }
     },
     "user":
     {
       "model":
       {
-        "userToken": "String",
+        "userToken": { "type": "String" },
         "nick": "String",
         "email": "String",
         "avatarFileToken": "String",
@@ -45,10 +38,7 @@
         "createdOn": "Date",
         "updatedOn": "Date"
       },
-      "options":
-      {
-        "collection": "user"
-      }
+      "options": { "collection": "user" }
     },
     "team":
     {
@@ -60,12 +50,9 @@
         "phone": "String",
         "description": "String",
         "homepage": "String",
-        "users":[{"userToken":"String","role":"String"}]
+        "users": [{ "userToken": "String", "role": "String" }]
       },
-      "options":
-      {
-        "collection": "team"
-      }
+      "options": { "collection": "team" }
     }
   }
 }

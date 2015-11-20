@@ -7,6 +7,7 @@ const gq = require('pitayax-service-core').gq
 
 const Parser = gq.Parser
 const Engine = gq.Engine
+const appName = 'engine'
 
 class ScriptAdapter
 {
@@ -42,9 +43,13 @@ class ScriptAdapter
     const app = that._app
     const conf = that._conf
 
-    const notFound = function() {
-      let err = new Error('Can\'t find script by path')
-      err.statusCode = 404
+    const notFound = () => {
+      const
+        err = new Error('Can\'t find script by path')
+        err.statusCode = 404
+
+      //write error to logger
+      app.logger.error(err.message, appName)
 
       throw err
     }
@@ -70,7 +75,7 @@ class ScriptAdapter
     scriptFile = path.join(global.dir, `rest\\scripts\\${scriptFile}`)
 
     //check file exists or not
-    try {fs.statSync(scriptFile)}
+    try { fs.statSync(scriptFile) }
     catch(err) { notFound() }
 
     //create new instance of parser
@@ -78,12 +83,16 @@ class ScriptAdapter
 
     return parser.parseFile(scriptFile)
             .then( script => {
+              //append to logger
+              app.logger.verbose(`parse script file: ${scriptFile} finished.`, appName)
 
               const engine = new Engine(script)
 
               //set data adapters for data engine
-              if (app.adapters) {
-                for(let type of app.adapters.keys()) {
+              if (app.adapters)
+              {
+                for (let type of app.adapters.keys())
+                {
                   engine.setDataAdapter(type, app.adapters.get(type))
                 }
               }
@@ -99,6 +108,10 @@ class ScriptAdapter
               return engine
             })
             .catch( err => {
+
+              //write error to logger
+              app.logger.error(err.message, appName)
+
               err.statusCode = 500
               throw err
             })

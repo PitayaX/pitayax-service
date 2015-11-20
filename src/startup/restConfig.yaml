@@ -6,7 +6,6 @@ databases:
   $schemas:
     - '../rest/schemas/rbac.json'
     - '../rest/schemas/blog.json'
-    - '../rest/schemas/northwind.json'
 settings:
   #env: development
   port: 8088

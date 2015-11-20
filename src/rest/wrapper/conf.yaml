@@ -1,2 +1,7 @@
 files:
   - "./rbac.js"
+password:
+  hash:
+    - md5
+    - sha256
+  digest: base64

@@ -4,16 +4,15 @@
   {
     "id": "posts",
     "body": (ctx) => ctx.req.body,
+    /* "relation": {
+      "target": "user",
+      "joins": {"publishedBy":"userToken"},
+      "as":{"name": "author", "fields": ["_id", "userToken", "nick", "email"]}
+    },*/
     "parts":
     {
       "id": "users",
       "headers": {"name": "user"},
-      /* "relation": {
-        "posts": {
-          "joins": [{"publishedBy":"userToken"}],
-          "as":{"name": "author", "fields": ["_id", "userToken", "nick", "email"]}
-        }
-      }, */
       "body": (ctx, data) =>
       {
         let userTokens = data

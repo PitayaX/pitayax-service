@@ -5,4 +5,4 @@
                 {"body": {"data":"result2"}},
                 {"body": {"data":"result3"}}
             ]
-};
+}
