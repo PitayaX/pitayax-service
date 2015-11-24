@@ -58,7 +58,7 @@ global.parseConf
     }
 
     //parse file
-    const info = path.parse(cfile);
+    const info = path.parse(cfile)
     if (!info) {
       //set default file info
       info = {
