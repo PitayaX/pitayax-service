@@ -4,8 +4,8 @@ databases:
     type: mongodb
     connectionString: '...'
   $schemas:
-    - '../rest/schemas/rbac.json'
-    - '../rest/schemas/blog.json'
+    - '../rest/schemas/rbac.js'
+    - '../rest/schemas/blog.js'
 settings:
   #env: development
   port: 8088

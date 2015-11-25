@@ -13,7 +13,7 @@
         "abstract": "String",
         "content": "String",
         "tags": [],
-        "publishedOn": { "type": "Date", "default": "${Date.now()}" },
+        "publishedOn": { "type": "Date", "default": Date.now() },
         "publishedBy": "String",
         "status": "Number",
         "viewCount": "Number",

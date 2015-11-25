@@ -36,6 +36,13 @@ class ApiRouter extends Router
       //fetch every item in schemas
       for (let key of schemas.keys()) {
 
+        const entity = schemas.get(key)
+
+        const options = (entity.options) ? entity.options : {}
+
+        //ignore if current entity is disable rest service
+        if (options.rest !== undefined && options.rest === false) continue
+
         //output message to logger
         logger.info(`start to create for object: ${key}`, app.appName)
 
@@ -54,6 +61,10 @@ class ApiRouter extends Router
         //create item router by name
         router.use(`/${key}`, routerBind())
 
+        if (entity.database) {
+          router.use(`/${entity.database}.${key}`, routerBind())
+        }
+
         //output message to logger
         logger.verbose(`created adapter for object: ${key}`, app.appName)
       }
@@ -61,23 +72,6 @@ class ApiRouter extends Router
 
     //catch unhandle path
     router.use('*', (req, res, next) => callback(req, res, errorForPath(req.originalUrl), null, app))
-
-    //catch unhandle path
-    /*
-    router.use(
-      '*',
-      (req, res, next) => {
-
-        const
-          err = new Error(`invaild path: ${req.originalUrl} for current router.`)
-          err.code = 404
-          err.statusCode = 404
-
-        //output error
-        callback(req, res, err, null, app)
-      }
-    )
-    */
 
     return router
   }

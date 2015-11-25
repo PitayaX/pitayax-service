@@ -55,14 +55,12 @@ class RestServer extends Server
 
     //get config section for schemas
     const schemas = conf.get('$schemas')
+    const schemasCache = Data.SchemaCache.create()
 
     const appendSchema = (file) => {
 
       try {
-        const buffer = fs.readFileSync(path.join(__dirname, file))  //read file
-        const json = JSON.parse(buffer)   //parse buffer to JSON
-
-        connections.appendSchema(json)    //append schema to connections
+        schemasCache.add(path.join(__dirname, file))
         app.logger.verbose(`appended schema file: ${file}`, server.Name)
       }
       catch(err) {
