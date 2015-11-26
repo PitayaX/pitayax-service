@@ -26,7 +26,7 @@
     {
       "model":
       {
-        "userToken": { "type": "String" },
+        "userId": { "type": "String" },
         "nick": "String",
         "email": "String",
         "avatarFileToken": "String",

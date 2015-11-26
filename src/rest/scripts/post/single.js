@@ -13,7 +13,7 @@
         "#":"get author info for current post",
         "id": "user",
         "headers": {"name": "user", "method": "retrieveOne"},
-        "body": (ctx, data) => {return {"userToken":  (data) ? data.publishedBy : ''}}
+        "body": (ctx, data) => {return {"userId":  (data) ? data.publishedBy : ''}}
       }
     ]
   },
@@ -23,8 +23,8 @@
     const user = ctx.global.getItem('user')
 
     if (user && user.userToken)
-      post.author = { "_id":user._id, "userToken":user.userToken, "nick":user.nick, "email": user.email }
-    else post.author = { "_id":'', "userToken":'', "nick":'', "email": '' }
+      post.author = { "_id":user._id, "userId":user.userToken, "nick":user.nick, "email": user.email }
+    else post.author = { "_id":'', "userId":'', "nick":'', "email": '' }
 
     return post
   }

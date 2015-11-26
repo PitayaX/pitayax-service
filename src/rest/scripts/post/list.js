@@ -6,8 +6,8 @@
     "body": (ctx) => ctx.req.body,
     "relations": {
       "target": "user",
-      "joins": { "publishedBy":"userToken" },
-      "as":{ "name": "author", "fields": ["_id", "userToken", "nick", "email"] }
+      "joins": { "publishedBy":"userId" },
+      "as":{ "name": "author", "fields": ["_id", "userId", "nick", "email"] }
     }
   }
 }

@@ -20,6 +20,7 @@ api:
       '/test': test
       '/model': model
       '/list': list
+      '/:key/:id': retrieve
       '/:id': retrieve
       '/': disable
     post:
