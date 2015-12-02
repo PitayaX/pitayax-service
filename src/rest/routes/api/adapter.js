@@ -86,6 +86,7 @@ class ApiAdapter
 
     //get filter and modifier from request
     const filter = this._getFilter(req, body)
+
     const modifier = (body.modifier) ? body.modifier : body
 
     //get data adapter
@@ -193,20 +194,29 @@ class ApiAdapter
     //check request
     if (!req) return {}
 
-    //parse body from request
-    if (body === undefined) body = (req.body) ? req.body : {}
-    if (typeof body === 'string') body = JSON.parse(body)
+    let filter = {}
 
-    //get filter form body
-    let filter = (body.query) ? body.query : body
-    if (Object.keys(body).length > 0) return filter
+    if (Object.keys(req.params).length > 0)
+    {
+      //get key and id value from request
+      const key = (req.params["key"]) ? req.params["key"] : "_id"
+      filter[key] = req.params["id"]
 
-    //get key and id value from request
-    const key = (req.params["key"]) ? req.params["key"] : "_id"
-    filter[key] = req.params["id"]
+      //return filter
+      return filter
+    }
+    else
+    {
+      //parse body from request
+      if (body === undefined) body = (req.body) ? req.body : {}
+      if (typeof body === 'string') body = JSON.parse(body)
 
-    //return filter
-    return filter
+      //get filter form body
+      let filter = (body.query) ? body.query : body
+      if (Object.keys(body).length > 0)
+        return filter
+      else return {}
+    }
   }
 
   _parseFilter(req)
